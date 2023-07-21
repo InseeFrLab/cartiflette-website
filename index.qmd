@@ -1,0 +1,247 @@
+---
+title: "Documentation projet `cartiflette`"
+echo: false
+---
+
+
+```{ojs}
+viewof langage_requete = Inputs.radio(
+  ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+  {value: null, format: x => x ?? "Python"}
+)
+```
+
+## Principe du package
+
+<br>
+L'objectif de [`cartiflette`](https://github.com/InseeFrLab/cartiflette) est de faciliter la récupération de fonds de carte officiels pour faciliter le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs. 
+
+Le projet a été initié dans le cadre du [Programme interministériel 10%](https://10pourcent.etalab.studio/projets/insee/)
+qui vise à favoriser les échanges entre _data scientists_ de l'administration française. 
+
+
+## Récupérer des données France entière
+
+
+Les premières données qu'il est possible de récupérer avec l'outil `cartiflette` sont des données France entière. Ce n'est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).
+
+Il existe deux approches pour cela:
+
+1. Utiliser la fonction `get_vectorfile_ign` qui va récupérer directement les données depuis [le site de l'IGN](https://geoservices.ign.fr/adminexpress). Comme il est nécessaire de télécharger les données France entière pour cela et que le format utilisé est le _shapefile_, les données sont volumineuses (de l'ordre de 500Mo). Cela peut donc demander un certain temps ;
+2. Utiliser l'une des fonctions de `cartiflette`. Ce cas est démontré ci-dessous
+
+```{ojs}
+// Source: https://observablehq.com/@mbostock/dashboard
+grid = width > 500
+        ? html`<div style="
+            background: #fff;
+            margin: 0;
+            border: none ;
+            display: grid;
+            width: ${width};
+            grid-template-areas: 
+              'd a'
+              'b b'
+              'c c'
+              'e e';
+            grid-gap: 10px;
+          ">
+          
+            <div name="d" style="grid-area: d; position: relative;">${viewof year}</div>
+            <div name="a" style="grid-area: a; position: relative;">${viewof selectedlevel}</div>
+            <div name="b" style="grid-area: b; position: relative;">${viewof format}</div>
+            <div name="c" style="grid-area: c; position: relative;">${map_france}</div>
+            <div name="e" style="grid-area: e; position: relative;">${button_france}</div>
+          </div>`
+  : html`<div style="
+            background: #fff;
+            margin: 0;
+            border: none ;
+            display: grid;
+            width: ${width};
+            grid-template-areas: 
+              'd d'
+              'a a'
+              'b b'
+              'c c'
+              'e e';
+            grid-gap: 10px;
+          ">
+          
+            <div name="d" style="grid-area: d; position: relative;">${viewof year}</div>
+            <div name="a" style="grid-area: a; position: relative;">${viewof selectedlevel}</div>
+            <div name="b" style="grid-area: b; position: relative;">${viewof format}</div>
+            <div name="c" style="grid-area: c; position: relative;">${map_france}</div>
+            <div name="e" style="grid-area: e; position: relative;">${button_france}</div>
+          </div>`
+```
+
+## Sélectionner un département facilement
+
+```{ojs}
+md`L'intérêt principal du projet \`cartiflette\` est la mise à disposition facilitée de fonds de carte adaptés aux besoins du _data scientist_ ou du géomaticien.
+
+En premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département ${departement})
+`
+```
+
+```{ojs}
+// Source: https://observablehq.com/@mbostock/dashboard
+grid_departement = width > 500
+        ? html`<div style="
+            background: #fff;
+            margin: 0;
+            border: none ;
+            display: grid;
+            width: ${width};
+            grid-template-areas: 
+              'a d'
+              'c c'
+              'b b';
+            grid-gap: 10px;
+          ">
+            <div name="a" style="grid-area: a; position: relative;">${viewof departement}</div>
+            <div name="d" style="grid-area: d; position: relative;">${viewof arrondissement}</div>
+            <div name="b" style="grid-area: b; position: relative;">${button_departement}</div>
+            <div name="c" style="grid-area: c; position: relative;">${map_departement}</div>
+          </div>`
+  : html`<div style="
+            background: #fff;
+            margin: 0;
+            border: none ;
+            display: grid;
+            width: ${width};
+            grid-template-areas: 
+              'a a'
+              'd d'
+              'c c'
+              'b b';
+            grid-gap: 10px;
+          ">
+            <div name="a" style="grid-area: a; position: relative;">${viewof departement}</div>
+            <div name="d" style="grid-area: d; position: relative;">${viewof arrondissement}</div>
+            <div name="c" style="grid-area: c; position: relative;">${map_departement}</div>          
+            <div name="b" style="grid-area: b; position: relative;">${button_departement}</div>
+          </div>`
+```
+
+```{ojs}
+md`
+${print_program_departement_single(langage, departement, level_arrondissement, format, year)}
+`
+```
+
+```{ojs}
+viewof departement = Inputs.select(liste_departements, {label: "Département à représenter"})
+```
+
+```{ojs}
+viewof selectedlevel = Inputs.select(['REGION','DEPARTEMENT'], {label: "Zonage administratif désiré:"})
+```
+
+```{ojs}
+viewof arrondissement = Inputs.toggle({label: "Arrondissement dans les grandes villes ?"})
+level_arrondissement = arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE"
+```
+
+```{ojs}
+viewof year = Inputs.select(["2022", "2021"], {label: "Année de la géographie de référence"})
+```
+
+```{ojs}
+viewof format = Inputs.select(
+  ["topojson"],
+  //['topojson','geojson'],
+  {label: "Format désiré:"})
+```
+
+```{ojs}
+map_france = topohelper
+  .from(
+    await data_departement
+  )
+  .project({ proj: l93 })
+  .view({ tooltip: true, zoom: true })
+```
+
+```{ojs}
+map_departement = topohelper
+  // direct call inside from() to avoid a deep copy
+  .from(
+    await departement_shape
+  )
+  .project({ proj: l93 })
+  .view({ tooltip: true, zoom: true })
+```
+
+```{ojs}
+data_departement = get_france(selectedlevel, format, year)
+```
+
+```{ojs}
+departement_shape = get_departement(
+      departement,
+      arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
+      "topojson",
+      year
+    )
+```
+
+```{ojs}
+import {download_vectorfile} from "@linogaliana/cartiflette-js"
+```
+
+```{ojs}
+import {
+  button, url_file_available,
+  get_france, get_departement, liste_departements,
+  get_multiple_departement, create_url_departement, create_url_france,
+  to_single_geojson} from "@linogaliana/cartiflette-js"
+```
+
+```{ojs}
+import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from "@linogaliana/cartiflette-doc-utils"
+```
+
+```{ojs}
+langage = langage_requete == null ? "Python" : langage_requete
+logo = ({
+  "python": html`<i class="fa-brands fa-python"></i>`,
+  "javascript": html`<i class="fa-brands fa-js"></i>`,
+  "r": html`<i class="fa-brands fa-r-project"></i>`
+})
+```
+
+
+```{ojs}
+import {
+  download_button
+  } from "@linogaliana/cartiflette-demo"
+```
+
+```{ojs}
+button_france = html`
+  ${download_button(
+    create_url_france(selectedlevel, format, year)
+  )}
+`
+```
+
+```{ojs}
+button_departement = html`
+  ${download_button(
+    create_url_departement(departement, "COMMUNE", format, year)
+  )}
+`
+```
+
+
+```{ojs}
+// Projection Lambert 93 (EPSG: 2154)
+l93 = "+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+```
+
+```{ojs}
+topohelper = import("https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm")
+```
+
