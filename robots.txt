@@ -1,0 +1,1 @@
+Sitemap: https://github.com/linogaliana/cartiflette-website/sitemap.xml
