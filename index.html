@@ -73,6 +73,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -100,7 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -136,17 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#principe-du-package" id="toc-principe-du-package" class="nav-link active" data-scroll-target="#principe-du-package">Principe du package</a></li>
-  <li><a href="#récupérer-des-données-france-entière" id="toc-récupérer-des-données-france-entière" class="nav-link" data-scroll-target="#récupérer-des-données-france-entière">Récupérer des données France entière</a></li>
-  <li><a href="#sélectionner-un-département-facilement" id="toc-sélectionner-un-département-facilement" class="nav-link" data-scroll-target="#sélectionner-un-département-facilement">Sélectionner un département facilement</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -167,88 +159,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
+<p>Un exercice pour illustrer la simplicité d’usage des fonds de carte du projet <a href="https://github.com/InseeFrLab/cartiflette"><code>cartiflette</code></a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Le projet s’enrichit progressivement de fonctionnalités, n’hésitez pas à <strong>consulter régulièrement cette page</strong>.</p>
+<p>Pour le moment, <a href="https://github.com/InseeFrLab/cartiflette"><code>cartiflette</code></a> est fourni principalement sous forme de <em>package</em> <code>Python</code> <i class="fa-brands fa-python" aria-label="python"></i>. Quelques fonctionnalités sont portées en <code>JavaScript</code> <i class="fa-brands fa-js-square" aria-label="js-square"></i> avec le présent <em>notebook</em>. <br> <br> Le développement d’une API pour offrir de la flexibilité dans la récupération des fichiers tout en laissant la liberté à l’utilisateur est prévue. N’hésitez pas à proposer de l’aide sur <a href="https://github.com/InseeFrLab/cartiflette"><code>Github</code> <i class="fa-brands fa-github" aria-label="github"></i> <code>inseefrlab/cartiflette</code></a></p>
+</div>
+</div>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="7" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 6;"><span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>viewof langage_requete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"Python"</span><span class="op">,</span> <span class="st">"Javascript"</span> <span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Langage de programmation pour les exemples de code"</span>}<span class="op">,</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">format</span><span class="op">:</span> x <span class="kw">=&gt;</span> x <span class="op">??</span> <span class="st">"Python"</span>}</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="33" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 32;"><span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>viewof langage_requete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"Python"</span><span class="op">,</span> <span class="st">"Javascript"</span> <span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Langage de programmation pour les exemples de code"</span>}<span class="op">,</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">format</span><span class="op">:</span> x <span class="kw">=&gt;</span> x <span class="op">??</span> <span class="st">"Python"</span>}</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<section id="principe-du-package" class="level2">
-<h2 class="anchored" data-anchor-id="principe-du-package">Principe du package</h2>
-<p><br> L’objectif de <a href="https://github.com/InseeFrLab/cartiflette"><code>cartiflette</code></a> est de faciliter la récupération de fonds de carte officiels pour faciliter le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs.</p>
-<p>Le projet a été initié dans le cadre du <a href="https://10pourcent.etalab.studio/projets/insee/">Programme interministériel 10%</a> qui vise à favoriser les échanges entre <em>data scientists</em> de l’administration française.</p>
-</section>
 <section id="récupérer-des-données-france-entière" class="level2">
 <h2 class="anchored" data-anchor-id="récupérer-des-données-france-entière">Récupérer des données France entière</h2>
-<p>Les premières données qu’il est possible de récupérer avec l’outil <code>cartiflette</code> sont des données France entière. Ce n’est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).</p>
+<p>Les premières données qu’il est possible de récupérer avec l’outil <code>cartiflette</code> sont des données France entière.</p>
+<p>Ce n’est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).</p>
 <p>Il existe deux approches pour cela:</p>
 <ol type="1">
 <li>Utiliser la fonction <code>get_vectorfile_ign</code> qui va récupérer directement les données depuis <a href="https://geoservices.ign.fr/adminexpress">le site de l’IGN</a>. Comme il est nécessaire de télécharger les données France entière pour cela et que le format utilisé est le <em>shapefile</em>, les données sont volumineuses (de l’ordre de 500Mo). Cela peut donc demander un certain temps ;</li>
 <li>Utiliser l’une des fonctions de <code>cartiflette</code>. Ce cas est démontré ci-dessous</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="33" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 32;"><span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd a'</span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="54" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 53;"><span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="vs">            max-width: 100%; </span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd a'</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="vs">            max-width: 100%; </span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-2" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-</section>
-<section id="sélectionner-un-département-facilement" class="level2">
-<h2 class="anchored" data-anchor-id="sélectionner-un-département-facilement">Sélectionner un département facilement</h2>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="81" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 80;"><span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`L'intérêt principal du projet </span><span class="sc">\`</span><span class="vs">cartiflette</span><span class="sc">\`</span><span class="vs"> est la mise à disposition facilitée de fonds de carte adaptés aux besoins du _data scientist_ ou du géomaticien.</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="vs">En premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département </span><span class="sc">${</span>departement<span class="sc">}</span><span class="vs">)</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="102" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 101;"><span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">` Comment faire ceci de manière reproductible avec </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span><span class="vs"> ?`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-3" data-nodetype="expression">
 
@@ -256,53 +258,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="88" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 87;"><span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>grid_departement <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a d'</span></span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
-<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
-<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;          </span></span>
-<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="107" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 106;"><span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span><span class="fu">print_program_france</span>(langage<span class="op">,</span> selectedlevel<span class="op">,</span> format<span class="op">,</span> year)<span class="sc">}</span></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-4" data-nodetype="declaration">
+<div id="ojs-cell-4" data-nodetype="expression">
 
 </div>
 </div>
 </div>
+</section>
+<section id="sélectionner-un-département-facilement" class="level2">
+<h2 class="anchored" data-anchor-id="sélectionner-un-département-facilement">Sélectionner un département facilement</h2>
+<p>L’intérêt principal du projet <code>cartiflette</code> est la mise à disposition facilitée de fonds de carte adaptés aux besoins du <em>data scientist</em> ou du géomaticien.</p>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="128" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 127;"><span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
-<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span><span class="fu">print_program_departement_single</span>(langage<span class="op">,</span> departement<span class="op">,</span> level_arrondissement<span class="op">,</span> format<span class="op">,</span> year)<span class="sc">}</span></span>
-<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="117" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 116;"><span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a><span class="vs">En premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département </span><span class="sc">${</span>departement<span class="sc">}</span><span class="vs">)</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-5" data-nodetype="expression">
 
@@ -310,7 +282,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="134" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 133;"><span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>viewof departement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(liste_departements<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Département à représenter"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="123" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 122;"><span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>grid_departement <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a d'</span></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
+<span id="cb6-150"><a href="#cb6-150" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
+<span id="cb6-151"><a href="#cb6-151" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
+<span id="cb6-152"><a href="#cb6-152" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
+<span id="cb6-153"><a href="#cb6-153" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
+<span id="cb6-154"><a href="#cb6-154" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
+<span id="cb6-155"><a href="#cb6-155" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-156"><a href="#cb6-156" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-157"><a href="#cb6-157" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;          </span></span>
+<span id="cb6-158"><a href="#cb6-158" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-159"><a href="#cb6-159" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-6" data-nodetype="declaration">
 
@@ -318,33 +326,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="138" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 137;"><span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a>viewof selectedlevel <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">'REGION'</span><span class="op">,</span><span class="st">'DEPARTEMENT'</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Zonage administratif désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="163" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 162;"><span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">` Comment faire ceci de manière reproductible avec </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span><span class="vs"> ?`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-7" data-nodetype="declaration">
+<div id="ojs-cell-7" data-nodetype="expression">
 
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="143" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 142;"><span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a>viewof arrondissement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"Arrondissement dans les grandes villes ?"</span>})</span>
-<span id="cb8-144"><a href="#cb8-144" aria-hidden="true" tabindex="-1"></a>level_arrondissement <span class="op">=</span> arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="168" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 167;"><span id="cb8-168"><a href="#cb8-168" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
+<span id="cb8-169"><a href="#cb8-169" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span><span class="fu">print_program_departement_single</span>(langage<span class="op">,</span> departement<span class="op">,</span> level_arrondissement<span class="op">,</span> format<span class="op">,</span> year)<span class="sc">}</span></span>
+<span id="cb8-170"><a href="#cb8-170" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-8-1" data-nodetype="declaration">
+<div id="ojs-cell-8" data-nodetype="expression">
 
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-8-2" data-nodetype="declaration">
-
-</div>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="147" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 146;"><span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>viewof year <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"2022"</span><span class="op">,</span> <span class="st">"2021"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Année de la géographie de référence"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="174" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 173;"><span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>viewof departement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(liste_departements<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Département à représenter"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-9" data-nodetype="declaration">
 
@@ -352,10 +352,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="151" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 150;"><span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a>viewof format <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"topojson"</span>]<span class="op">,</span></span>
-<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>  <span class="co">//['topojson','geojson'],</span></span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Format désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="178" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 177;"><span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>viewof selectedlevel <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">'REGION'</span><span class="op">,</span><span class="st">'DEPARTEMENT'</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Zonage administratif désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-10" data-nodetype="declaration">
 
@@ -363,26 +360,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="158" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 157;"><span id="cb11-158"><a href="#cb11-158" aria-hidden="true" tabindex="-1"></a>map_france <span class="op">=</span> topohelper</span>
-<span id="cb11-159"><a href="#cb11-159" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
-<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> data_departement</span>
-<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
-<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span> })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="183" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 182;"><span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a>viewof arrondissement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"Arrondissement dans les grandes villes ?"</span>})</span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a>level_arrondissement <span class="op">=</span> arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-11" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-11-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="167" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 166;"><span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a>map_departement <span class="op">=</span> topohelper</span>
-<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a>  <span class="co">// direct call inside from() to avoid a deep copy</span></span>
-<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
-<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> departement_shape</span>
-<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
-<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span> })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="187" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 186;"><span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a>viewof year <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"2022"</span><span class="op">,</span> <span class="st">"2021"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Année de la géographie de référence"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-12" data-nodetype="declaration">
 
@@ -390,7 +386,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="177" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 176;"><span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a>data_departement <span class="op">=</span> <span class="fu">get_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="191" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 190;"><span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a>viewof format <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb13-192"><a href="#cb13-192" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"topojson"</span>]<span class="op">,</span></span>
+<span id="cb13-193"><a href="#cb13-193" aria-hidden="true" tabindex="-1"></a>  <span class="co">//['topojson','geojson'],</span></span>
+<span id="cb13-194"><a href="#cb13-194" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Format désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-13" data-nodetype="declaration">
 
@@ -398,12 +397,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="181" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 180;"><span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a>departement_shape <span class="op">=</span> <span class="fu">get_departement</span>(</span>
-<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a>      departement<span class="op">,</span></span>
-<span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a>      arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span><span class="op">,</span></span>
-<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a>      <span class="st">"topojson"</span><span class="op">,</span></span>
-<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a>      year</span>
-<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="198" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 197;"><span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a>map_france <span class="op">=</span> topohelper</span>
+<span id="cb14-199"><a href="#cb14-199" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
+<span id="cb14-200"><a href="#cb14-200" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> data_departement</span>
+<span id="cb14-201"><a href="#cb14-201" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-202"><a href="#cb14-202" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
+<span id="cb14-203"><a href="#cb14-203" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">size</span><span class="op">:</span> [width<span class="op">,</span> <span class="dv">300</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-14" data-nodetype="declaration">
 
@@ -411,7 +410,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="190" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 189;"><span id="cb15-190"><a href="#cb15-190" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {download_vectorfile} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="207" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 206;"><span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a>map_departement <span class="op">=</span> topohelper</span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>  <span class="co">// direct call inside from() to avoid a deep copy</span></span>
+<span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> departement_shape</span>
+<span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">size</span><span class="op">:</span> [width<span class="op">,</span> <span class="dv">300</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-15" data-nodetype="declaration">
 
@@ -419,11 +424,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb16" data-startfrom="194" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 193;"><span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
-<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a>  button<span class="op">,</span> url_file_available<span class="op">,</span></span>
-<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>  get_france<span class="op">,</span> get_departement<span class="op">,</span> liste_departements<span class="op">,</span></span>
-<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>  get_multiple_departement<span class="op">,</span> create_url_departement<span class="op">,</span> create_url_france<span class="op">,</span></span>
-<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>  to_single_geojson} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb16" data-startfrom="218" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 217;"><span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a>data_departement <span class="op">=</span> <span class="fu">get_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-16" data-nodetype="declaration">
 
@@ -431,7 +432,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb17" data-startfrom="202" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 201;"><span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {create_projection2154<span class="op">,</span> map_multiple_2154<span class="op">,</span> map_multiple_4326<span class="op">,</span> make_map<span class="op">,</span> print_program_france<span class="op">,</span> print_program_departement_single} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-doc-utils"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb17" data-startfrom="222" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 221;"><span id="cb17-222"><a href="#cb17-222" aria-hidden="true" tabindex="-1"></a>departement_shape <span class="op">=</span> <span class="fu">get_departement</span>(</span>
+<span id="cb17-223"><a href="#cb17-223" aria-hidden="true" tabindex="-1"></a>      departement<span class="op">,</span></span>
+<span id="cb17-224"><a href="#cb17-224" aria-hidden="true" tabindex="-1"></a>      arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span><span class="op">,</span></span>
+<span id="cb17-225"><a href="#cb17-225" aria-hidden="true" tabindex="-1"></a>      <span class="st">"topojson"</span><span class="op">,</span></span>
+<span id="cb17-226"><a href="#cb17-226" aria-hidden="true" tabindex="-1"></a>      year</span>
+<span id="cb17-227"><a href="#cb17-227" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-17" data-nodetype="declaration">
 
@@ -439,31 +445,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb18" data-startfrom="207" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 206;"><span id="cb18-207"><a href="#cb18-207" aria-hidden="true" tabindex="-1"></a>langage <span class="op">=</span> langage_requete <span class="op">==</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"Python"</span> <span class="op">:</span> langage_requete</span>
-<span id="cb18-208"><a href="#cb18-208" aria-hidden="true" tabindex="-1"></a>logo <span class="op">=</span> ({</span>
-<span id="cb18-209"><a href="#cb18-209" aria-hidden="true" tabindex="-1"></a>  <span class="st">"python"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-python"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
-<span id="cb18-210"><a href="#cb18-210" aria-hidden="true" tabindex="-1"></a>  <span class="st">"javascript"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-js"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
-<span id="cb18-211"><a href="#cb18-211" aria-hidden="true" tabindex="-1"></a>  <span class="st">"r"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-r-project"&gt;&lt;/i&gt;`</span></span>
-<span id="cb18-212"><a href="#cb18-212" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb18" data-startfrom="231" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 230;"><span id="cb18-231"><a href="#cb18-231" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {download_vectorfile} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-18-1" data-nodetype="declaration">
+<div id="ojs-cell-18" data-nodetype="declaration">
 
-</div>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-18-2" data-nodetype="declaration">
-
-</div>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb19" data-startfrom="216" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 215;"><span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
-<span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a>  download_button</span>
-<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a>  } <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-demo"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb19" data-startfrom="235" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 234;"><span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
+<span id="cb19-236"><a href="#cb19-236" aria-hidden="true" tabindex="-1"></a>  button<span class="op">,</span> url_file_available<span class="op">,</span></span>
+<span id="cb19-237"><a href="#cb19-237" aria-hidden="true" tabindex="-1"></a>  get_france<span class="op">,</span> get_departement<span class="op">,</span> liste_departements<span class="op">,</span></span>
+<span id="cb19-238"><a href="#cb19-238" aria-hidden="true" tabindex="-1"></a>  get_multiple_departement<span class="op">,</span> create_url_departement<span class="op">,</span> create_url_france<span class="op">,</span></span>
+<span id="cb19-239"><a href="#cb19-239" aria-hidden="true" tabindex="-1"></a>  to_single_geojson} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-19" data-nodetype="declaration">
 
@@ -471,11 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb20" data-startfrom="222" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 221;"><span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>button_france <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
-<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
-<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span>
-<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
-<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb20" data-startfrom="243" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 242;"><span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {create_projection2154<span class="op">,</span> map_multiple_2154<span class="op">,</span> map_multiple_4326<span class="op">,</span> make_map<span class="op">,</span> print_program_france<span class="op">,</span> print_program_departement_single} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-doc-utils"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-20" data-nodetype="declaration">
 
@@ -483,20 +473,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb21" data-startfrom="230" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 229;"><span id="cb21-230"><a href="#cb21-230" aria-hidden="true" tabindex="-1"></a>button_departement <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
-<span id="cb21-231"><a href="#cb21-231" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
-<span id="cb21-232"><a href="#cb21-232" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_departement</span>(departement<span class="op">,</span> <span class="st">"COMMUNE"</span><span class="op">,</span> format<span class="op">,</span> year)</span>
-<span id="cb21-233"><a href="#cb21-233" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
-<span id="cb21-234"><a href="#cb21-234" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb21" data-startfrom="248" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 247;"><span id="cb21-248"><a href="#cb21-248" aria-hidden="true" tabindex="-1"></a>langage <span class="op">=</span> langage_requete <span class="op">==</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"Python"</span> <span class="op">:</span> langage_requete</span>
+<span id="cb21-249"><a href="#cb21-249" aria-hidden="true" tabindex="-1"></a>logo <span class="op">=</span> ({</span>
+<span id="cb21-250"><a href="#cb21-250" aria-hidden="true" tabindex="-1"></a>  <span class="st">"python"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-python"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
+<span id="cb21-251"><a href="#cb21-251" aria-hidden="true" tabindex="-1"></a>  <span class="st">"javascript"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-js"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
+<span id="cb21-252"><a href="#cb21-252" aria-hidden="true" tabindex="-1"></a>  <span class="st">"r"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-r-project"&gt;&lt;/i&gt;`</span></span>
+<span id="cb21-253"><a href="#cb21-253" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-21" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-21-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-21-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb22" data-startfrom="239" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 238;"><span id="cb22-239"><a href="#cb22-239" aria-hidden="true" tabindex="-1"></a><span class="co">// Projection Lambert 93 (EPSG: 2154)</span></span>
-<span id="cb22-240"><a href="#cb22-240" aria-hidden="true" tabindex="-1"></a>l93 <span class="op">=</span> <span class="st">"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb22" data-startfrom="257" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 256;"><span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
+<span id="cb22-258"><a href="#cb22-258" aria-hidden="true" tabindex="-1"></a>  download_button</span>
+<span id="cb22-259"><a href="#cb22-259" aria-hidden="true" tabindex="-1"></a>  } <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-demo"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-22" data-nodetype="declaration">
 
@@ -504,9 +505,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb23" data-startfrom="244" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 243;"><span id="cb23-244"><a href="#cb23-244" aria-hidden="true" tabindex="-1"></a>topohelper <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb23" data-startfrom="263" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 262;"><span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>button_france <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb23-264"><a href="#cb23-264" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
+<span id="cb23-265"><a href="#cb23-265" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span>
+<span id="cb23-266"><a href="#cb23-266" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
+<span id="cb23-267"><a href="#cb23-267" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-23" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb24" data-startfrom="271" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 270;"><span id="cb24-271"><a href="#cb24-271" aria-hidden="true" tabindex="-1"></a>button_departement <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb24-272"><a href="#cb24-272" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
+<span id="cb24-273"><a href="#cb24-273" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_departement</span>(departement<span class="op">,</span> <span class="st">"COMMUNE"</span><span class="op">,</span> format<span class="op">,</span> year)</span>
+<span id="cb24-274"><a href="#cb24-274" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
+<span id="cb24-275"><a href="#cb24-275" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-24" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="280" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 279;"><span id="cb25-280"><a href="#cb25-280" aria-hidden="true" tabindex="-1"></a><span class="co">// Projection Lambert 93 (EPSG: 2154)</span></span>
+<span id="cb25-281"><a href="#cb25-281" aria-hidden="true" tabindex="-1"></a>l93 <span class="op">=</span> <span class="st">"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-25" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb26" data-startfrom="285" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 284;"><span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a>topohelper <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-26" data-nodetype="declaration">
 
 </div>
 </div>
@@ -515,9 +549,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Un grand merci à <a href="https://observablehq.com/@tombor">Thomas Ansart</a> pour l’aide apportée sur la visualisation des cartes avec <code>Javascript</code> et la librairie <code>Topohelper</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"viewof langage_requete = Inputs.radio(\n  [\"Python\", \"Javascript\" ,\"R\"], {label: \"Langage de programmation pour les exemples de code\"},\n  {value: null, format: x => x ?? \"Python\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'd a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'd d'\n              'a a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"md`L'intérêt principal du projet \\`cartiflette\\` est la mise à disposition facilitée de fonds de carte adaptés aux besoins du _data scientist_ ou du géomaticien.\n\nEn premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département ${departement})\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid_departement = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a a'\n              'd d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>          \n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"md`\n${print_program_departement_single(langage, departement, level_arrondissement, format, year)}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"viewof departement = Inputs.select(liste_departements, {label: \"Département à représenter\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"viewof selectedlevel = Inputs.select(['REGION','DEPARTEMENT'], {label: \"Zonage administratif désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"viewof arrondissement = Inputs.toggle({label: \"Arrondissement dans les grandes villes ?\"})\nlevel_arrondissement = arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\"\n"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"viewof year = Inputs.select([\"2022\", \"2021\"], {label: \"Année de la géographie de référence\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"viewof format = Inputs.select(\n  [\"topojson\"],\n  //['topojson','geojson'],\n  {label: \"Format désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"map_france = topohelper\n  .from(\n    await data_departement\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true })\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"map_departement = topohelper\n  // direct call inside from() to avoid a deep copy\n  .from(\n    await departement_shape\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true })\n"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"data_departement = get_france(selectedlevel, format, year)\n"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"departement_shape = get_departement(\n      departement,\n      arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\",\n      \"topojson\",\n      year\n    )\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"import {download_vectorfile} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"import {\n  button, url_file_available,\n  get_france, get_departement, liste_departements,\n  get_multiple_departement, create_url_departement, create_url_france,\n  to_single_geojson} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-17","inline":false,"source":"import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from \"@linogaliana/cartiflette-doc-utils\"\n"},{"methodName":"interpret","cellName":"ojs-cell-18","inline":false,"source":"langage = langage_requete == null ? \"Python\" : langage_requete\nlogo = ({\n  \"python\": html`<i class=\"fa-brands fa-python\"></i>`,\n  \"javascript\": html`<i class=\"fa-brands fa-js\"></i>`,\n  \"r\": html`<i class=\"fa-brands fa-r-project\"></i>`\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-19","inline":false,"source":"import {\n  download_button\n  } from \"@linogaliana/cartiflette-demo\"\n"},{"methodName":"interpret","cellName":"ojs-cell-20","inline":false,"source":"button_france = html`\n  ${download_button(\n    create_url_france(selectedlevel, format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-21","inline":false,"source":"button_departement = html`\n  ${download_button(\n    create_url_departement(departement, \"COMMUNE\", format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-22","inline":false,"source":"// Projection Lambert 93 (EPSG: 2154)\nl93 = \"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs\"\n"},{"methodName":"interpret","cellName":"ojs-cell-23","inline":false,"source":"topohelper = import(\"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm\")\n"},{"methodName":"interpretQuiet","source":"shinyInput('langage_requete')"},{"methodName":"interpretQuiet","source":"shinyInput('departement')"},{"methodName":"interpretQuiet","source":"shinyInput('selectedlevel')"},{"methodName":"interpretQuiet","source":"shinyInput('arrondissement')"},{"methodName":"interpretQuiet","source":"shinyInput('year')"},{"methodName":"interpretQuiet","source":"shinyInput('format')"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"viewof langage_requete = Inputs.radio(\n  [\"Python\", \"Javascript\" ,\"R\"], {label: \"Langage de programmation pour les exemples de code\"},\n  {value: null, format: x => x ?? \"Python\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            max-width: 100%; \n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'd a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            max-width: 100%; \n            width: ${width};\n            grid-template-areas: \n              'd d'\n              'a a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"md`\n${print_program_france(langage, selectedlevel, format, year)}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"md`\nEn premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département ${departement})\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid_departement = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a a'\n              'd d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>          \n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"md`\n${print_program_departement_single(langage, departement, level_arrondissement, format, year)}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"viewof departement = Inputs.select(liste_departements, {label: \"Département à représenter\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"viewof selectedlevel = Inputs.select(['REGION','DEPARTEMENT'], {label: \"Zonage administratif désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"viewof arrondissement = Inputs.toggle({label: \"Arrondissement dans les grandes villes ?\"})\nlevel_arrondissement = arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\"\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"viewof year = Inputs.select([\"2022\", \"2021\"], {label: \"Année de la géographie de référence\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"viewof format = Inputs.select(\n  [\"topojson\"],\n  //['topojson','geojson'],\n  {label: \"Format désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"map_france = topohelper\n  .from(\n    await data_departement\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true, size: [width, 300]})\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"map_departement = topohelper\n  // direct call inside from() to avoid a deep copy\n  .from(\n    await departement_shape\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true, size: [width, 300]})\n\n"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"data_departement = get_france(selectedlevel, format, year)\n"},{"methodName":"interpret","cellName":"ojs-cell-17","inline":false,"source":"departement_shape = get_departement(\n      departement,\n      arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\",\n      \"topojson\",\n      year\n    )\n"},{"methodName":"interpret","cellName":"ojs-cell-18","inline":false,"source":"import {download_vectorfile} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-19","inline":false,"source":"import {\n  button, url_file_available,\n  get_france, get_departement, liste_departements,\n  get_multiple_departement, create_url_departement, create_url_france,\n  to_single_geojson} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-20","inline":false,"source":"import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from \"@linogaliana/cartiflette-doc-utils\"\n"},{"methodName":"interpret","cellName":"ojs-cell-21","inline":false,"source":"langage = langage_requete == null ? \"Python\" : langage_requete\nlogo = ({\n  \"python\": html`<i class=\"fa-brands fa-python\"></i>`,\n  \"javascript\": html`<i class=\"fa-brands fa-js\"></i>`,\n  \"r\": html`<i class=\"fa-brands fa-r-project\"></i>`\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-22","inline":false,"source":"import {\n  download_button\n  } from \"@linogaliana/cartiflette-demo\"\n"},{"methodName":"interpret","cellName":"ojs-cell-23","inline":false,"source":"button_france = html`\n  ${download_button(\n    create_url_france(selectedlevel, format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-24","inline":false,"source":"button_departement = html`\n  ${download_button(\n    create_url_departement(departement, \"COMMUNE\", format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-25","inline":false,"source":"// Projection Lambert 93 (EPSG: 2154)\nl93 = \"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs\"\n"},{"methodName":"interpret","cellName":"ojs-cell-26","inline":false,"source":"topohelper = import(\"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm\")\n"},{"methodName":"interpretQuiet","source":"shinyInput('langage_requete')"},{"methodName":"interpretQuiet","source":"shinyInput('departement')"},{"methodName":"interpretQuiet","source":"shinyInput('selectedlevel')"},{"methodName":"interpretQuiet","source":"shinyInput('arrondissement')"},{"methodName":"interpretQuiet","source":"shinyInput('year')"},{"methodName":"interpretQuiet","source":"shinyInput('format')"}]}
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
