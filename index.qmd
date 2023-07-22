@@ -1,8 +1,12 @@
 ---
-title: "Documentation projet `cartiflette`"
 echo: false
 toc: false
 ---
+
+```{ojs}
+md`# Cartes de France avec [\`cartiflette\`](https://github.com/InseeFrLab/cartiflette) 🧀 <img src="https://raw.githubusercontent.com/InseeFrLab/cartiflette/main/cartiflette.png" align="right" height="119" />
+${button}`
+```
 
 Un exercice pour illustrer la simplicité d'usage des fonds de carte du projet [`cartiflette`](https://github.com/InseeFrLab/cartiflette)[^1]
 
