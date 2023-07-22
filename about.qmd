@@ -2,4 +2,9 @@
 title: "About"
 ---
 
-Détails à venir
+L'objectif de [`cartiflette`](https://github.com/InseeFrLab/cartiflette) est de faciliter la récupération de fonds de carte officiels pour faciliter le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs. 
+
+Le projet a été initié dans le cadre du [Programme interministériel 10%](https://10pourcent.etalab.studio/projets/insee/)
+qui vise à favoriser les échanges entre _data scientists_ de l'administration française. 
+
+__Plus de détails à venir__

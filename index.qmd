@@ -1,7 +1,33 @@
 ---
 title: "Documentation projet `cartiflette`"
 echo: false
+toc: false
 ---
+
+Un exercice pour illustrer la simplicité d'usage des fonds de carte du projet [`cartiflette`](https://github.com/InseeFrLab/cartiflette)[^1]
+
+[^1]: Un grand merci à [Thomas Ansart](https://observablehq.com/@tombor) pour l'aide apportée sur la visualisation des cartes avec `Javascript` et la librairie `Topohelper`
+
+
+::: {.callout-note collapse="true"}
+
+## Note
+
+Le projet s'enrichit progressivement de fonctionnalités, n'hésitez pas à __consulter régulièrement cette page__.
+
+Pour le moment, [`cartiflette`](https://github.com/InseeFrLab/cartiflette) est fourni principalement 
+sous forme de 
+_package_ `Python` {{< fa brands python >}}. Quelques fonctionnalités sont portées en `JavaScript` {{< fa brands js-square >}} avec le 
+présent _notebook_. 
+<br>
+<br>
+Le développement d'une API pour offrir de la flexibilité dans la récupération des fichiers tout
+en laissant la liberté à l'utilisateur est prévue. N'hésitez pas à proposer de l'aide sur 
+[`Github` {{< fa brands github >}} `inseefrlab/cartiflette`](https://github.com/InseeFrLab/cartiflette)
+
+:::
+
+
 
 
 ```{ojs}
@@ -11,19 +37,14 @@ viewof langage_requete = Inputs.radio(
 )
 ```
 
-## Principe du package
-
-<br>
-L'objectif de [`cartiflette`](https://github.com/InseeFrLab/cartiflette) est de faciliter la récupération de fonds de carte officiels pour faciliter le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs. 
-
-Le projet a été initié dans le cadre du [Programme interministériel 10%](https://10pourcent.etalab.studio/projets/insee/)
-qui vise à favoriser les échanges entre _data scientists_ de l'administration française. 
 
 
 ## Récupérer des données France entière
 
 
-Les premières données qu'il est possible de récupérer avec l'outil `cartiflette` sont des données France entière. Ce n'est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).
+Les premières données qu'il est possible de récupérer avec l'outil `cartiflette` sont des données France entière.
+
+Ce n'est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).
 
 Il existe deux approches pour cela:
 
@@ -36,6 +57,7 @@ grid = width > 500
         ? html`<div style="
             background: #fff;
             margin: 0;
+            max-width: 100%; 
             border: none ;
             display: grid;
             width: ${width};
@@ -58,6 +80,7 @@ grid = width > 500
             margin: 0;
             border: none ;
             display: grid;
+            max-width: 100%; 
             width: ${width};
             grid-template-areas: 
               'd d'
@@ -76,11 +99,23 @@ grid = width > 500
           </div>`
 ```
 
-## Sélectionner un département facilement
+```{ojs}
+md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`
+```
+
 
 ```{ojs}
-md`L'intérêt principal du projet \`cartiflette\` est la mise à disposition facilitée de fonds de carte adaptés aux besoins du _data scientist_ ou du géomaticien.
+md`
+${print_program_france(langage, selectedlevel, format, year)}
+`
+```
 
+## Sélectionner un département facilement
+
+L'intérêt principal du projet `cartiflette` est la mise à disposition facilitée de fonds de carte adaptés aux besoins du _data scientist_ ou du géomaticien.
+
+```{ojs}
+md`
 En premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département ${departement})
 `
 ```
@@ -126,6 +161,11 @@ grid_departement = width > 500
 ```
 
 ```{ojs}
+md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`
+```
+
+
+```{ojs}
 md`
 ${print_program_departement_single(langage, departement, level_arrondissement, format, year)}
 `
@@ -161,7 +201,7 @@ map_france = topohelper
     await data_departement
   )
   .project({ proj: l93 })
-  .view({ tooltip: true, zoom: true })
+  .view({ tooltip: true, zoom: true, size: [width, 300]})
 ```
 
 ```{ojs}
@@ -171,7 +211,8 @@ map_departement = topohelper
     await departement_shape
   )
   .project({ proj: l93 })
-  .view({ tooltip: true, zoom: true })
+  .view({ tooltip: true, zoom: true, size: [width, 300]})
+
 ```
 
 ```{ojs}
