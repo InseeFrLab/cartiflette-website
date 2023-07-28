@@ -205,7 +205,7 @@ map_france = topohelper
     await data_departement
   )
   .project({ proj: l93 })
-  .view({ tooltip: true, zoom: true, size: [width, 300]})
+  .view({ tooltip: true, zoom: true, size: [width, width * 0.7]})
 ```
 
 ```{ojs}
@@ -215,7 +215,7 @@ map_departement = topohelper
     await departement_shape
   )
   .project({ proj: l93 })
-  .view({ tooltip: true, zoom: true, size: [width, 300]})
+  .view({ tooltip: true, zoom: true, size: [width, width * 0.7]})
 
 ```
 
