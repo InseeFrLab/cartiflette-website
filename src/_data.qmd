@@ -1,0 +1,22 @@
+```{ojs}
+data_france = get_france(selectedlevel, "topojson", year, drom_rapproches, simplification_percent)
+```
+
+
+```{ojs}
+button_france = html`
+  ${download_button(
+    create_url_france(selectedlevel, format, year, drom_rapproches, simplification_percent)
+  )}
+`
+```
+
+```{ojs}
+departement_shape = get_departement(
+      departement,
+      arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
+      "topojson",
+      year
+    )
+```
+

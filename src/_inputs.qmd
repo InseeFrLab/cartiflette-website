@@ -1,0 +1,41 @@
+```{ojs}
+viewof year = Inputs.select(["2022", "2021"], {label: "Année de la géographie de référence"})
+```
+
+```{ojs}
+viewof drom_rapproches = Inputs.toggle({label: "Rapprocher les DROM ?", value: true})
+```
+
+```{ojs}
+viewof selectedlevel = Inputs.select(['DEPARTEMENT', 'REGION', 'BASSIN_VIE'], {label: "Zonage désiré:"})
+```
+
+```{ojs}
+viewof format = Inputs.select(
+  ["topojson", "geojson"],
+  {label: "Format désiré:"})
+```
+
+```{ojs}
+viewof simplification_percent = Inputs.range([0, 50], {step: 50, value: 50, label: "Degré de simplification (%)"})
+```
+
+<!--------
+Carte départements
+--------->
+
+```{ojs}
+viewof arrondissement = Inputs.toggle({label: "Arrondissement dans les grandes villes ?"})
+level_arrondissement = arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE"
+```
+
+```{ojs}
+viewof departement = Inputs.select(liste_departements, {label: "Département à représenter"})
+```
+
+```{ojs}
+viewof simplification_percent_departement = Inputs.bind(
+  Inputs.range([0, 50], {step: 50, value: 50, label: "Degré de simplification (%)"}),
+  viewof simplification_percent
+  )
+```

@@ -1,0 +1,44 @@
+```{ojs}
+availableHeight = window.innerHeight
+screenHeight = 0.9*(availableHeight - document.getElementById("quarto-header").offsetHeight)
+availableWidth = window.innerWidth
+mapWidth = (width > 400) ? 0.4*width : 0.95*width 
+mapHeight = (width > 400) ? 0.85*screenHeight : 0.5*screenHeight
+smallScreen = 500
+```
+
+
+```{ojs}
+// Projection Lambert 93 (EPSG: 2154)
+l93 = "+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+```
+
+```{ojs}
+topohelper = import("https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm")
+```
+
+<!----------------
+CARTIFLETTE RELATED STUFFS
+----------------->
+
+```{ojs}
+import {download_vectorfile} from "@linogaliana/cartiflette-js"
+```
+
+```{ojs}
+import {
+  button, url_file_available,
+  get_france, get_departement, liste_departements,
+  get_multiple_departement, create_url_departement, create_url_france,
+  to_single_geojson} from "@linogaliana/cartiflette-js"
+```
+
+```{ojs}
+import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from "@linogaliana/cartiflette-doc-utils"
+```
+
+```{ojs}
+import {
+  download_button
+  } from "@linogaliana/cartiflette-demo"
+```
