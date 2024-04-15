@@ -3,3 +3,4 @@ _site/
 /.quarto/
 
 /.luarc.json
+site_libs
