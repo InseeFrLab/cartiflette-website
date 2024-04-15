@@ -6,15 +6,125 @@ echo: false
 {{< include "./src/_globals.qmd" >}}
 {{< include "./src/_inputs.qmd" >}}
 
-## Récupérer un fonds de carte France entière
+## Récupérer un fond de carte France entière
 
 ```{ojs}
 //| output: true
 html`<div>${grid}</div>`
 ```
 
-## Récupérer un fonds de carte sur une emprise limitée
+## Récupérer un fond de carte sur une emprise limitée
 
+```{ojs}
+//| output: true
+html`<div>${grid_departements}</div>`
+```
+
+```{ojs}
+grid_departements =  {
+    let grid ;
+
+    if (availableWidth>smallScreen){
+        grid = html`
+        <div style="
+            background: #fff;
+            margin: 0;
+            border: none;
+            display: grid;
+            width: ${availableWidth};
+            grid-template-areas: 
+                'selectors map choice-code'
+                'selectors map code'
+                'selectors map code'
+                'selectors map code'
+                'download map code';
+            grid-template-columns: 30% 40% 30%;
+            grid-gap: 10px;
+            ">
+            
+            <div name="selectors" style="grid-area: selectors; position: relative;">
+                ${viewof selected_departements}
+                ${year_emprise}
+                ${format_emprise}
+                ${simplification_percent_emprise}
+                ${viewof arrondissement}
+            </div>
+            
+            <div name="map" style="grid-area: map; position: relative;">
+                ${map_multiple_departement}
+            </div>
+
+            <div name="choice-code" style="grid-area: choice-code; position: relative;">
+                ${language_emprise}
+            </div>
+
+
+            <div name="code" style="grid-area: code; position: relative;">
+                Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+            </div>
+
+            <div name="download-button" style="grid-area: download; position: relative;">
+                
+            </div>
+
+        </div>
+        `
+        return grid
+    }
+
+    grid = html`
+    <div style="
+        background: #fff;
+        margin: 0;
+        border: none;
+        display: grid;
+        width: ${availableWidth};
+        grid-template-areas: 
+            'selectors'
+            'map'
+            'download'
+            'choice-code'
+            'code';
+        grid-template-rows: auto auto auto auto;
+        grid-gap: 10px;
+        ">
+
+        <div name="selectors" style="grid-area: selectors; position: relative;">
+                ${viewof selected_departements}
+                ${year_emprise}
+                ${format_emprise}
+                ${simplification_percent_emprise}
+                ${viewof arrondissement}
+        </div>
+        
+        <div name="map" style="grid-area: map; position: relative;">
+            ${map_multiple_departement}
+        </div>
+
+        <div name="download-button" style="grid-area: download; position: relative;">
+        </div>
+
+        <div name="choice-code" style="grid-area: choice-code; position: relative;">
+            ${language_emprise}
+        </div>
+
+        <div name="code" style="grid-area: code; position: relative;">
+            Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+            ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+        </div>
+
+    </div>
+    `
+
+    return grid
+}
+```
+
+
+<!--------
+Objets utiles
+---------->
 
 ```{ojs}
 // Source: https://observablehq.com/@mbostock/dashboard
@@ -133,27 +243,3 @@ map_france = topohelper
     ]})
 ```
 
-```{ojs}
-langage = langage_requete == null ? "Python" : langage_requete
-```
-
-```{ojs}
-viewof langage_requete = Inputs.radio(
-  ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
-  {value: null, format: x => x ?? "Python"}
-)
-```
-
-
-```{ojs}
-logo = ({
-  "python": `${fab`python`}`,
-  "javascript": `${fab`js`}`,
-  "r": `${fab`r-project`}`
-})
-```
-
-
-```{ojs}
-import { style as faStyle, fa, fab, fas } from "@airbornemint/fontawesome"
-```

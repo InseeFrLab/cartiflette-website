@@ -2,12 +2,13 @@
 viewof year = Inputs.select(["2022", "2021"], {label: "Année de la géographie de référence"})
 ```
 
+
 ```{ojs}
 viewof drom_rapproches = Inputs.toggle({label: "Rapprocher les DROM ?", value: true})
 ```
 
 ```{ojs}
-viewof selectedlevel = Inputs.select(['DEPARTEMENT', 'REGION', 'BASSIN_VIE'], {label: "Zonage désiré:"})
+viewof selectedlevel = Inputs.select(['DEPARTEMENT', 'REGION', 'BASSIN_VIE', 'AIRE_ATTRACTION_VILLES'], {label: "Zonage désiré:"})
 ```
 
 ```{ojs}
@@ -25,7 +26,7 @@ Carte départements
 --------->
 
 ```{ojs}
-viewof arrondissement = Inputs.toggle({label: "Arrondissement dans les grandes villes ?"})
+viewof arrondissement = Inputs.toggle({label: "Arrondissement dans les grandes villes ?", value: true})
 level_arrondissement = arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE"
 ```
 
@@ -38,4 +39,89 @@ viewof simplification_percent_departement = Inputs.bind(
   Inputs.range([0, 50], {step: 50, value: 50, label: "Degré de simplification (%)"}),
   viewof simplification_percent
   )
+```
+
+
+```{ojs}
+viewof langage_requete = Inputs.radio(
+  ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+  {value: null, format: x => x ?? "Python"}
+)
+```
+
+<!-----------------
+Deuxième exemple
+------------------->
+
+```{ojs}
+//| output: true
+viewof selected_departements = multiAutoSelect({
+    options: liste_departements,
+    placeholder: "Liste des départements",
+    value: ["75", "92", "93", "94"]
+})
+```
+
+
+
+```{ojs}
+language_emprise = Inputs.bind(
+    Inputs.radio(
+        ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+        {value: null, format: x => x ?? "Python"}
+    ),
+    viewof langage_requete
+)
+```
+
+```{ojs}
+year_emprise = Inputs.bind(
+    Inputs.select(
+        ["2022", "2021"], {label: "Année de la géographie de référence"}
+    ),
+    viewof year
+)
+```
+
+```{ojs}
+format_emprise = Inputs.bind(
+    Inputs.select(
+        ["topojson", "geojson"],{label: "Format désiré:"}
+    ),
+    viewof format
+)
+```
+
+```{ojs}
+simplification_percent_emprise = Inputs.bind(
+    Inputs.range(
+        [0, 50], {step: 50, value: 50, label: "Degré de simplification (%)"}
+    ),
+    viewof simplification_percent
+)
+```
+
+
+
+
+<!---------
+Macro
+---------->
+
+```{ojs}
+langage = langage_requete == null ? "Python" : langage_requete
+```
+
+
+```{ojs}
+logo = ({
+  "python": `${fab`python`}`,
+  "javascript": `${fab`js`}`,
+  "r": `${fab`r-project`}`
+})
+```
+
+
+```{ojs}
+import { style as faStyle, fa, fab, fas } from "@airbornemint/fontawesome"
 ```

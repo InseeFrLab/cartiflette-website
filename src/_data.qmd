@@ -20,3 +20,61 @@ departement_shape = get_departement(
     )
 ```
 
+
+
+<!----
+Deuxième panel
+------>
+
+```{ojs}
+data_multiple_departement_combined = {
+    if (selected_departements.length == 1){
+        return data_multiple_departement
+    }
+    return mergeGeoJSONs(data_multiple_departement)
+}
+```
+
+```{ojs}
+//| output: true
+map_multiple_departement = topohelper.fromGeojson(
+    data_multiple_departement_combined,
+    {deep: true}
+    )
+    .project({ proj: l93 })
+    .view({
+        tooltip: true,
+        zoom: true,
+        size: [
+            availableWidth > smallScreen ? availableWidth*0.4 : availableWidth*0.95, availableHeight * 0.6
+    ]})
+```
+
+```{ojs}
+//| output: true
+data_multiple_departement = {
+
+    let topos ;
+    
+    if (selected_departements.length == 1){
+        topos = get_departement(
+            selected_departements,
+            arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
+            "geojson",
+            year,
+            simplification_percent
+        )
+        return topos
+    }
+
+    topos = get_multiple_departement(
+            selected_departements,
+            arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
+            "geojson",
+            year,
+            simplification_percent
+        )
+    
+    return topos
+}
+```

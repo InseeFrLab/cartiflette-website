@@ -2,12 +2,17 @@ project:
   type: website
 
 website:
-  title: "Documentation projet cartiflette"
+  title: "Documentation projet cartiflette 🧀"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - about.qmd
+    tools:
+      - icon: github
+        menu:
+          - text: Le projet sur Github
+            url:  https://github.com/inseefrlab/cartiflette
 
 format:
   html:

@@ -1,4 +1,29 @@
 ```{ojs}
+// Function to merge multiple GeoJSON FeatureCollections
+function mergeGeoJSONs(geojsonList) {
+    // Initialize an empty FeatureCollection
+    const mergedGeoJSON = {
+        type: "FeatureCollection",
+        features: []
+    };
+
+    // Loop through all GeoJSON objects in the list
+    geojsonList.forEach(geojson => {
+        if (geojson.type === "Feature") {
+            // If it's a Feature, add directly to the features array
+            mergedGeoJSON.features.push(geojson);
+        } else if (geojson.type === "FeatureCollection") {
+            // If it's a FeatureCollection, add all its features to the features array
+            mergedGeoJSON.features = mergedGeoJSON.features.concat(geojson.features);
+        }
+    });
+
+    return mergedGeoJSON;
+}
+```
+
+
+```{ojs}
 availableHeight = window.innerHeight
 screenHeight = 0.9*(availableHeight - document.getElementById("quarto-header").offsetHeight)
 availableWidth = window.innerWidth
@@ -41,4 +66,8 @@ import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, p
 import {
   download_button
   } from "@linogaliana/cartiflette-demo"
+```
+
+```{ojs}
+import {multiAutoSelect} from "@linogaliana/multi-auto-select"
 ```
