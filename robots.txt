@@ -1,1 +1,1 @@
-Sitemap: https://github.com/linogaliana/cartiflette-website/sitemap.xml
+Sitemap: https://InseeFrLab.github.io/cartiflette-website/sitemap.xml

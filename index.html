@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Documentation projet &lt;code&gt;cartiflette&lt;/code&gt;</title>
+<title>Documentation projet cartiflette</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -69,19 +69,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -90,6 +96,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -102,15 +109,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Documentation projet <code>cartiflette</code></span>
+    <span class="navbar-title">Documentation projet cartiflette</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -120,17 +127,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -138,403 +146,418 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#récupérer-un-fonds-de-carte-france-entière" id="toc-récupérer-un-fonds-de-carte-france-entière" class="nav-link active" data-scroll-target="#récupérer-un-fonds-de-carte-france-entière">Récupérer un fonds de carte France entière</a></li>
+  <li><a href="#récupérer-un-fonds-de-carte-sur-une-emprise-limitée" id="toc-récupérer-un-fonds-de-carte-sur-une-emprise-limitée" class="nav-link" data-scroll-target="#récupérer-un-fonds-de-carte-sur-une-emprise-limitée">Récupérer un fonds de carte sur une emprise limitée</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="6" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 5;"><span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`# Cartes de France avec [</span><span class="sc">\`</span><span class="vs">cartiflette</span><span class="sc">\`</span><span class="vs">](https://github.com/InseeFrLab/cartiflette) 🧀 &lt;img src="https://raw.githubusercontent.com/InseeFrLab/cartiflette/main/cartiflette.png" align="right" height="119" /&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span>button<span class="sc">}</span><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-1" data-nodetype="expression">
+
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="11" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 10;"><span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>data_france <span class="op">=</span> <span class="fu">get_france</span>(selectedlevel<span class="op">,</span> <span class="st">"topojson"</span><span class="op">,</span> year<span class="op">,</span> drom_rapproches<span class="op">,</span> simplification_percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<p>Un exercice pour illustrer la simplicité d’usage des fonds de carte du projet <a href="https://github.com/InseeFrLab/cartiflette"><code>cartiflette</code></a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Le projet s’enrichit progressivement de fonctionnalités, n’hésitez pas à <strong>consulter régulièrement cette page</strong>.</p>
-<p>Pour le moment, <a href="https://github.com/InseeFrLab/cartiflette"><code>cartiflette</code></a> est fourni principalement sous forme de <em>package</em> <code>Python</code> <i class="fa-brands fa-python" aria-label="python"></i>. Quelques fonctionnalités sont portées en <code>JavaScript</code> <i class="fa-brands fa-js-square" aria-label="js-square"></i> avec le présent <em>notebook</em>. <br> <br> Le développement d’une API pour offrir de la flexibilité dans la récupération des fichiers tout en laissant la liberté à l’utilisateur est prévue. N’hésitez pas à proposer de l’aide sur <a href="https://github.com/InseeFrLab/cartiflette"><code>Github</code> <i class="fa-brands fa-github" aria-label="github"></i> <code>inseefrlab/cartiflette</code></a></p>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="37" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 36;"><span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>viewof langage_requete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"Python"</span><span class="op">,</span> <span class="st">"Javascript"</span> <span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Langage de programmation pour les exemples de code"</span>}<span class="op">,</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">format</span><span class="op">:</span> x <span class="kw">=&gt;</span> x <span class="op">??</span> <span class="st">"Python"</span>}</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="19" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 18;"><span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>button_france <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year<span class="op">,</span> drom_rapproches<span class="op">,</span> simplification_percent)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-2" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<section id="récupérer-des-données-france-entière" class="level2">
-<h2 class="anchored" data-anchor-id="récupérer-des-données-france-entière">Récupérer des données France entière</h2>
-<p>Les premières données qu’il est possible de récupérer avec l’outil <code>cartiflette</code> sont des données France entière.</p>
-<p>Ce n’est pas là où le package apporte le plus de fonctionnalités novatrices mais cela peut être pratique pour récupérer facilement les contours administratifs (voir 👇 pour ceux disponibles).</p>
-<p>Il existe deux approches pour cela:</p>
-<ol type="1">
-<li>Utiliser la fonction <code>get_vectorfile_ign</code> qui va récupérer directement les données depuis <a href="https://geoservices.ign.fr/adminexpress">le site de l’IGN</a>. Comme il est nécessaire de télécharger les données France entière pour cela et que le format utilisé est le <em>shapefile</em>, les données sont volumineuses (de l’ordre de 500Mo). Cela peut donc demander un certain temps ;</li>
-<li>Utiliser l’une des fonctions de <code>cartiflette</code>. Ce cas est démontré ci-dessous</li>
-</ol>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="58" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 57;"><span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="vs">            max-width: 100%; </span></span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd a'</span></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="vs">            max-width: 100%; </span></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b'</span></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="vs">              'e e';</span></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof year<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>viewof format<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="e" style="grid-area: e; position: relative;"&gt;</span><span class="sc">${</span>button_france<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="122" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 121;"><span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>departement_shape <span class="op">=</span> <span class="fu">get_departement</span>(</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>      departement<span class="op">,</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>      arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span><span class="op">,</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>      <span class="st">"topojson"</span><span class="op">,</span></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>      year</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-3" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="106" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 105;"><span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">` Comment faire ceci de manière reproductible avec </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span><span class="vs"> ?`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-4" data-nodetype="expression">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="137" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 136;"><span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a>availableHeight <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="at">innerHeight</span></span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>screenHeight <span class="op">=</span> <span class="fl">0.9</span><span class="op">*</span>(availableHeight <span class="op">-</span> <span class="bu">document</span><span class="op">.</span><span class="fu">getElementById</span>(<span class="st">"quarto-header"</span>)<span class="op">.</span><span class="at">offsetHeight</span>)</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>availableWidth <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="at">innerWidth</span></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>mapWidth <span class="op">=</span> (width <span class="op">&gt;</span> <span class="dv">400</span>) <span class="op">?</span> <span class="fl">0.4</span><span class="op">*</span>width <span class="op">:</span> <span class="fl">0.95</span><span class="op">*</span>width </span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a>mapHeight <span class="op">=</span> (width <span class="op">&gt;</span> <span class="dv">400</span>) <span class="op">?</span> <span class="fl">0.85</span><span class="op">*</span>screenHeight <span class="op">:</span> <span class="fl">0.5</span><span class="op">*</span>screenHeight</span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a>smallScreen <span class="op">=</span> <span class="dv">500</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="111" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 110;"><span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
-<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span><span class="fu">print_program_france</span>(langage<span class="op">,</span> selectedlevel<span class="op">,</span> format<span class="op">,</span> year)<span class="sc">}</span></span>
-<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-5" data-nodetype="expression">
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-</section>
-<section id="sélectionner-un-département-facilement" class="level2">
-<h2 class="anchored" data-anchor-id="sélectionner-un-département-facilement">Sélectionner un département facilement</h2>
-<p>L’intérêt principal du projet <code>cartiflette</code> est la mise à disposition facilitée de fonds de carte adaptés aux besoins du <em>data scientist</em> ou du géomaticien.</p>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="121" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 120;"><span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="vs">En premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département </span><span class="sc">${</span>departement<span class="sc">}</span><span class="vs">)</span></span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-6" data-nodetype="expression">
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="127" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 126;"><span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a>grid_departement <span class="op">=</span> width <span class="op">&gt;</span> <span class="dv">500</span></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a d'</span></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>  <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;div style="</span></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
-<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none ;</span></span>
-<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>width<span class="sc">}</span><span class="vs">;</span></span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="vs">              'a a'</span></span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="vs">              'd d'</span></span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="vs">              'c c'</span></span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="vs">              'b b';</span></span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="vs">          "&gt;</span></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="a" style="grid-area: a; position: relative;"&gt;</span><span class="sc">${</span>viewof departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="d" style="grid-area: d; position: relative;"&gt;</span><span class="sc">${</span>viewof arrondissement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="c" style="grid-area: c; position: relative;"&gt;</span><span class="sc">${</span>map_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;          </span></span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="b" style="grid-area: b; position: relative;"&gt;</span><span class="sc">${</span>button_departement<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-4-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="140" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 139;"><span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a><span class="co">// Projection Lambert 93 (EPSG: 2154)</span></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>l93 <span class="op">=</span> <span class="st">"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="148" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 147;"><span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>topohelper <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<!----------------
+CARTIFLETTE RELATED STUFFS
+----------------->
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="157" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 156;"><span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {download_vectorfile} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-7" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="167" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 166;"><span id="cb8-167"><a href="#cb8-167" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">` Comment faire ceci de manière reproductible avec </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span><span class="vs"> ?`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-8" data-nodetype="expression">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb8--1"><a href="#cb8--1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
+<span id="cb8-0"><a href="#cb8-0" aria-hidden="true" tabindex="-1"></a>  button<span class="op">,</span> url_file_available<span class="op">,</span></span>
+<span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  get_france<span class="op">,</span> get_departement<span class="op">,</span> liste_departements<span class="op">,</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  get_multiple_departement<span class="op">,</span> create_url_departement<span class="op">,</span> create_url_france<span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  to_single_geojson} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-8" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="172" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 171;"><span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`</span></span>
-<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span><span class="fu">print_program_departement_single</span>(langage<span class="op">,</span> departement<span class="op">,</span> level_arrondissement<span class="op">,</span> format<span class="op">,</span> year)<span class="sc">}</span></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-9" data-nodetype="expression">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb9--1"><a href="#cb9--1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {create_projection2154<span class="op">,</span> map_multiple_2154<span class="op">,</span> map_multiple_4326<span class="op">,</span> make_map<span class="op">,</span> print_program_france<span class="op">,</span> print_program_departement_single} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-doc-utils"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-9" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="178" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 177;"><span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a>viewof departement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(liste_departements<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Département à représenter"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb10--1"><a href="#cb10--1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
+<span id="cb10-0"><a href="#cb10-0" aria-hidden="true" tabindex="-1"></a>  download_button</span>
+<span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  } <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-demo"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-10" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="182" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 181;"><span id="cb11-182"><a href="#cb11-182" aria-hidden="true" tabindex="-1"></a>viewof selectedlevel <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">'REGION'</span><span class="op">,</span><span class="st">'DEPARTEMENT'</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Zonage administratif désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb11--1"><a href="#cb11--1" aria-hidden="true" tabindex="-1"></a>viewof year <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"2022"</span><span class="op">,</span> <span class="st">"2021"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Année de la géographie de référence"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-11" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="187" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 186;"><span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a>viewof arrondissement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"Arrondissement dans les grandes villes ?"</span>})</span>
-<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a>level_arrondissement <span class="op">=</span> arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-12-1" data-nodetype="declaration">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb12--1"><a href="#cb12--1" aria-hidden="true" tabindex="-1"></a>viewof drom_rapproches <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"Rapprocher les DROM ?"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="kw">true</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-12" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-12-2" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="191" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 190;"><span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a>viewof year <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">"2022"</span><span class="op">,</span> <span class="st">"2021"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Année de la géographie de référence"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb13--1"><a href="#cb13--1" aria-hidden="true" tabindex="-1"></a>viewof selectedlevel <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>([<span class="st">'DEPARTEMENT'</span><span class="op">,</span> <span class="st">'REGION'</span><span class="op">,</span> <span class="st">'BASSIN_VIE'</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Zonage désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-13" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="195" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 194;"><span id="cb14-195"><a href="#cb14-195" aria-hidden="true" tabindex="-1"></a>viewof format <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
-<span id="cb14-196"><a href="#cb14-196" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"topojson"</span>]<span class="op">,</span></span>
-<span id="cb14-197"><a href="#cb14-197" aria-hidden="true" tabindex="-1"></a>  <span class="co">//['topojson','geojson'],</span></span>
-<span id="cb14-198"><a href="#cb14-198" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Format désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb14--1"><a href="#cb14--1" aria-hidden="true" tabindex="-1"></a>viewof format <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb14-0"><a href="#cb14-0" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"topojson"</span><span class="op">,</span> <span class="st">"geojson"</span>]<span class="op">,</span></span>
+<span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Format désiré:"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-14" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="202" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 201;"><span id="cb15-202"><a href="#cb15-202" aria-hidden="true" tabindex="-1"></a>map_france <span class="op">=</span> topohelper</span>
-<span id="cb15-203"><a href="#cb15-203" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
-<span id="cb15-204"><a href="#cb15-204" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> data_departement</span>
-<span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
-<span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">size</span><span class="op">:</span> [width<span class="op">,</span> width <span class="op">*</span> <span class="fl">0.7</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb15--1"><a href="#cb15--1" aria-hidden="true" tabindex="-1"></a>viewof simplification_percent <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Degré de simplification (%)"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-15" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb16" data-startfrom="211" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 210;"><span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a>map_departement <span class="op">=</span> topohelper</span>
-<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a>  <span class="co">// direct call inside from() to avoid a deep copy</span></span>
-<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
-<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> departement_shape</span>
-<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
-<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({ <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">size</span><span class="op">:</span> [width<span class="op">,</span> width <span class="op">*</span> <span class="fl">0.7</span>]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-16" data-nodetype="declaration">
+<!--------
+Carte départements
+--------->
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb16" data-startfrom="0" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb16-0"><a href="#cb16-0" aria-hidden="true" tabindex="-1"></a>viewof arrondissement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"Arrondissement dans les grandes villes ?"</span>})</span>
+<span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>level_arrondissement <span class="op">=</span> arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-16-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb17" data-startfrom="222" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 221;"><span id="cb17-222"><a href="#cb17-222" aria-hidden="true" tabindex="-1"></a>data_departement <span class="op">=</span> <span class="fu">get_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-16-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb17" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb17--1"><a href="#cb17--1" aria-hidden="true" tabindex="-1"></a>viewof departement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(liste_departements<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Département à représenter"</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-17" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb18" data-startfrom="226" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 225;"><span id="cb18-226"><a href="#cb18-226" aria-hidden="true" tabindex="-1"></a>departement_shape <span class="op">=</span> <span class="fu">get_departement</span>(</span>
-<span id="cb18-227"><a href="#cb18-227" aria-hidden="true" tabindex="-1"></a>      departement<span class="op">,</span></span>
-<span id="cb18-228"><a href="#cb18-228" aria-hidden="true" tabindex="-1"></a>      arrondissement <span class="op">?</span> <span class="st">"COMMUNE_ARRONDISSEMENT"</span> <span class="op">:</span> <span class="st">"COMMUNE"</span><span class="op">,</span></span>
-<span id="cb18-229"><a href="#cb18-229" aria-hidden="true" tabindex="-1"></a>      <span class="st">"topojson"</span><span class="op">,</span></span>
-<span id="cb18-230"><a href="#cb18-230" aria-hidden="true" tabindex="-1"></a>      year</span>
-<span id="cb18-231"><a href="#cb18-231" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb18" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb18--1"><a href="#cb18--1" aria-hidden="true" tabindex="-1"></a>viewof simplification_percent_departement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">bind</span>(</span>
+<span id="cb18-0"><a href="#cb18-0" aria-hidden="true" tabindex="-1"></a>  Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Degré de simplification (%)"</span>})<span class="op">,</span></span>
+<span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  viewof simplification_percent</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-18" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
+<section id="récupérer-un-fonds-de-carte-france-entière" class="level2">
+<h2 class="anchored" data-anchor-id="récupérer-un-fonds-de-carte-france-entière">Récupérer un fonds de carte France entière</h2>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb19" data-startfrom="235" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 234;"><span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {download_vectorfile} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb19" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb19-0"><a href="#cb19-0" aria-hidden="true" tabindex="-1"></a><span class="fu">html</span><span class="vs">`&lt;div&gt;</span><span class="sc">${</span>grid<span class="sc">}</span><span class="vs">&lt;/div&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-19" data-nodetype="declaration">
+<div id="ojs-cell-19" data-nodetype="expression">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb20" data-startfrom="239" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 238;"><span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
-<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a>  button<span class="op">,</span> url_file_available<span class="op">,</span></span>
-<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a>  get_france<span class="op">,</span> get_departement<span class="op">,</span> liste_departements<span class="op">,</span></span>
-<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a>  get_multiple_departement<span class="op">,</span> create_url_departement<span class="op">,</span> create_url_france<span class="op">,</span></span>
-<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a>  to_single_geojson} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-js"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+</section>
+<section id="récupérer-un-fonds-de-carte-sur-une-emprise-limitée" class="level2">
+<h2 class="anchored" data-anchor-id="récupérer-un-fonds-de-carte-sur-une-emprise-limitée">Récupérer un fonds de carte sur une emprise limitée</h2>
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb20" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb20--1"><a href="#cb20--1" aria-hidden="true" tabindex="-1"></a><span class="co">// Source: https://observablehq.com/@mbostock/dashboard</span></span>
+<span id="cb20-0"><a href="#cb20-0" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> {</span>
+<span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> grid <span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (availableWidth<span class="op">&gt;</span>smallScreen){</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        grid <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div style="</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="vs">            background: #fff;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="vs">            margin: 0;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="vs">            border: none;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="vs">            display: grid;</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="vs">            width: </span><span class="sc">${</span>availableWidth<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-areas: </span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="vs">                'selectors map choice-code'</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="vs">                'selectors map code'</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="vs">                'selectors map code'</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="vs">                'selectors map code'</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="vs">                'download map code';</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-template-columns: 30% 40% 30%;</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="vs">            grid-gap: 10px;</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="vs">            "&gt;</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="selectors" style="grid-area: selectors; position: relative;"&gt;</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof year<span class="sc">}</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof format<span class="sc">}</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof simplification_percent<span class="sc">}</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof drom_rapproches<span class="sc">}</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;/div&gt;</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="map" style="grid-area: map; position: relative;"&gt;</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>map_france<span class="sc">}</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;/div&gt;</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="choice-code" style="grid-area: choice-code; position: relative;"&gt;</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>viewof langage_requete<span class="sc">}</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;/div&gt;</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="code" style="grid-area: code; position: relative;"&gt;</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a><span class="vs">                Comment faire en &lt;code&gt;</span><span class="sc">${</span>langage<span class="sc">}</span><span class="vs">&lt;/code&gt; </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span><span class="fu">print_program_france</span>(langage<span class="op">,</span> selectedlevel<span class="op">,</span> format<span class="op">,</span> year<span class="op">,</span> drom_rapproches<span class="op">,</span> simplification_percent)<span class="sc">}</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;/div&gt;</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;div name="download-button" style="grid-area: download; position: relative;"&gt;</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a><span class="vs">                </span><span class="sc">${</span>button_france<span class="sc">}</span></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;/div&gt;</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a><span class="vs">        `</span></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> grid</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;div style="</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a><span class="vs">        background: #fff;</span></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a><span class="vs">        margin: 0;</span></span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a><span class="vs">        border: none;</span></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="vs">        display: grid;</span></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="vs">        width: </span><span class="sc">${</span>availableWidth<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="vs">        grid-template-areas: </span></span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a><span class="vs">            'selectors'</span></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="vs">            'map'</span></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="vs">            'download'</span></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a><span class="vs">            'choice-code'</span></span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a><span class="vs">            'code';</span></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="vs">        grid-template-rows: auto auto auto auto;</span></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a><span class="vs">        grid-gap: 10px;</span></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a><span class="vs">        "&gt;</span></span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div name="selectors" style="grid-area: selectors; position: relative;"&gt;</span></span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof year<span class="sc">}</span></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof selectedlevel<span class="sc">}</span></span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof format<span class="sc">}</span></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof simplification_percent<span class="sc">}</span></span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof drom_rapproches<span class="sc">}</span></span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a><span class="vs">        </span></span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div name="map" style="grid-area: map; position: relative;"&gt;</span></span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>map_france<span class="sc">}</span></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div name="download-button" style="grid-area: download; position: relative;"&gt;</span></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>button_france<span class="sc">}</span></span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div name="choice-code" style="grid-area: choice-code; position: relative;"&gt;</span></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span>viewof langage_requete<span class="sc">}</span></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div name="code" style="grid-area: code; position: relative;"&gt;</span></span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a><span class="vs">            Comment faire en &lt;code&gt;</span><span class="sc">${</span>langage<span class="sc">}</span><span class="vs">&lt;/code&gt; </span><span class="sc">${</span>logo[langage<span class="op">.</span><span class="fu">toLowerCase</span>()]<span class="sc">}</span></span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a><span class="vs">            </span><span class="sc">${</span><span class="fu">print_program_france</span>(langage<span class="op">,</span> selectedlevel<span class="op">,</span> format<span class="op">,</span> year<span class="op">,</span> drom_rapproches<span class="op">,</span> simplification_percent)<span class="sc">}</span></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/div&gt;</span></span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;/div&gt;</span></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a><span class="vs">    `</span></span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grid</span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-20" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb21" data-startfrom="247" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 246;"><span id="cb21-247"><a href="#cb21-247" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {create_projection2154<span class="op">,</span> map_multiple_2154<span class="op">,</span> map_multiple_4326<span class="op">,</span> make_map<span class="op">,</span> print_program_france<span class="op">,</span> print_program_departement_single} <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-doc-utils"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb21" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb21--1"><a href="#cb21--1" aria-hidden="true" tabindex="-1"></a>map_france <span class="op">=</span> topohelper</span>
+<span id="cb21-0"><a href="#cb21-0" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">from</span>(</span>
+<span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> data_france</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">project</span>({ <span class="dt">proj</span><span class="op">:</span> l93 })</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>({</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">tooltip</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">zoom</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">size</span><span class="op">:</span> [</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        availableWidth <span class="op">&gt;</span> smallScreen <span class="op">?</span> availableWidth<span class="op">*</span><span class="fl">0.4</span> <span class="op">:</span> availableWidth<span class="op">*</span><span class="fl">0.95</span><span class="op">,</span> availableHeight <span class="op">*</span> <span class="fl">0.6</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    ]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-21" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb22" data-startfrom="252" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 251;"><span id="cb22-252"><a href="#cb22-252" aria-hidden="true" tabindex="-1"></a>langage <span class="op">=</span> langage_requete <span class="op">==</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"Python"</span> <span class="op">:</span> langage_requete</span>
-<span id="cb22-253"><a href="#cb22-253" aria-hidden="true" tabindex="-1"></a>logo <span class="op">=</span> ({</span>
-<span id="cb22-254"><a href="#cb22-254" aria-hidden="true" tabindex="-1"></a>  <span class="st">"python"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-python"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
-<span id="cb22-255"><a href="#cb22-255" aria-hidden="true" tabindex="-1"></a>  <span class="st">"javascript"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-js"&gt;&lt;/i&gt;`</span><span class="op">,</span></span>
-<span id="cb22-256"><a href="#cb22-256" aria-hidden="true" tabindex="-1"></a>  <span class="st">"r"</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;i class="fa-brands fa-r-project"&gt;&lt;/i&gt;`</span></span>
-<span id="cb22-257"><a href="#cb22-257" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-22-1" data-nodetype="declaration">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb22" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb22--1"><a href="#cb22--1" aria-hidden="true" tabindex="-1"></a>langage <span class="op">=</span> langage_requete <span class="op">==</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"Python"</span> <span class="op">:</span> langage_requete</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-22" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell-output cell-output-display">
-<div>
-<div id="ojs-cell-22-2" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb23" data-startfrom="261" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 260;"><span id="cb23-261"><a href="#cb23-261" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {</span>
-<span id="cb23-262"><a href="#cb23-262" aria-hidden="true" tabindex="-1"></a>  download_button</span>
-<span id="cb23-263"><a href="#cb23-263" aria-hidden="true" tabindex="-1"></a>  } <span class="im">from</span> <span class="st">"@linogaliana/cartiflette-demo"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb23" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb23--1"><a href="#cb23--1" aria-hidden="true" tabindex="-1"></a>viewof langage_requete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb23-0"><a href="#cb23-0" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"Python"</span><span class="op">,</span> <span class="st">"Javascript"</span> <span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Langage de programmation pour les exemples de code"</span>}<span class="op">,</span></span>
+<span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">format</span><span class="op">:</span> x <span class="kw">=&gt;</span> x <span class="op">??</span> <span class="st">"Python"</span>}</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-23" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb24" data-startfrom="267" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 266;"><span id="cb24-267"><a href="#cb24-267" aria-hidden="true" tabindex="-1"></a>button_france <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
-<span id="cb24-268"><a href="#cb24-268" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
-<span id="cb24-269"><a href="#cb24-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_france</span>(selectedlevel<span class="op">,</span> format<span class="op">,</span> year)</span>
-<span id="cb24-270"><a href="#cb24-270" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
-<span id="cb24-271"><a href="#cb24-271" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb24" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb24--1"><a href="#cb24--1" aria-hidden="true" tabindex="-1"></a>logo <span class="op">=</span> ({</span>
+<span id="cb24-0"><a href="#cb24-0" aria-hidden="true" tabindex="-1"></a>  <span class="st">"python"</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">fab</span><span class="vs">`python`</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>  <span class="st">"javascript"</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">fab</span><span class="vs">`js`</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"r"</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">fab</span><span class="vs">`r-project`</span><span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-24" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="275" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 274;"><span id="cb25-275"><a href="#cb25-275" aria-hidden="true" tabindex="-1"></a>button_departement <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
-<span id="cb25-276"><a href="#cb25-276" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span><span class="fu">download_button</span>(</span>
-<span id="cb25-277"><a href="#cb25-277" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_url_departement</span>(departement<span class="op">,</span> <span class="st">"COMMUNE"</span><span class="op">,</span> format<span class="op">,</span> year)</span>
-<span id="cb25-278"><a href="#cb25-278" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">}</span></span>
-<span id="cb25-279"><a href="#cb25-279" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<div class="cell hidden">
+<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="-1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -2;"><span id="cb25--1"><a href="#cb25--1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { style <span class="im">as</span> faStyle<span class="op">,</span> fa<span class="op">,</span> fab<span class="op">,</span> fas } <span class="im">from</span> <span class="st">"@airbornemint/fontawesome"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-25" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb26" data-startfrom="284" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 283;"><span id="cb26-284"><a href="#cb26-284" aria-hidden="true" tabindex="-1"></a><span class="co">// Projection Lambert 93 (EPSG: 2154)</span></span>
-<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a>l93 <span class="op">=</span> <span class="st">"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-26" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code hidden" id="cb27" data-startfrom="289" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 288;"><span id="cb27-289"><a href="#cb27-289" aria-hidden="true" tabindex="-1"></a>topohelper <span class="op">=</span> <span class="im">import</span>(<span class="st">"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div id="ojs-cell-27" data-nodetype="declaration">
 
 </div>
 </div>
@@ -543,15 +566,9 @@ Note
 
 </section>
 
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>Un grand merci à <a href="https://observablehq.com/@tombor">Thomas Ansart</a> pour l’aide apportée sur la visualisation des cartes avec <code>Javascript</code> et la librairie <code>Topohelper</code><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"md`# Cartes de France avec [\\`cartiflette\\`](https://github.com/InseeFrLab/cartiflette) 🧀 <img src=\"https://raw.githubusercontent.com/InseeFrLab/cartiflette/main/cartiflette.png\" align=\"right\" height=\"119\" />\n${button}`\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof langage_requete = Inputs.radio(\n  [\"Python\", \"Javascript\" ,\"R\"], {label: \"Langage de programmation pour les exemples de code\"},\n  {value: null, format: x => x ?? \"Python\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            max-width: 100%; \n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'd a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            max-width: 100%; \n            width: ${width};\n            grid-template-areas: \n              'd d'\n              'a a'\n              'b b'\n              'c c'\n              'e e';\n            grid-gap: 10px;\n          \">\n          \n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof year}</div>\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof selectedlevel}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${viewof format}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_france}</div>\n            <div name=\"e\" style=\"grid-area: e; position: relative;\">${button_france}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"md`\n${print_program_france(langage, selectedlevel, format, year)}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"md`\nEn premier lieu, il est aisé de récupérer directement un niveau géographique donné (ici toutes les communes du département ${departement})\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"// Source: https://observablehq.com/@mbostock/dashboard\ngrid_departement = width > 500\n        ? html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>\n          </div>`\n  : html`<div style=\"\n            background: #fff;\n            margin: 0;\n            border: none ;\n            display: grid;\n            width: ${width};\n            grid-template-areas: \n              'a a'\n              'd d'\n              'c c'\n              'b b';\n            grid-gap: 10px;\n          \">\n            <div name=\"a\" style=\"grid-area: a; position: relative;\">${viewof departement}</div>\n            <div name=\"d\" style=\"grid-area: d; position: relative;\">${viewof arrondissement}</div>\n            <div name=\"c\" style=\"grid-area: c; position: relative;\">${map_departement}</div>          \n            <div name=\"b\" style=\"grid-area: b; position: relative;\">${button_departement}</div>\n          </div>`\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"md` Comment faire ceci de manière reproductible avec ${logo[langage.toLowerCase()]} ?`\n"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"md`\n${print_program_departement_single(langage, departement, level_arrondissement, format, year)}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"viewof departement = Inputs.select(liste_departements, {label: \"Département à représenter\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"viewof selectedlevel = Inputs.select(['REGION','DEPARTEMENT'], {label: \"Zonage administratif désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"viewof arrondissement = Inputs.toggle({label: \"Arrondissement dans les grandes villes ?\"})\nlevel_arrondissement = arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\"\n"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"viewof year = Inputs.select([\"2022\", \"2021\"], {label: \"Année de la géographie de référence\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"viewof format = Inputs.select(\n  [\"topojson\"],\n  //['topojson','geojson'],\n  {label: \"Format désiré:\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"map_france = topohelper\n  .from(\n    await data_departement\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true, size: [width, width * 0.7]})\n"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"map_departement = topohelper\n  // direct call inside from() to avoid a deep copy\n  .from(\n    await departement_shape\n  )\n  .project({ proj: l93 })\n  .view({ tooltip: true, zoom: true, size: [width, width * 0.7]})\n\n"},{"methodName":"interpret","cellName":"ojs-cell-17","inline":false,"source":"data_departement = get_france(selectedlevel, format, year)\n"},{"methodName":"interpret","cellName":"ojs-cell-18","inline":false,"source":"departement_shape = get_departement(\n      departement,\n      arrondissement ? \"COMMUNE_ARRONDISSEMENT\" : \"COMMUNE\",\n      \"topojson\",\n      year\n    )\n"},{"methodName":"interpret","cellName":"ojs-cell-19","inline":false,"source":"import {download_vectorfile} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-20","inline":false,"source":"import {\n  button, url_file_available,\n  get_france, get_departement, liste_departements,\n  get_multiple_departement, create_url_departement, create_url_france,\n  to_single_geojson} from \"@linogaliana/cartiflette-js\"\n"},{"methodName":"interpret","cellName":"ojs-cell-21","inline":false,"source":"import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from \"@linogaliana/cartiflette-doc-utils\"\n"},{"methodName":"interpret","cellName":"ojs-cell-22","inline":false,"source":"langage = langage_requete == null ? \"Python\" : langage_requete\nlogo = ({\n  \"python\": html`<i class=\"fa-brands fa-python\"></i>`,\n  \"javascript\": html`<i class=\"fa-brands fa-js\"></i>`,\n  \"r\": html`<i class=\"fa-brands fa-r-project\"></i>`\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-23","inline":false,"source":"import {\n  download_button\n  } from \"@linogaliana/cartiflette-demo\"\n"},{"methodName":"interpret","cellName":"ojs-cell-24","inline":false,"source":"button_france = html`\n  ${download_button(\n    create_url_france(selectedlevel, format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-25","inline":false,"source":"button_departement = html`\n  ${download_button(\n    create_url_departement(departement, \"COMMUNE\", format, year)\n  )}\n`\n"},{"methodName":"interpret","cellName":"ojs-cell-26","inline":false,"source":"// Projection Lambert 93 (EPSG: 2154)\nl93 = \"+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs\"\n"},{"methodName":"interpret","cellName":"ojs-cell-27","inline":false,"source":"topohelper = import(\"https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm\")\n"},{"methodName":"interpretQuiet","source":"shinyInput('langage_requete')"},{"methodName":"interpretQuiet","source":"shinyInput('departement')"},{"methodName":"interpretQuiet","source":"shinyInput('selectedlevel')"},{"methodName":"interpretQuiet","source":"shinyInput('arrondissement')"},{"methodName":"interpretQuiet","source":"shinyInput('year')"},{"methodName":"interpretQuiet","source":"shinyInput('format')"}]}
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRhdGFfZnJhbmNlID0gZ2V0X2ZyYW5jZShzZWxlY3RlZGxldmVsLCBcInRvcG9qc29uXCIsIHllYXIsIGRyb21fcmFwcHJvY2hlcywgc2ltcGxpZmljYXRpb25fcGVyY2VudClcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImJ1dHRvbl9mcmFuY2UgPSBodG1sYFxuICAke2Rvd25sb2FkX2J1dHRvbihcbiAgICBjcmVhdGVfdXJsX2ZyYW5jZShzZWxlY3RlZGxldmVsLCBmb3JtYXQsIHllYXIsIGRyb21fcmFwcHJvY2hlcywgc2ltcGxpZmljYXRpb25fcGVyY2VudClcbiAgKX1cbmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRlcGFydGVtZW50X3NoYXBlID0gZ2V0X2RlcGFydGVtZW50KFxuICAgICAgZGVwYXJ0ZW1lbnQsXG4gICAgICBhcnJvbmRpc3NlbWVudCA/IFwiQ09NTVVORV9BUlJPTkRJU1NFTUVOVFwiIDogXCJDT01NVU5FXCIsXG4gICAgICBcInRvcG9qc29uXCIsXG4gICAgICB5ZWFyXG4gICAgKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC00IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiYXZhaWxhYmxlSGVpZ2h0ID0gd2luZG93LmlubmVySGVpZ2h0XG5zY3JlZW5IZWlnaHQgPSAwLjkqKGF2YWlsYWJsZUhlaWdodCAtIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKFwicXVhcnRvLWhlYWRlclwiKS5vZmZzZXRIZWlnaHQpXG5hdmFpbGFibGVXaWR0aCA9IHdpbmRvdy5pbm5lcldpZHRoXG5tYXBXaWR0aCA9ICh3aWR0aCA+IDQwMCkgPyAwLjQqd2lkdGggOiAwLjk1KndpZHRoIFxubWFwSGVpZ2h0ID0gKHdpZHRoID4gNDAwKSA/IDAuODUqc2NyZWVuSGVpZ2h0IDogMC41KnNjcmVlbkhlaWdodFxuc21hbGxTY3JlZW4gPSA1MDBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIFByb2plY3Rpb24gTGFtYmVydCA5MyAoRVBTRzogMjE1NClcbmw5MyA9IFwiK3Byb2o9bGNjICtsYXRfMD00Ni41ICtsb25fMD0zICtsYXRfMT00OSArbGF0XzI9NDQgK3hfMD03MDAwMDAgK3lfMD02NjAwMDAwICtlbGxwcz1HUlM4MCArdG93Z3M4ND0wLDAsMCwwLDAsMCwwICt1bml0cz1tICtub19kZWZzICt0eXBlPWNyc1wiXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ0b3BvaGVscGVyID0gaW1wb3J0KFwiaHR0cHM6Ly9jZG4uanNkZWxpdnIubmV0L25wbS90b3BvaGVscGVyQDAuNC4zLytlc21cIilcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7ZG93bmxvYWRfdmVjdG9yZmlsZX0gZnJvbSBcIkBsaW5vZ2FsaWFuYS9jYXJ0aWZsZXR0ZS1qc1wiXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTgiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJpbXBvcnQge1xuICBidXR0b24sIHVybF9maWxlX2F2YWlsYWJsZSxcbiAgZ2V0X2ZyYW5jZSwgZ2V0X2RlcGFydGVtZW50LCBsaXN0ZV9kZXBhcnRlbWVudHMsXG4gIGdldF9tdWx0aXBsZV9kZXBhcnRlbWVudCwgY3JlYXRlX3VybF9kZXBhcnRlbWVudCwgY3JlYXRlX3VybF9mcmFuY2UsXG4gIHRvX3NpbmdsZV9nZW9qc29ufSBmcm9tIFwiQGxpbm9nYWxpYW5hL2NhcnRpZmxldHRlLWpzXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtOSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7Y3JlYXRlX3Byb2plY3Rpb24yMTU0LCBtYXBfbXVsdGlwbGVfMjE1NCwgbWFwX211bHRpcGxlXzQzMjYsIG1ha2VfbWFwLCBwcmludF9wcm9ncmFtX2ZyYW5jZSwgcHJpbnRfcHJvZ3JhbV9kZXBhcnRlbWVudF9zaW5nbGV9IGZyb20gXCJAbGlub2dhbGlhbmEvY2FydGlmbGV0dGUtZG9jLXV0aWxzXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTAiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJpbXBvcnQge1xuICBkb3dubG9hZF9idXR0b25cbiAgfSBmcm9tIFwiQGxpbm9nYWxpYW5hL2NhcnRpZmxldHRlLWRlbW9cIlxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InZpZXdvZiB5ZWFyID0gSW5wdXRzLnNlbGVjdChbXCIyMDIyXCIsIFwiMjAyMVwiXSwge2xhYmVsOiBcIkFubsOpZSBkZSBsYSBnw6lvZ3JhcGhpZSBkZSByw6lmw6lyZW5jZVwifSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgZHJvbV9yYXBwcm9jaGVzID0gSW5wdXRzLnRvZ2dsZSh7bGFiZWw6IFwiUmFwcHJvY2hlciBsZXMgRFJPTSA/XCIsIHZhbHVlOiB0cnVlfSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTMiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2Ygc2VsZWN0ZWRsZXZlbCA9IElucHV0cy5zZWxlY3QoWydERVBBUlRFTUVOVCcsICdSRUdJT04nLCAnQkFTU0lOX1ZJRSddLCB7bGFiZWw6IFwiWm9uYWdlIGTDqXNpcsOpOlwifSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgZm9ybWF0ID0gSW5wdXRzLnNlbGVjdChcbiAgW1widG9wb2pzb25cIiwgXCJnZW9qc29uXCJdLFxuICB7bGFiZWw6IFwiRm9ybWF0IGTDqXNpcsOpOlwifSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2Ygc2ltcGxpZmljYXRpb25fcGVyY2VudCA9IElucHV0cy5yYW5nZShbMCwgNTBdLCB7c3RlcDogNTAsIHZhbHVlOiA1MCwgbGFiZWw6IFwiRGVncsOpIGRlIHNpbXBsaWZpY2F0aW9uICglKVwifSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgYXJyb25kaXNzZW1lbnQgPSBJbnB1dHMudG9nZ2xlKHtsYWJlbDogXCJBcnJvbmRpc3NlbWVudCBkYW5zIGxlcyBncmFuZGVzIHZpbGxlcyA/XCJ9KVxubGV2ZWxfYXJyb25kaXNzZW1lbnQgPSBhcnJvbmRpc3NlbWVudCA/IFwiQ09NTVVORV9BUlJPTkRJU1NFTUVOVFwiIDogXCJDT01NVU5FXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgZGVwYXJ0ZW1lbnQgPSBJbnB1dHMuc2VsZWN0KGxpc3RlX2RlcGFydGVtZW50cywge2xhYmVsOiBcIkTDqXBhcnRlbWVudCDDoCByZXByw6lzZW50ZXJcIn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTE4IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidmlld29mIHNpbXBsaWZpY2F0aW9uX3BlcmNlbnRfZGVwYXJ0ZW1lbnQgPSBJbnB1dHMuYmluZChcbiAgSW5wdXRzLnJhbmdlKFswLCA1MF0sIHtzdGVwOiA1MCwgdmFsdWU6IDUwLCBsYWJlbDogXCJEZWdyw6kgZGUgc2ltcGxpZmljYXRpb24gKCUpXCJ9KSxcbiAgdmlld29mIHNpbXBsaWZpY2F0aW9uX3BlcmNlbnRcbiAgKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xOSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imh0bWxgPGRpdj4ke2dyaWR9PC9kaXY+YFxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yMCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIFNvdXJjZTogaHR0cHM6Ly9vYnNlcnZhYmxlaHEuY29tL0BtYm9zdG9jay9kYXNoYm9hcmRcbmdyaWQgPSB7XG5cbiAgICBsZXQgZ3JpZCA7XG5cbiAgICBpZiAoYXZhaWxhYmxlV2lkdGg+c21hbGxTY3JlZW4pe1xuICAgICAgICBncmlkID0gaHRtbGBcbiAgICAgICAgPGRpdiBzdHlsZT1cIlxuICAgICAgICAgICAgYmFja2dyb3VuZDogI2ZmZjtcbiAgICAgICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgICAgIGRpc3BsYXk6IGdyaWQ7XG4gICAgICAgICAgICB3aWR0aDogJHthdmFpbGFibGVXaWR0aH07XG4gICAgICAgICAgICBncmlkLXRlbXBsYXRlLWFyZWFzOiBcbiAgICAgICAgICAgICAgICAnc2VsZWN0b3JzIG1hcCBjaG9pY2UtY29kZSdcbiAgICAgICAgICAgICAgICAnc2VsZWN0b3JzIG1hcCBjb2RlJ1xuICAgICAgICAgICAgICAgICdzZWxlY3RvcnMgbWFwIGNvZGUnXG4gICAgICAgICAgICAgICAgJ3NlbGVjdG9ycyBtYXAgY29kZSdcbiAgICAgICAgICAgICAgICAnZG93bmxvYWQgbWFwIGNvZGUnO1xuICAgICAgICAgICAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiAzMCUgNDAlIDMwJTtcbiAgICAgICAgICAgIGdyaWQtZ2FwOiAxMHB4O1xuICAgICAgICAgICAgXCI+XG4gICAgICAgICAgICBcbiAgICAgICAgICAgIDxkaXYgbmFtZT1cInNlbGVjdG9yc1wiIHN0eWxlPVwiZ3JpZC1hcmVhOiBzZWxlY3RvcnM7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICAgICAke3ZpZXdvZiB5ZWFyfVxuICAgICAgICAgICAgICAgICR7dmlld29mIHNlbGVjdGVkbGV2ZWx9XG4gICAgICAgICAgICAgICAgJHt2aWV3b2YgZm9ybWF0fVxuICAgICAgICAgICAgICAgICR7dmlld29mIHNpbXBsaWZpY2F0aW9uX3BlcmNlbnR9XG4gICAgICAgICAgICAgICAgJHt2aWV3b2YgZHJvbV9yYXBwcm9jaGVzfVxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICBcbiAgICAgICAgICAgIDxkaXYgbmFtZT1cIm1hcFwiIHN0eWxlPVwiZ3JpZC1hcmVhOiBtYXA7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICAgICAke21hcF9mcmFuY2V9XG4gICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgPGRpdiBuYW1lPVwiY2hvaWNlLWNvZGVcIiBzdHlsZT1cImdyaWQtYXJlYTogY2hvaWNlLWNvZGU7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICAgICAke3ZpZXdvZiBsYW5nYWdlX3JlcXVldGV9XG4gICAgICAgICAgICA8L2Rpdj5cblxuXG4gICAgICAgICAgICA8ZGl2IG5hbWU9XCJjb2RlXCIgc3R5bGU9XCJncmlkLWFyZWE6IGNvZGU7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICAgICBDb21tZW50IGZhaXJlIGVuIDxjb2RlPiR7bGFuZ2FnZX08L2NvZGU+ICR7bG9nb1tsYW5nYWdlLnRvTG93ZXJDYXNlKCldfVxuICAgICAgICAgICAgICAgICR7cHJpbnRfcHJvZ3JhbV9mcmFuY2UobGFuZ2FnZSwgc2VsZWN0ZWRsZXZlbCwgZm9ybWF0LCB5ZWFyLCBkcm9tX3JhcHByb2NoZXMsIHNpbXBsaWZpY2F0aW9uX3BlcmNlbnQpfVxuICAgICAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgICAgIDxkaXYgbmFtZT1cImRvd25sb2FkLWJ1dHRvblwiIHN0eWxlPVwiZ3JpZC1hcmVhOiBkb3dubG9hZDsgcG9zaXRpb246IHJlbGF0aXZlO1wiPlxuICAgICAgICAgICAgICAgICR7YnV0dG9uX2ZyYW5jZX1cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDwvZGl2PlxuICAgICAgICBgXG4gICAgICAgIHJldHVybiBncmlkXG4gICAgfVxuXG4gICAgZ3JpZCA9IGh0bWxgXG4gICAgPGRpdiBzdHlsZT1cIlxuICAgICAgICBiYWNrZ3JvdW5kOiAjZmZmO1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgZGlzcGxheTogZ3JpZDtcbiAgICAgICAgd2lkdGg6ICR7YXZhaWxhYmxlV2lkdGh9O1xuICAgICAgICBncmlkLXRlbXBsYXRlLWFyZWFzOiBcbiAgICAgICAgICAgICdzZWxlY3RvcnMnXG4gICAgICAgICAgICAnbWFwJ1xuICAgICAgICAgICAgJ2Rvd25sb2FkJ1xuICAgICAgICAgICAgJ2Nob2ljZS1jb2RlJ1xuICAgICAgICAgICAgJ2NvZGUnO1xuICAgICAgICBncmlkLXRlbXBsYXRlLXJvd3M6IGF1dG8gYXV0byBhdXRvIGF1dG87XG4gICAgICAgIGdyaWQtZ2FwOiAxMHB4O1xuICAgICAgICBcIj5cblxuICAgICAgICA8ZGl2IG5hbWU9XCJzZWxlY3RvcnNcIiBzdHlsZT1cImdyaWQtYXJlYTogc2VsZWN0b3JzOyBwb3NpdGlvbjogcmVsYXRpdmU7XCI+XG4gICAgICAgICAgICAke3ZpZXdvZiB5ZWFyfVxuICAgICAgICAgICAgJHt2aWV3b2Ygc2VsZWN0ZWRsZXZlbH1cbiAgICAgICAgICAgICR7dmlld29mIGZvcm1hdH1cbiAgICAgICAgICAgICR7dmlld29mIHNpbXBsaWZpY2F0aW9uX3BlcmNlbnR9XG4gICAgICAgICAgICAke3ZpZXdvZiBkcm9tX3JhcHByb2NoZXN9XG4gICAgICAgIDwvZGl2PlxuICAgICAgICBcbiAgICAgICAgPGRpdiBuYW1lPVwibWFwXCIgc3R5bGU9XCJncmlkLWFyZWE6IG1hcDsgcG9zaXRpb246IHJlbGF0aXZlO1wiPlxuICAgICAgICAgICAgJHttYXBfZnJhbmNlfVxuICAgICAgICA8L2Rpdj5cblxuICAgICAgICA8ZGl2IG5hbWU9XCJkb3dubG9hZC1idXR0b25cIiBzdHlsZT1cImdyaWQtYXJlYTogZG93bmxvYWQ7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICR7YnV0dG9uX2ZyYW5jZX1cbiAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgPGRpdiBuYW1lPVwiY2hvaWNlLWNvZGVcIiBzdHlsZT1cImdyaWQtYXJlYTogY2hvaWNlLWNvZGU7IHBvc2l0aW9uOiByZWxhdGl2ZTtcIj5cbiAgICAgICAgICAgICR7dmlld29mIGxhbmdhZ2VfcmVxdWV0ZX1cbiAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgPGRpdiBuYW1lPVwiY29kZVwiIHN0eWxlPVwiZ3JpZC1hcmVhOiBjb2RlOyBwb3NpdGlvbjogcmVsYXRpdmU7XCI+XG4gICAgICAgICAgICBDb21tZW50IGZhaXJlIGVuIDxjb2RlPiR7bGFuZ2FnZX08L2NvZGU+ICR7bG9nb1tsYW5nYWdlLnRvTG93ZXJDYXNlKCldfVxuICAgICAgICAgICAgJHtwcmludF9wcm9ncmFtX2ZyYW5jZShsYW5nYWdlLCBzZWxlY3RlZGxldmVsLCBmb3JtYXQsIHllYXIsIGRyb21fcmFwcHJvY2hlcywgc2ltcGxpZmljYXRpb25fcGVyY2VudCl9XG4gICAgICAgIDwvZGl2PlxuXG4gICAgPC9kaXY+XG4gICAgYFxuICAgIHJldHVybiBncmlkXG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIxIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoibWFwX2ZyYW5jZSA9IHRvcG9oZWxwZXJcbiAgLmZyb20oXG4gICAgYXdhaXQgZGF0YV9mcmFuY2VcbiAgKVxuICAucHJvamVjdCh7IHByb2o6IGw5MyB9KVxuICAudmlldyh7XG4gICAgdG9vbHRpcDogdHJ1ZSxcbiAgICB6b29tOiB0cnVlLFxuICAgIHNpemU6IFtcbiAgICAgICAgYXZhaWxhYmxlV2lkdGggPiBzbWFsbFNjcmVlbiA/IGF2YWlsYWJsZVdpZHRoKjAuNCA6IGF2YWlsYWJsZVdpZHRoKjAuOTUsIGF2YWlsYWJsZUhlaWdodCAqIDAuNlxuICAgIF19KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImxhbmdhZ2UgPSBsYW5nYWdlX3JlcXVldGUgPT0gbnVsbCA/IFwiUHl0aG9uXCIgOiBsYW5nYWdlX3JlcXVldGVcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMjMiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgbGFuZ2FnZV9yZXF1ZXRlID0gSW5wdXRzLnJhZGlvKFxuICBbXCJQeXRob25cIiwgXCJKYXZhc2NyaXB0XCIgLFwiUlwiXSwge2xhYmVsOiBcIkxhbmdhZ2UgZGUgcHJvZ3JhbW1hdGlvbiBwb3VyIGxlcyBleGVtcGxlcyBkZSBjb2RlXCJ9LFxuICB7dmFsdWU6IG51bGwsIGZvcm1hdDogeCA9PiB4ID8/IFwiUHl0aG9uXCJ9XG4pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTI0IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoibG9nbyA9ICh7XG4gIFwicHl0aG9uXCI6IGAke2ZhYmBweXRob25gfWAsXG4gIFwiamF2YXNjcmlwdFwiOiBgJHtmYWJganNgfWAsXG4gIFwiclwiOiBgJHtmYWJgci1wcm9qZWN0YH1gXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IHN0eWxlIGFzIGZhU3R5bGUsIGZhLCBmYWIsIGZhcyB9IGZyb20gXCJAYWlyYm9ybmVtaW50L2ZvbnRhd2Vzb21lXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgneWVhcicpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdkcm9tX3JhcHByb2NoZXMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnc2VsZWN0ZWRsZXZlbCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdmb3JtYXQnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnc2ltcGxpZmljYXRpb25fcGVyY2VudCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdhcnJvbmRpc3NlbWVudCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdkZXBhcnRlbWVudCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdzaW1wbGlmaWNhdGlvbl9wZXJjZW50X2RlcGFydGVtZW50JykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ2xhbmdhZ2VfcmVxdWV0ZScpIn1dfQ==
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
@@ -581,6 +598,150 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -640,10 +801,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/InseeFrLab\.github\.io\/cartiflette-website\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -653,8 +831,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -666,7 +853,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -710,6 +1020,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -735,6 +1046,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -795,6 +1132,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
