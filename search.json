@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Les deux principaux objectifs de cartiflette:\n\nfaciliter et normaliser la récupération de fonds de carte officiels pour simplifier le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs ;\nenrichir les fonds de carte officiels pour limiter les préparations de données à la charge des cartographes.\n\nLe projet a été initié dans le cadre du Programme interministériel 10% qui vise à favoriser les échanges entre data scientists de l’administration française.\nPlus de détails à venir"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Documentation projet cartiflette 🧀",
@@ -54,5 +47,12 @@
     "title": "Documentation projet cartiflette 🧀",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nUn grand merci à Thomas Ansart pour l’aide apportée sur la visualisation des cartes avec Javascript et la librairie Topohelper↩︎"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Les deux principaux objectifs de cartiflette:\n\nfaciliter et normaliser la récupération de fonds de carte officiels pour simplifier le travail des cartographes qui désirent associer leurs données à des fonds de carte administratifs ;\nenrichir les fonds de carte officiels pour limiter les préparations de données à la charge des cartographes.\n\nLe projet a été initié dans le cadre du Programme interministériel 10% qui vise à favoriser les échanges entre data scientists de l’administration française.\nPlus de détails à venir"
   }
 ]
