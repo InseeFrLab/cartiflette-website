@@ -1,5 +1,5 @@
 ```{ojs}
-viewof year = Inputs.select(["2022", "2021"], {label: "Année de la géographie de référence"})
+viewof year = Inputs.select(["2022",], {label: "Année de la géographie de référence"})
 ```
 
 
@@ -77,7 +77,7 @@ language_emprise = Inputs.bind(
 ```{ojs}
 year_emprise = Inputs.bind(
     Inputs.select(
-        ["2022", "2021"], {label: "Année de la géographie de référence"}
+        ["2022",], {label: "Année de la géographie de référence"}
     ),
     viewof year
 )
