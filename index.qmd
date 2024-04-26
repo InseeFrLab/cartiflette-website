@@ -5,6 +5,7 @@ echo: false
 {{< include "./src/_data.qmd" >}}
 {{< include "./src/_globals.qmd" >}}
 {{< include "./src/_inputs.qmd" >}}
+{{< include "./src/_programs.qmd" >}}
 
 ## Récupérer un fond de carte France entière
 
