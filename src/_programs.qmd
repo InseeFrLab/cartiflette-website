@@ -1,0 +1,39 @@
+<!----------------
+Fonctions qui étaient importées depuis @linogaliana/cartiflette-doc-utils
+et qu'on rappatrie ici pour plus de praticité
+----------------->
+
+```{ojs}
+// Function to display the code bloc to use Cartiflette for whole France
+function print_program_france(langage, selectedlevel, format, year, rapproche_drom, simplification){
+    const filter_by = rapproche_drom ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE"
+    if (langage == "Python"){
+        return md`
+        from cartiflette import carti_download
+        shp_communes = carti_download(
+            values = ["France"],
+            crs = 4326,
+            borders = "${selectedlevel}",
+            vectorfile_format="${format}",
+            simplification=${simplification},
+            filter_by="${filter_by}",
+            source="EXPRESS-COG-CARTO-TERRITOIRE",
+            year=${year})
+        `
+    } else{
+        return md`
+        import {carti_download} from "@linogaliana/cartiflette-js"
+        carti_download({
+            value: "France",
+            crs: 4326,
+            borders: "${selectedlevel}",
+            vectorfile_format: "${format}",
+            simplification=${simplification},
+            filter_by: ${filter_by}",
+            source: "EXPRESS-COG-CARTO-TERRITOIRE",
+            year:${year}
+        })
+        `
+    }
+}
+```

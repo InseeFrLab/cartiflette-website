@@ -5,3 +5,22 @@ $primary: #ffce67 ;
 .btn btn-quarto {
     background-color: $primary;
 }
+
+.code-bloc-title {
+    background-color: $primary;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.3rem;
+    font-weight: bold;
+}
+
+.code {
+    border: solid 0.1rem $primary;
+    margin-right: 1.5rem;
+}
+
+.cartiflette-example {
+    display: flex;
+    justify-content: space-between;
+}
