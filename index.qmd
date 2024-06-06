@@ -34,16 +34,16 @@ grid_departements =  {
             display: grid;
             width: ${availableWidth};
             grid-template-areas: 
-                'selectors map choice-code'
-                'selectors map code'
-                'selectors map code'
-                'selectors map code'
-                'download map code';
+                'selectors_departements map_departements choice-code_departements'
+                'selectors_departements map_departements code_departements'
+                'selectors_departements map_departements code_departements'
+                'selectors_departements map_departements code_departements'
+                'download_departements map_departements code_departements';
             grid-template-columns: 30% 40% 30%;
             grid-gap: 10px;
             ">
             
-            <div name="selectors" style="grid-area: selectors; position: relative;">
+            <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -51,25 +51,25 @@ grid_departements =  {
                 ${viewof arrondissement}
             </div>
             
-            <div name="map" style="grid-area: map; position: relative;">
+            <div name="map_departements" style="grid-area: map_departements; position: relative;">
                 ${map_multiple_departement}
             </div>
 
             <div name="code-bloc-departement" class="code-bloc">
-                <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                    ${language_emprise}
+                <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                    ${language_emprise_departements}
                 </div>
 
-                <div name="code" style="grid-area: code; position: relative;" class="code">
+                <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
                     <span class="code-bloc-title">
-                        Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-                    </span>
-                    ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                        Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                    </span> 
+                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
                 </div>
             </div>
 
-            <div name="download-button" style="grid-area: download; position: relative;">
-                
+            <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+                ${button_departements}
             </div>
 
         </div>
@@ -85,16 +85,16 @@ grid_departements =  {
         display: grid;
         width: ${availableWidth};
         grid-template-areas: 
-            'selectors'
-            'map'
-            'download'
-            'choice-code'
-            'code';
+            'selectors_departements'
+            'map_departements'
+            'download_departements'
+            'choice-code_departements'
+            'code_departements';
         grid-template-rows: auto auto auto auto;
         grid-gap: 10px;
         ">
 
-        <div name="selectors" style="grid-area: selectors; position: relative;">
+        <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -102,23 +102,24 @@ grid_departements =  {
                 ${viewof arrondissement}
         </div>
         
-        <div name="map" style="grid-area: map; position: relative;">
+        <div name="map_departements" style="grid-area: map_departements; position: relative;">
             ${map_multiple_departement}
         </div>
 
-        <div name="download-button" style="grid-area: download; position: relative;">
+        <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+            ${button_departements}
         </div>
 
         <div name="code-bloc-departement" class="code-bloc">
-            <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                ${language_emprise}
+            <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                ${language_emprise_departements}
             </div>
 
-            <div name="code" style="grid-area: code; position: relative;" class="code">
+            <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
                 <span class="code-bloc-title">
-                    Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+                    Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
                 </span>
-                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
             </div>
         </div>
 
