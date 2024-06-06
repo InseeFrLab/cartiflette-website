@@ -49,6 +49,13 @@ viewof langage_requete = Inputs.radio(
 )
 ```
 
+```{ojs}
+viewof langage_requete_departements = Inputs.radio(
+  ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+  {value: null, format: x => x ?? "Python"}
+)
+```
+
 <!-----------------
 Deuxième exemple
 ------------------->
@@ -71,6 +78,16 @@ language_emprise = Inputs.bind(
         {value: null, format: x => x ?? "Python"}
     ),
     viewof langage_requete
+)
+```
+
+```{ojs}
+language_emprise_departements = Inputs.bind(
+    Inputs.radio(
+        ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+        {value: null, format: x => x ?? "Python"}
+    ),
+    viewof langage_requete_departements
 )
 ```
 
@@ -112,6 +129,9 @@ Macro
 langage = langage_requete == null ? "Python" : langage_requete
 ```
 
+```{ojs}
+langage_departements = langage_requete_departements == null ? "Python" : langage_requete_departements
+```
 
 ```{ojs}
 logo = ({
