@@ -151,12 +151,11 @@ grid = {
             width: ${availableWidth};
             grid-template-areas: 
                 'selectors map choice-code'
-                'selectors map code'
-                'selectors map code'
-                'selectors map code'
-                'download map code';
-            grid-template-columns: 30% 40% 30%;
-            grid-gap: 10px;
+                '. map code'
+                '. map .'
+                '. map .'
+                'download map .';
+            grid-template-columns: 23% 45% 32%;
             ">
             
             <div name="selectors" style="grid-area: selectors; position: relative;">
@@ -199,6 +198,14 @@ grid = {
         margin: 0;
         border: none;
         width: ${availableWidth};
+        grid-template-areas: 
+                'selectors map choice-code'
+                'download map code'
+                '. map code'
+                '. map code'
+                '. map code';
+            grid-template-columns: 23% 45% 32%;
+            grid-gap: 10px;
         ">
 
         <div name="selectors" style="grid-area: selectors; position: relative;">

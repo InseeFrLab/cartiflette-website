@@ -4,6 +4,13 @@ $primary: #ffce67 ;
 /*-- scss:rules --*/
 .btn btn-quarto {
     background-color: $primary;
+    font-size: smaller;
+    margin-bottom: 0.15rem;
+}
+
+.btn-download {
+    background-color: $primary;
+    border: none;
 }
 
 .code-bloc-title {
@@ -13,9 +20,10 @@ $primary: #ffce67 ;
     justify-content: center;
     gap: 0.3rem;
     font-weight: bold;
+    align-items: center;
 }
 
-.code {
+.code, div[name="choice-code"] {
     border: solid 0.1rem $primary;
     margin-right: 1.5rem;
 }
@@ -23,4 +31,26 @@ $primary: #ffce67 ;
 .cartiflette-example {
     display: flex;
     justify-content: space-between;
+}
+
+div[name="choice-code"] > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    --label-width: auto;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;;
+}
+
+div[name="choice-code"] > form > label {
+    background-color: $primary;
+    padding: 0.5rem;
+    font-weight: bold;
+    align-self: stretch;
+    margin-right: 0;
+    text-align: center;
+}
+
+div[name="choice-code"] > form > div > label {
+    align-items: baseline;
 }
