@@ -2,6 +2,20 @@
 $primary: #ffce67 ;
 
 /*-- scss:rules --*/
+.nav-link, .navbar-title {
+    color: #000;
+}
+.nav-link:hover, .navbar-title:hover {
+    color: #fff;
+}
+
+.active {
+    color: #fff !important;
+}
+.active:hover {
+    color: #000 !important;
+}
+
 .btn-quarto {
     background-color: $primary;
     border: none;
