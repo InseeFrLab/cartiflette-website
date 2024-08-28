@@ -12,6 +12,14 @@ button_france = html`
 ```
 
 ```{ojs}
+button_departements = html`
+  ${download_button(
+    create_url_departement(selected_departements, selectedlevel, format, year, simplification_percent)
+  )}
+`
+```
+
+```{ojs}
 departement_shape = get_departement(
       departement,
       arrondissement ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
