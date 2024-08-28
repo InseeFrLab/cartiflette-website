@@ -5,6 +5,7 @@ echo: false
 {{< include "./src/_data.qmd" >}}
 {{< include "./src/_globals.qmd" >}}
 {{< include "./src/_inputs.qmd" >}}
+{{< include "./src/_programs.qmd" >}}
 
 ## Récupérer un fond de carte France entière
 
@@ -33,16 +34,15 @@ grid_departements =  {
             display: grid;
             width: ${availableWidth};
             grid-template-areas: 
-                'selectors map choice-code'
-                'selectors map code'
-                'selectors map code'
-                'selectors map code'
-                'download map code';
-            grid-template-columns: 30% 40% 30%;
-            grid-gap: 10px;
+                'selectors_departements map_departements choice-code_departements'
+                '. map_departements code_departements'
+                '. map_departements .'
+                '. map_departements .'
+                'download_departements map_departements .';
+            grid-template-columns: 23% 45% 32%;
             ">
             
-            <div name="selectors" style="grid-area: selectors; position: relative;">
+            <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -50,22 +50,25 @@ grid_departements =  {
                 ${viewof arrondissement}
             </div>
             
-            <div name="map" style="grid-area: map; position: relative;">
+            <div name="map_departements" style="grid-area: map_departements; position: relative;">
                 ${map_multiple_departement}
             </div>
 
-            <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                ${language_emprise}
+            <div name="code-bloc-departement" class="code-bloc">
+                <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                    ${language_emprise_departements}
+                </div>
+
+                <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
+                    <span class="code-bloc-title">
+                        Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                    </span> 
+                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                </div>
             </div>
 
-
-            <div name="code" style="grid-area: code; position: relative;">
-                Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
-            </div>
-
-            <div name="download-button" style="grid-area: download; position: relative;">
-                
+            <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+                ${button_departements}
             </div>
 
         </div>
@@ -81,16 +84,16 @@ grid_departements =  {
         display: grid;
         width: ${availableWidth};
         grid-template-areas: 
-            'selectors'
-            'map'
-            'download'
-            'choice-code'
-            'code';
-        grid-template-rows: auto auto auto auto;
+            'selectors_departements'
+            'map_departements'
+            'download_departements'
+            'choice-code_departements'
+            'code_departements';
+        grid-template-rows: auto auto auto auto auto;
         grid-gap: 10px;
         ">
 
-        <div name="selectors" style="grid-area: selectors; position: relative;">
+        <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -98,20 +101,25 @@ grid_departements =  {
                 ${viewof arrondissement}
         </div>
         
-        <div name="map" style="grid-area: map; position: relative;">
+        <div name="map_departements" style="grid-area: map_departements; position: relative;">
             ${map_multiple_departement}
         </div>
 
-        <div name="download-button" style="grid-area: download; position: relative;">
+        <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+            ${button_departements}
         </div>
 
-        <div name="choice-code" style="grid-area: choice-code; position: relative;">
-            ${language_emprise}
-        </div>
+        <div name="code-bloc-departement" class="code-bloc">
+            <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                ${language_emprise_departements}
+            </div>
 
-        <div name="code" style="grid-area: code; position: relative;">
-            Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-            ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+            <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
+                <span class="code-bloc-title">
+                    Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                </span>
+                ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+            </div>
         </div>
 
     </div>
@@ -134,7 +142,7 @@ grid = {
 
     if (availableWidth>smallScreen){
         grid = html`
-        <div style="
+        <div class="cartiflette-example" style="
             background: #fff;
             margin: 0;
             border: none;
@@ -142,12 +150,11 @@ grid = {
             width: ${availableWidth};
             grid-template-areas: 
                 'selectors map choice-code'
-                'selectors map code'
-                'selectors map code'
-                'selectors map code'
-                'download map code';
-            grid-template-columns: 30% 40% 30%;
-            grid-gap: 10px;
+                '. map code'
+                '. map .'
+                '. map .'
+                'download map .';
+            grid-template-columns: 23% 45% 32%;
             ">
             
             <div name="selectors" style="grid-area: selectors; position: relative;">
@@ -162,14 +169,17 @@ grid = {
                 ${map_france}
             </div>
 
-            <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                ${viewof langage_requete}
-            </div>
+            <div name="code-bloc" class="code-bloc">
+                <div name="choice-code" style="grid-area: choice-code; position: relative;">
+                    ${viewof langage_requete}
+                </div>
 
-
-            <div name="code" style="grid-area: code; position: relative;">
-                Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                <div name="code" style="grid-area: code; position: relative;" class="code">
+                    <span class="code-bloc-title">
+                        Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+                    </span>
+                    ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                </div>
             </div>
 
             <div name="download-button" style="grid-area: download; position: relative;">
@@ -182,7 +192,7 @@ grid = {
     }
 
     grid = html`
-    <div style="
+    <div class="cartiflette-example" style="
         background: #fff;
         margin: 0;
         border: none;
@@ -194,7 +204,7 @@ grid = {
             'download'
             'choice-code'
             'code';
-        grid-template-rows: auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto;
         grid-gap: 10px;
         ">
 
@@ -214,13 +224,17 @@ grid = {
             ${button_france}
         </div>
 
-        <div name="choice-code" style="grid-area: choice-code; position: relative;">
-            ${viewof langage_requete}
-        </div>
+        <div name="code-bloc" class="code-bloc">
+            <div name="choice-code" style="grid-area: choice-code; position: relative;">
+                ${viewof langage_requete}
+            </div>
 
-        <div name="code" style="grid-area: code; position: relative;">
-            Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-            ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+            <div name="code" style="grid-area: code; position: relative;" class="code">
+                <span class="code-bloc-title">
+                    Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+                </span>
+                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+            </div>
         </div>
 
     </div>

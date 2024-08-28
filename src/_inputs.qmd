@@ -1,5 +1,5 @@
 ```{ojs}
-viewof year = Inputs.select(["2022", "2021"], {label: "Année de la géographie de référence"})
+viewof year = Inputs.select(["2022",], {label: "Année de la géographie de référence"})
 ```
 
 
@@ -49,6 +49,13 @@ viewof langage_requete = Inputs.radio(
 )
 ```
 
+```{ojs}
+viewof langage_requete_departements = Inputs.radio(
+  ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+  {value: null, format: x => x ?? "Python"}
+)
+```
+
 <!-----------------
 Deuxième exemple
 ------------------->
@@ -75,9 +82,19 @@ language_emprise = Inputs.bind(
 ```
 
 ```{ojs}
+language_emprise_departements = Inputs.bind(
+    Inputs.radio(
+        ["Python", "Javascript" ,"R"], {label: "Langage de programmation pour les exemples de code"},
+        {value: null, format: x => x ?? "Python"}
+    ),
+    viewof langage_requete_departements
+)
+```
+
+```{ojs}
 year_emprise = Inputs.bind(
     Inputs.select(
-        ["2022", "2021"], {label: "Année de la géographie de référence"}
+        ["2022",], {label: "Année de la géographie de référence"}
     ),
     viewof year
 )
@@ -112,6 +129,9 @@ Macro
 langage = langage_requete == null ? "Python" : langage_requete
 ```
 
+```{ojs}
+langage_departements = langage_requete_departements == null ? "Python" : langage_requete_departements
+```
 
 ```{ojs}
 logo = ({
