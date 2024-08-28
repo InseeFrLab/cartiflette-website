@@ -35,12 +35,11 @@ grid_departements =  {
             width: ${availableWidth};
             grid-template-areas: 
                 'selectors_departements map_departements choice-code_departements'
-                'selectors_departements map_departements code_departements'
-                'selectors_departements map_departements code_departements'
-                'selectors_departements map_departements code_departements'
-                'download_departements map_departements code_departements';
-            grid-template-columns: 30% 40% 30%;
-            grid-gap: 10px;
+                '. map_departements code_departements'
+                '. map_departements .'
+                '. map_departements .'
+                'download_departements map_departements .';
+            grid-template-columns: 23% 45% 32%;
             ">
             
             <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
@@ -90,7 +89,7 @@ grid_departements =  {
             'download_departements'
             'choice-code_departements'
             'code_departements';
-        grid-template-rows: auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto;
         grid-gap: 10px;
         ">
 
@@ -197,15 +196,16 @@ grid = {
         background: #fff;
         margin: 0;
         border: none;
+        display: grid;
         width: ${availableWidth};
         grid-template-areas: 
-                'selectors map choice-code'
-                'download map code'
-                '. map code'
-                '. map code'
-                '. map code';
-            grid-template-columns: 23% 45% 32%;
-            grid-gap: 10px;
+            'selectors'
+            'map'
+            'download'
+            'choice-code'
+            'code';
+        grid-template-rows: auto auto auto auto auto;
+        grid-gap: 10px;
         ">
 
         <div name="selectors" style="grid-area: selectors; position: relative;">
