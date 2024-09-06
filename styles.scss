@@ -72,3 +72,10 @@ div[name="choice-code"] > form > label, div[name="choice-code_departements"] > f
 div[name="choice-code"] > form > div > label, div[name="choice-code_departements"] > form > div > label {
     align-items: baseline;
 }
+
+$primary-darkened: darken($primary, 10%);
+
+.yellow {
+  color: $primary-darkened;
+  font-weight: bold;
+}

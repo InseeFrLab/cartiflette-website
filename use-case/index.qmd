@@ -1,6 +1,13 @@
 ---
 title: "Galerie d'exemples Python"
+format: 
+  html:
+    page-layout: article
 ---
+
+::: {.callout-important}
+Cette section est un _work in progress_!
+:::
 
 Les exemples dans d'autres langages arriveront prochainement
 

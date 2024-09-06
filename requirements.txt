@@ -3,3 +3,5 @@ nbclient
 ipykernel
 jupyter
 cartiflette @ git+https://github.com/inseefrlab/cartiflette
+py7zr
+folium

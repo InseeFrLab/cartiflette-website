@@ -2,6 +2,8 @@
 echo: false
 ---
 
+::: {.column-screen-inset}
+
 {{< include "./src/_data.qmd" >}}
 {{< include "./src/_globals.qmd" >}}
 {{< include "./src/_inputs.qmd" >}}
@@ -257,3 +259,4 @@ map_france = topohelper
     ]})
 ```
 
+:::
