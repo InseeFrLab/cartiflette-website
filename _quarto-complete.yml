@@ -1,0 +1,15 @@
+project:
+  type: website
+  render:
+    - index.qmd
+    - about.qmd
+    - use-case/*.qmd
+
+website:
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - href: use-case/index.qmd
+        text: Galerie d'exemples

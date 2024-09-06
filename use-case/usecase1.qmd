@@ -1,0 +1,119 @@
+---
+title: "Cas d'usage 1: cartographie "
+output: true
+---
+
+Nombre de places velib par km2 pour chaque ville + arrondissement
+
+
+## Préliminaire: récupération des localisations des stations
+
+
+```{python}
+import geopandas as gpd
+
+velib_data = "https://opendata.paris.fr/explore/dataset/velib-emplacement-des-stations/download/?format=geojson&timezone=Europe/Berlin&lang=fr"
+stations = gpd.read_file(velib_data)
+stations.head(2)
+```
+
+
+
+
+## Avec `cartiflette` 
+
+```{python}
+from cartiflette import carti_download
+import pandas as pd
+
+# 1. Fonds communaux
+contours_villes_arrt = carti_download(
+    values = ["75", "92", "93", "94"],
+    crs = 4326,
+    borders="COMMUNE_ARRONDISSEMENT",
+    vectorfile_format="geojson",
+    filter_by="DEPARTEMENT",
+    source="EXPRESS-COG-CARTO-TERRITOIRE",
+    year=2022)
+
+
+# 2. Départements 
+departements = contours_villes_arrt.dissolve("INSEE_DEP")
+```
+
+
+```{python}
+stations_info = gpd.sjoin(
+    stations, contours_villes_arrt, predicate="within"
+)
+```
+
+
+```{python}
+comptes = (
+    stations_info
+    .groupby("INSEE_COG")
+    .agg({"capacity": "sum"})
+    .reset_index()
+)
+```
+
+```{python}
+contours_villes_arrt["INSEE_COG"] = contours_villes_arrt["INSEE_COG"].astype(str)
+comptes["INSEE_COG"] = comptes["INSEE_COG"].astype(str)
+
+comptes_velib_by_city_arrt = contours_villes_arrt.merge(
+    comptes, how = "inner", on = "INSEE_COG"
+)
+comptes_velib_by_city_arrt['densite'] = comptes_velib_by_city_arrt['capacity']
+```
+
+
+```{python}
+df_points = comptes_velib_by_city_arrt.copy()
+
+df_points["markersize"] = 12*df_points["densite"].div(comptes_velib_by_city_arrt.to_crs(2154).area.div(10**6).sum())
+
+bins = [-float('inf'), 20, 100, 500, float('inf')]
+labels = ["Moins de 20", "Entre 20 et 100", "Entre 100 et 500", "Plus de 500"]
+
+df_points["markercolor"] = pd.cut(df_points['densite'], bins=bins, labels=labels, right=True)
+
+df_points["geometry"] = df_points["geometry"].centroid
+```
+
+
+```{python}
+import matplotlib.pyplot as plt
+
+ax = comptes_velib_by_city_arrt.plot(
+    color="lightgray", edgecolor="grey", figsize=(7, 7), linewidth=0.4, alpha=0.3
+)
+df_points.plot(
+    ax=ax,
+    column="markercolor",
+    markersize="markersize",
+    alpha=0.7,  # categorical=False,
+    legend=True,
+    legend_kwds={"loc": "upper center", "ncol": 2, "bbox_to_anchor": (0.5, 0.05)},
+    cmap="viridis",
+)
+departements.boundary.plot(ax=ax, edgecolor="black", alpha=0.3)
+ax.axis("off")
+ax.set(title="Densité de population dans la petite couronne")
+ax.get_legend().set_title("Nombre de vélib par km²")
+plt.figtext(
+    0.3,
+    0.15,
+    "Source: IGN - AdminExpress",
+    wrap=True,
+    horizontalalignment="center",
+    fontsize=8,
+    style="italic",
+)
+```
+
+# Sans `cartiflette` 
+
+
+

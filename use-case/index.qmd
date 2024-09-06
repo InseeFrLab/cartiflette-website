@@ -1,0 +1,7 @@
+---
+title: "Galerie d'exemples Python"
+---
+
+Les exemples dans d'autres langages arriveront prochainement
+
+* [Récupération de données consolidées ville/arrondissement](/use-case/usecase1.qmd)
