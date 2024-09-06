@@ -21,6 +21,8 @@ jobs:
 
       - name: Set up quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.5.57
 
       - name: Render FR version
         uses: quarto-dev/quarto-actions/render@v2
