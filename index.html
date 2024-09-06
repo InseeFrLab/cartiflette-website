@@ -106,7 +106,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
 
-<link rel="stylesheet" href="styles.scss">
 <link rel="stylesheet" href="site_libs/quarto-contrib/quarto-project/quarto-ext/fontawesome/assets/css/all.css">
 </head>
 
@@ -134,6 +133,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./use-case/index.html"> 
+<span class="menu-text">Galerie d’exemples</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -1221,7 +1224,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/InseeFrLab\.github\.io\/cartiflette-website\/");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
