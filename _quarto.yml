@@ -22,7 +22,7 @@ format:
     theme:
       light: [minty, styles.scss]
       dark: sketchy
-    css: [styles.scss, _extensions/quarto-ext/fontawesome/assets/css/all.css]
+    css: [_extensions/quarto-ext/fontawesome/assets/css/all.css]
     toc: true
     grid:
       sidebar-width: 0px
