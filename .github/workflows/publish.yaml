@@ -22,8 +22,6 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
       - name: Render website
         run: |
-          rm _quarto.yml
-          cp _quarto-prod.yml _quarto.yml
           quarto render --profile complete --to html
       - name: Publish to Pages
         if: github.ref == 'refs/heads/main'
