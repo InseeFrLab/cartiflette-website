@@ -125,7 +125,7 @@ from cartiflette import carti_download
 # 1. Fonds communaux
 contours_villes_arrt = carti_download(
     values = ["75", "92", "93", "94"],
-    crs = 4326,
+    crs = 4326, #<1>
     borders="COMMUNE_ARRONDISSEMENT",
     filter_by="DEPARTEMENT",
     source="EXPRESS-COG-CARTO-TERRITOIRE",
@@ -133,17 +133,31 @@ contours_villes_arrt = carti_download(
 
 
 # 2. Départements 
-departements = contours_villes_arrt.dissolve("INSEE_DEP") #<1>
+departements = contours_villes_arrt.dissolve("INSEE_DEP") #<2>
 ```
-1. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
+1. 4326 est le code du système de représentation WGS84 (le même que celui des données Vélib). De futures développement de `cartiflette` permettront de récupérer des données avec d'autres projections, notamment les systèmes Lambert. 
+2. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
 
 
-`contours_villes_arrt` est un `GeoDataFrame` classique, il est donc possible d'appliquer à celui-ci les méthodes usuelles de `GeoPandas` par exemple la méthode `dissolve` ci-dessus. 
+`contours_villes_arrt` est un `GeoDataFrame` classique, il est donc possible d'appliquer à celui-ci les méthodes usuelles de `GeoPandas` par exemple la méthode `dissolve` ci-dessus. Le masque obtenu pour notre carte est celui-ci
+
+```{python}
+contours_villes_arrt.plot()
+```
+
+Comme nous avons besoin de localiser les stations dans les arrondissements, nous faisons une jointure spatiale entre notre fonds de carte et nos données Vélib
 
 ```{python}
 stations_info = gpd.sjoin(
     stations, contours_villes_arrt, predicate="within"
 )
+```
+
+Outre la localisation des stations au niveau communes ou arrondissement, cela permet d'ajouter une ribambelle de métadonnées (des informations annexes) à nos données initiales:
+
+```{python}
+#| echo: false
+stations_info.head(2)
 ```
 
 
