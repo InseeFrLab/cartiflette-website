@@ -11,7 +11,7 @@
     "href": "use-case/usecase1.html#footnotes",
     "title": "Associer des arrondissements à des données communales avec cartiflette",
     "section": "Footnotes",
-    "text": "Footnotes\n\n\nLe système de coordonnées WGS84 (World Geodetic System 1984) est un système de référence géodésique utilisé pour représenter les positions géographiques sur la Terre. Ce système est utilisé par la plupart des applications GPS et des fournisseurs de tuiles vectorielles comme OpenStreetMap.↩︎"
+    "text": "Footnotes\n\n\nLe système de coordonnées WGS84 (World Geodetic System 1984) est un système de référence géodésique utilisé pour représenter les positions géographiques sur la Terre. Ce système est utilisé par la plupart des applications GPS et des fournisseurs de tuiles vectorielles comme OpenStreetMap.↩︎\nLa variable INSEE_COM correspond au code officiel géographique au niveau communal. La valeur est donc identique pour les 20 arrondissements parisiens.↩︎"
   },
   {
     "objectID": "use-case/index.html",
