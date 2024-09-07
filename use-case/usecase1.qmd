@@ -15,6 +15,7 @@ Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __réc
 Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la petite couronne parisienne (Paris intra-muros et départements limitrophes). 
 L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne.
 
+
 ::: {.callout-tip}
 ## Pourquoi utiliser `cartiflette` pour ce type de besoins ?
 
@@ -25,6 +26,14 @@ L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² da
 - [Moindre besoin d'expertise en SIG]{.yellow} car la librairie fournit un `GeoDataFrame` prêt à l'emploi ce qui ne nécessite pas une connaissance pointue dans le domaine (système de projection, format _shapefile_, etc.) ;
 - [Moins de risque d'erreur]{.yellow} que lorsqu'on fait soi-même la combinaison de sources à des niveaux administratifs différents (accoler le masque des arrondissements à celui des communes limitrophes nécessite beaucoup de précautions) ;
 - [Bénéficier de métadonnées supplémentaires]{.yellow} sur les communes que les fonds de carte `AdminExpress`
+
+:::
+
+
+::: {.callout-note}
+## Et Lyon et Marseille ?
+
+`cartiflette` fournit le même découpage par arrondissement pour les villes de Lyon et Marseille. Pour cela, il suffit de demander une zone géographique englobant Lyon et Marseille, par exemple le département du Rhône ou la région Provence Alpes Côte d'Azur. 
 
 :::
 
@@ -127,16 +136,17 @@ contours_villes_arrt = carti_download(
     values = ["75", "92", "93", "94"],
     crs = 4326, #<1>
     borders="COMMUNE_ARRONDISSEMENT",
-    filter_by="DEPARTEMENT",
+    filter_by="DEPARTEMENT", #<2>
     source="EXPRESS-COG-CARTO-TERRITOIRE",
     year=2022)
 
 
 # 2. Départements 
-departements = contours_villes_arrt.dissolve("INSEE_DEP") #<2>
+departements = contours_villes_arrt.dissolve("INSEE_DEP") #<3>
 ```
-1. 4326 est le code du système de représentation WGS84 (le même que celui des données Vélib). De futures développement de `cartiflette` permettront de récupérer des données avec d'autres projections, notamment les systèmes Lambert. 
-2. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
+1. 4326 est le code du système de représentation WGS84 (le même que celui des données Vélib). De futures développement de `cartiflette` permettront de récupérer des données avec d'autres projections, notamment les systèmes Lambert.
+2. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Néanmoins, il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Ile de France, en spécifiant les arguments `filter_by="DEPARTEMENT"` et `values="11"`.
+3. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
 
 
 `contours_villes_arrt` est un `GeoDataFrame` classique, il est donc possible d'appliquer à celui-ci les méthodes usuelles de `GeoPandas` par exemple la méthode `dissolve` ci-dessus. Le masque obtenu pour notre carte est celui-ci
@@ -160,6 +170,9 @@ Outre la localisation des stations au niveau communes ou arrondissement, cela pe
 stations_info.head(2)
 ```
 
+Le décompte des stations par communes et arrondissements se fait alors assez aisément en utilisant la grammaire `Pandas`. Pour cela, il est possible d'utiliser la variable `INSEE_COG` construite par `cartiflette` pour consolider les codes communes des arrondissements et des communes[^inseeCOM]
+
+[^inseeCOM]: La variable `INSEE_COM` correspond au code officiel géographique au niveau communal. La valeur est donc identique pour les 20 arrondissements parisiens.  
 
 ```{python}
 comptes = (
@@ -170,19 +183,22 @@ comptes = (
 )
 ```
 
+Enfin, il ne reste plus qu'à construire la variable d'intérêt, ce qui n'est pas du travail lié à `cartiflette`:
+
 ```{python}
 import pandas as pd
-contours_villes_arrt["INSEE_COG"] = contours_villes_arrt["INSEE_COG"].astype(str)
-comptes["INSEE_COG"] = comptes["INSEE_COG"].astype(str)
 
+# Conversion des variables
+contours_villes_arrt["INSEE_COG"] = contours_villes_arrt["INSEE_COG"].astype(str) #<1>
+comptes["INSEE_COG"] = comptes["INSEE_COG"].astype(str) #<1>
+
+# Jointure pour retrouver la dimension géographique de nos données agrégées
 comptes_velib_by_city_arrt = contours_villes_arrt.merge(
     comptes, how = "inner", on = "INSEE_COG"
 )
 comptes_velib_by_city_arrt['densite'] = comptes_velib_by_city_arrt['capacity']
-```
 
-
-```{python}
+# Création des variables pour la taille de nos ronds proportionnels
 df_points = comptes_velib_by_city_arrt.copy()
 
 df_points["markersize"] = 12*df_points["densite"].div(comptes_velib_by_city_arrt.to_crs(2154).area.div(10**6).sum())
@@ -192,9 +208,12 @@ labels = ["Moins de 20", "Entre 20 et 100", "Entre 100 et 500", "Plus de 500"]
 
 df_points["markercolor"] = pd.cut(df_points['densite'], bins=bins, labels=labels, right=True)
 
+# Centre de nos cercles
 df_points["geometry"] = df_points["geometry"].centroid
 ```
+1. On force la conversion de la variable `INSEE_COG` en _string_ pour éviter le type `object` de `Pandas` qui peut poser des problèmes lors des jointures. 
 
+Finalement, on obtient la carte avec le code suivant
 
 ```{python}
 import matplotlib.pyplot as plt
