@@ -5,6 +5,9 @@ number-sections: true
 code-annotations: hover
 ---
 
+
+
+
 ::: {.callout-important}
 Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
 :::
@@ -128,6 +131,9 @@ La source la plus simple pour répondre à notre besoin est [`AdminExpress EXPRE
 
 Avec la fonction `carti_download`, l'import de ces données est assez transparent:
 
+
+::: {#lst-cartiflette-example lst-cap="Example d'utilisation de cartiflette"}
+
 ```{python}
 #| code-line-numbers: true
 from cartiflette import carti_download
@@ -141,13 +147,14 @@ contours_villes_arrt = carti_download(
     source="EXPRESS-COG-CARTO-TERRITOIRE",
     year=2022)
 
-
 # 2. Départements 
 departements = contours_villes_arrt.dissolve("INSEE_DEP") #<3>
 ```
 1. 4326 est le code du système de représentation WGS84 (le même que celui des données Vélib). De futures développement de `cartiflette` permettront de récupérer des données avec d'autres projections, notamment les systèmes Lambert.
 2. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Néanmoins, il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Ile de France, en spécifiant les arguments `filter_by="DEPARTEMENT"` et `values="11"`.
 3. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
+
+:::
 
 ```{python}
 #| echo: false
@@ -282,6 +289,9 @@ La première étape consiste donc à télécharger le fichier depuis le site de 
 
 Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
 
+::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
+
+
 ```{python}
 #| code-fold: true
 #| code-summary: "1️⃣ Code pour télécharger les données"
@@ -323,7 +333,13 @@ def download_7z_archive(file_name):
 download_7z_archive(file_name)
 ```
 
+:::
+
+
 La deuxième étape consiste à dézipper la version téléchargée en local
+
+
+::: {#lst-example-unzip-adminexpress lst-cap="2️⃣ Dézipper la version téléchargée"}
 
 ```{python}
 #| code-fold: true
@@ -346,14 +362,19 @@ def extract_7z_archive(
 extract_7z_archive(file_name)
 ```
 
+:::
+
 La troisième étape consiste à importer les fonds de carte désirés. Le piège à cette étape est qu'il existe deux fonds de carte d'arrondissements: les arrondissements départementaux(subdivisions départementales) et les arrondissements municipaux (subdivisions des trois plus grandes villes françaises). Ce sont ces derniers qui nous intéressent. Ils sont livrés sous le nom de fichier `ARRONDISSEMENT_MUNICIPAL` (à ne pas confondre avec `ARRONDISSEMENT` qui correspond aux arrondissements départementaux). 
 
 Les données sont livrées au format _shapefile_, un format propriétaire bien connu des spécialistes des SIG. Moins pratique que le GeoJSON pour les utilisateurs de `Python`, il est tout de même possible de le lire directement avec `GeoPandas`
+
+::: {#lst-example-open-adminexpress lst-cap="3️⃣ Importer le bon shapefile dans Python"}
 
 ```{python}
 #| code-fold: true
 #| code-summary: "3️⃣ Importer le bon _shapefile_ dans Python"
 #| code-line-numbers: true
+
 path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
 
 # Limites communales
@@ -366,12 +387,17 @@ arrondissement_shapefile = gpd.read_file(f"{path_extraction}/ARRONDISSEMENT_MUNI
 departements_shapefile = gpd.read_file(f"{path_extraction}/DEPARTEMENT.shp")
 ```
 
+:::
+
 La 4e et dernière étape, la plus propice à faire des erreurs, est celle qui consiste à restreindre les données à notre aire d'intérêt et à superposer les masques du fonds des arrondissements municipaux avec celui des communes. 
+
+::: {#lst-example-merge-adminexpress lst-cap="4️⃣ Consolider pour obtenir le fonds de carte désiré"}
 
 ```{python}
 #| code-fold: true
-#| code-summary: "3️⃣ Importer le bon _shapefile_ dans Python"
+#| code-summary: "4️⃣ Consolider pour obtenir le fonds de carte désiré"
 #| code-line-numbers: true
+
 import pandas as pd
 
 # 1. Filtrer les données à l'emprise désirée
@@ -398,57 +424,23 @@ geodataframe_cartiflette_like = pd.concat(
 1. On crée les variables `INSEE_COG` et `INSEE_COM` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
 2. Code commune de la ville de Paris
 
+:::
+
 ```{python}
 #| echo: false
 end_time_no_cartiflette = time.time()
 ```
 
-## Bilan 
+# Bilan 
+
+Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-unzip-adminexpress, @lst-example-open-adminexpress, @lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
+
 
 ## Volume de données téléchargées
 
-
-
-### Nombre de lignes de code
-
-### Temps de traitement 
-
-En premier lieu, 
-
 ```{python}
-#| echo: false
-directory = "extracted_files"  # Change this to the path where your files are extracted
-from directory_tree import DisplayTree
-DisplayTree(directory)
-```
-
-nombre de fichiers
-
-```{python}
-import glob
-
-# List all files recursively using glob
-file_list = glob.glob(f"{directory}/**/*", recursive=True)
-
-# Filter out directories (we want to count only files)
-file_list = [file for file in file_list if not os.path.isdir(file)]
-
-len(file_list)
-```
-
-volume sur disque: zippé et dézippé
-
-
-```{python}
-import os
-import math
-
-# Path to the zipped file
-zipped_file = "ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15.7z"
-
-# Get the size of the zipped file in bytes
-zipped_size = os.path.getsize(zipped_file)
-
+#| code-fold: true
+#| code-summary: "Fonction convert_size pour avoir les tailles de fichiers dans un format lisible par un humain"
 # Convert to a human-readable format (e.g., MB, GB)
 def convert_size(size_bytes):
     if size_bytes == 0:
@@ -458,19 +450,216 @@ def convert_size(size_bytes):
     p = math.pow(1024, i)
     s = round(size_bytes / p, 2)
     return f"{s} {size_name[i]}"
-
-print(f"Zipped file size: {convert_size(zipped_size)}")
 ```
 
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Evaluation de la taille des fichiers issus d'AdminExpress"
+import math
+import os
 from pathlib import Path
+
+# Path to the zipped file
+zipped_file = "ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15.7z"
+
+# Get the size of the zipped file in bytes
+zipped_size = os.path.getsize(zipped_file)
 
 # Path to the directory containing unzipped files
 unzipped_dir = "./extracted_files"
 
 root_directory = Path(unzipped_dir)
 size_dir = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
-convert_size(size_dir)
+
+poids_archive_compressee = convert_size(zipped_size)
+poids_archive_decompressee = convert_size(size_dir)
 ```
 
+```{python}
+#| output: false
+#| code-fold: true
+#| code-summary: "Evaluation de la taille des mêmes données issues de cartiflette"
+
+writedir = "cartiflette-data/usecase1"
+os.makedirs(writedir, exist_ok=True)
+contours_villes_arrt.to_file(
+    f"{writedir}/contours.shp"
+) #<1>
+
+poids_archive_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.shp")
+poids_archive_cartiflette = convert_size(
+    poids_archive_cartiflette_bytes
+)
+```
+1. On crée un _shapefile_ avec le `GeoDataFrame` obtenu depuis `cartiflette` afin d'avoir une comparaison honnête avec le fonds de carte issu du site de l'IGN. 
+
+La première base de comparaison possible est la taille sur disque des fonds de carte récupérés par `cartiflette` ou sans passer par ce _package_. Le code ci-dessus ☝️ permet de construire les statistiques suivantes:
+
+* Les données `cartiflette` représenteraient __`{python} poids_archive_cartiflette`__ si elles étaient stockées sur disque. 
+* Sans passer par `cartiflette`, on a besoin de __`{python} poids_archive_decompressee`__ pour stocker les fonds de carte décompressés auxquels il faut ajouter `{python} poids_archive_compressee` pour stocker l'archive compressée. 
+
+Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round((zipped_size + size_dir)/poids_archive_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
+
+```{python}
+#| echo: false
+import glob
+
+directory = "extracted_files"
+file_list = glob.glob(f"{directory}/**/*", recursive=True)
+# Filter out directories (we want to count only files)
+file_list = [file for file in file_list if not os.path.isdir(file)]
+
+nbre_fichiers = len(file_list)
+```
+
+L'arborescence du dossier décompressé est également assez conséquente: nous avons `{python} nbre_fichiers` fichiers. L'arborescence complète obtenue sans `cartiflette` est disponible ci-dessous. Avec `cartiflette` aucun fichier n'est écrit sur disque, tout est directement accessible dans la session `Python`.
+
+<details>
+
+<summary>
+Arborescence complète
+</summary>
+
+```{python}
+#| echo: false
+from directory_tree import DisplayTree
+DisplayTree(directory)
+```
+
+</details>
+
+
+## Nombre de lignes de code
+
+
+::: {.content-visible when-format="html"}
+
+```{ojs}
+//| echo: false
+md`La récupération des données avec \`cartiflette\` ne demande que __${nlines_cartiflette} lignes de code__ contre __${nlines_cartiflette} sans \`cartiflette\`__`
+```
+
+```{ojs}
+//| echo: false
+nlines_no_cartiflette = d3.sum(nrows_no_cartiflette)
+```
+
+```{ojs}
+//| echo: false
+nlines_cartiflette = d3.sum(nrows_cartiflette)
+```
+
+En ce qui concerne le temps de développement de ce code, on est sur quelques secondes pour le code avec `cartiflette` en utilisant la [documentation interactive d'exemples](index.qmd) contre plusieurs dizaines de minutes pour le code sans `cartiflette`. 
+
+:::
+
+::: {.content-visible when-format="ipynb"}
+
+La récupération des données avec cartiflette ne demande que 13 lignes de code contre 18 sans cartiflette
+
+:::
+
+## Temps de traitement 
+
+```{python}
+#| echo: false
+import datetime
+
+def human_readable_time(duration):
+    # Convert the duration to seconds if it's not already
+    if isinstance(duration, datetime.timedelta):
+        total_seconds = int(duration.total_seconds())
+    else:
+        total_seconds = int(duration)
+    
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if hours > 0:
+        return f"{hours} heures, {minutes} minutes et {seconds} secondes"
+    elif minutes > 0:
+        return f"{minutes}minutes et {seconds} secondes"
+    else:
+        return f"{seconds} secondes"
+
+time_cartiflette_exact = end_time_cartiflette - start_time_cartiflette
+time_no_cartiflette_exact = end_time_no_cartiflette - start_time_no_cartiflette
+
+time_cartiflette = human_readable_time(
+    time_cartiflette_exact
+)
+time_no_cartiflette = human_readable_time(
+    time_no_cartiflette_exact
+)
+```
+
+Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`. Sans `cartiflette`, soit un rapport de 1 à `{python} round(time_no_cartiflette_exact/time_cartiflette_exact)` pour cette tâche.
+
+::: {.content-visible when-format="html"}
+
+<!------------
+Retrieve number of lines
+-------------->
+
+```{ojs}
+//| echo: false
+labels = [
+    'lst-example-download-adminexpress',
+    'lst-example-unzip-adminexpress',
+    'lst-example-open-adminexpress',
+    'lst-example-merge-adminexpres'
+]
+labels_cartiflette = [
+    'lst-cartiflette-example'
+]
+
+function extractLineNumbers(label) {
+    const selector = `[aria-describedby^="${label}"]`;
+    const blocks = document.querySelectorAll(selector);
+
+    let lineNumbers = [];
+
+    blocks.forEach(block => {
+        // Search for ids matching "annotated-cell-XX-N"
+        const annotatedCells = block.querySelectorAll('[id^="annotated-cell-"]');
+        annotatedCells.forEach(cell => {
+            const match = cell.id.match(/annotated-cell-\d+-(\d+)/);
+            if (match) {
+                lineNumbers.push(parseInt(match[1], 10));
+            }
+        });
+
+        // Search for ids matching "cbXX-N"
+        const cbCells = block.querySelectorAll('[id^="cb"]');
+        cbCells.forEach(cell => {
+            const match = cell.id.match(/cb\d+-(\d+)/);
+            if (match) {
+                lineNumbers.push(parseInt(match[1], 10));
+            }
+        });
+    });
+
+    return lineNumbers;
+}
+
+function getMaxLineNumber(label) {
+    const lineNumbers = extractLineNumbers(label);
+    return Math.max(...lineNumbers);
+}
+
+// Iterate over labels to get max line numbers
+nrows_no_cartiflette = labels.map(label => {
+    const maxLineNumber = getMaxLineNumber(label);
+    return maxLineNumber;
+})
+
+nrows_cartiflette = labels.map(label => {
+    const maxLineNumber = getMaxLineNumber(label);
+    return maxLineNumber;
+})
+
+
+```
+
+:::
