@@ -69,14 +69,10 @@ stations.head(2)
 
 et peuvent être localisées sur une carte de la manière suivante:
 
-<details>
-<summary>
-Voir le code pour générer la carte 👇️
-</summary>
-
-
 ```{python}
 #| output: false
+#| code-fold: true
+#| code-summary: "Voir le code pour générer la carte interactive 👇️"
 import folium
 from folium.plugins import MarkerCluster
 
@@ -103,22 +99,28 @@ m
 ```
 1. Cette fonctionnalité permet d'avoir une carte interactive avec zoom progressifs car le nombre de stations est important ce qui ralentirait la carte de toutes les afficher 
 
-</details>
-
 
 ```{python}
 #| echo: false
 m
 ```
 
-
+<br>
 Nous allons avoir besoin des contours d'arrondissements et de communes pour deux raisons:
 
 - Localiser les stations à ce niveau d'analyse par le biais d'une [jointure spatiale](https://geopandas.org/en/stable/gallery/spatial_joins.html) avant de pouvoir les agréger à ce niveau ;
 - Représenter ces données sur une carte présentant Paris intra-muros et les villes limitrophes participant au système Vélib.
 
 
-# Récupérer les contours administratifs officiels l'IGN via `cartiflette` 
+# Récupérer les contours administratifs officiels l'IGN via `cartiflette`
+
+## La récupération des données utilisant `cartiflette`
+
+```{python}
+#| echo: false
+import time
+start_time_cartiflette = time.time()
+```
 
 Les contours administratifs officiels sont produits par l'[IGN](https://www.ign.fr/) et utilisent le [code officiel géographique (COG)](https://www.insee.fr/fr/metadonnees/source/serie/s2084) (liste officielle des entités administratives) produit par l'Insee. 
 
@@ -126,9 +128,8 @@ La source la plus simple pour répondre à notre besoin est [`AdminExpress EXPRE
 
 Avec la fonction `carti_download`, l'import de ces données est assez transparent:
 
-
-
 ```{python}
+#| code-line-numbers: true
 from cartiflette import carti_download
 
 # 1. Fonds communaux
@@ -148,12 +149,23 @@ departements = contours_villes_arrt.dissolve("INSEE_DEP") #<3>
 2. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Néanmoins, il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Ile de France, en spécifiant les arguments `filter_by="DEPARTEMENT"` et `values="11"`.
 3. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
 
+```{python}
+#| echo: false
+end_time_cartiflette = time.time()
+```
 
 `contours_villes_arrt` est un `GeoDataFrame` classique, il est donc possible d'appliquer à celui-ci les méthodes usuelles de `GeoPandas` par exemple la méthode `dissolve` ci-dessus. Le masque obtenu pour notre carte est celui-ci
 
 ```{python}
 contours_villes_arrt.plot()
 ```
+
+Pour voir le code permettant d'obtenir un `GeoDataFrame` équivalent sans passer par `cartiflette`, vous pouvez vous rendre dans la partie [Comment faire sans `cartiflette` ?](#sans-cartiflette). La section [Bilan](#bilan) fournit quelques éléments de comparaison entre l'approche avec et celle sans `cartiflette` (temps de traitement, volume de données téléchargées, nombre de lignes de codes, etc.). 
+
+
+## Le reste du travail après avoir utilisé `cartiflette`
+
+La suite du travail n'est pas lié à `cartiflette` mais est de la manipulation de données spatiales. 
 
 Comme nous avons besoin de localiser les stations dans les arrondissements, nous faisons une jointure spatiale entre notre fonds de carte et nos données Vélib
 
@@ -186,6 +198,9 @@ comptes = (
 Enfin, il ne reste plus qu'à construire la variable d'intérêt, ce qui n'est pas du travail lié à `cartiflette`:
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Dérouler 👇️ pour voir le code permettant préparer la carte"
+#| output: false
 import pandas as pd
 
 # Conversion des variables
@@ -206,7 +221,9 @@ df_points["markersize"] = 12*df_points["densite"].div(comptes_velib_by_city_arrt
 bins = [-float('inf'), 20, 100, 500, float('inf')]
 labels = ["Moins de 20", "Entre 20 et 100", "Entre 100 et 500", "Plus de 500"]
 
-df_points["markercolor"] = pd.cut(df_points['densite'], bins=bins, labels=labels, right=True)
+df_points["markercolor"] = pd.cut(
+    df_points['densite'], bins=bins, labels=labels, right=True
+)
 
 # Centre de nos cercles
 df_points["geometry"] = df_points["geometry"].centroid
@@ -216,6 +233,8 @@ df_points["geometry"] = df_points["geometry"].centroid
 Finalement, on obtient la carte avec le code suivant
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Dérouler 👇️ pour voir le code permettant de faire la carte"
 import matplotlib.pyplot as plt
 
 ax = comptes_velib_by_city_arrt.plot(
@@ -245,9 +264,30 @@ plt.figtext(
 )
 ```
 
-# Sans `cartiflette` 
+# Comment faire sans `cartiflette` ? {.sans-cartiflette}
 
 ```{python}
+#| echo: false
+start_time_no_cartiflette = time.time()
+```
+
+L'approche est nettement plus fastidieuse sans `cartiflette`. Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par quatre étapes principales:
+
+* 1️⃣ Télécharger les données et les enregistrer sur le disque, en local.
+* 2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l'arborescence obtenue sur le disque.
+* 3️⃣ Importer les bons _shapefile_ dans `Python`.
+* 4️⃣ Créer le fonds de carte consolidé en se restreignant aux départements d'intérêt pouis en retirant la commune de Paris et en y apposant, à la place, les arrondissements.
+
+La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN. L'archive étant assez volumineuse, le code proposé propose une barre de progrès pour s'assurer que le téléchargement progresse.
+
+Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
+
+```{python}
+#| code-fold: true
+#| code-summary: "1️⃣ Code pour télécharger les données"
+#| code-line-numbers: true
+#| output: false
+
 import os
 import requests
 import py7zr
@@ -256,39 +296,124 @@ from tqdm import tqdm
 # Step 1: Download the file with progress bar
 url = "https://data.geopf.fr/telechargement/download/ADMIN-EXPRESS-COG-CARTO/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15.7z"
 file_name = url.split("/")[-1]
+
+def download_7z_archive(file_name):
+    if os.path.exists(file_name) is False:
+        # Streaming download with progress bar
+        print("Downloading file...")
+        response = requests.get(url, stream=True)
+        total_size = int(response.headers.get('content-length', 0))
+
+        with open(file_name, 'wb') as file, tqdm(
+                desc=file_name,
+                total=total_size,
+                unit='iB',
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as bar:
+            for chunk in response.iter_content(chunk_size=8192):
+                size = file.write(chunk)
+                bar.update(size)
+
+        print(f"Downloaded {file_name}")
+        return file_name
+    else:
+        print("File exists, please delete it before going further")
+
+download_7z_archive(file_name)
 ```
 
+La deuxième étape consiste à dézipper la version téléchargée en local
+
 ```{python}
-if os.path.exists(file_name) is False:
-    # Streaming download with progress bar
-    print("Downloading file...")
-    response = requests.get(url, stream=True)
-    total_size = int(response.headers.get('content-length', 0))
+#| code-fold: true
+#| code-summary: "2️⃣ Dézipper la version téléchargée"
+#| code-line-numbers: true
+#| output: false
 
-    with open(file_name, 'wb') as file, tqdm(
-            desc=file_name,
-            total=total_size,
-            unit='iB',
-            unit_scale=True,
-            unit_divisor=1024,
-        ) as bar:
-        for chunk in response.iter_content(chunk_size=8192):
-            size = file.write(chunk)
-            bar.update(size)
-
-    print(f"Downloaded {file_name}")
-
+def extract_7z_archive(
+    file_name, output_dir = "extracted_files"
+):
     # Step 2: Extract the .7z file
-    output_dir = "extracted_files"
     os.makedirs(output_dir, exist_ok=True)
 
     print("Extracting the file...")
     with py7zr.SevenZipFile(file_name, mode='r') as z:
         z.extractall(path=output_dir)
     print(f"Extracted to {output_dir}")
+    return output_dir
+
+extract_7z_archive(file_name)
 ```
 
-lister l'arborescence compliquée obtenue
+La troisième étape consiste à importer les fonds de carte désirés. Le piège à cette étape est qu'il existe deux fonds de carte d'arrondissements: les arrondissements départementaux(subdivisions départementales) et les arrondissements municipaux (subdivisions des trois plus grandes villes françaises). Ce sont ces derniers qui nous intéressent. Ils sont livrés sous le nom de fichier `ARRONDISSEMENT_MUNICIPAL` (à ne pas confondre avec `ARRONDISSEMENT` qui correspond aux arrondissements départementaux). 
+
+Les données sont livrées au format _shapefile_, un format propriétaire bien connu des spécialistes des SIG. Moins pratique que le GeoJSON pour les utilisateurs de `Python`, il est tout de même possible de le lire directement avec `GeoPandas`
+
+```{python}
+#| code-fold: true
+#| code-summary: "3️⃣ Importer le bon _shapefile_ dans Python"
+#| code-line-numbers: true
+path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
+
+# Limites communales
+city_shapefile = gpd.read_file(f"{path_extraction}/COMMUNE.shp")
+
+# Arrondissements
+arrondissement_shapefile = gpd.read_file(f"{path_extraction}/ARRONDISSEMENT_MUNICIPAL.shp")
+
+# Départements
+departements_shapefile = gpd.read_file(f"{path_extraction}/DEPARTEMENT.shp")
+```
+
+La 4e et dernière étape, la plus propice à faire des erreurs, est celle qui consiste à restreindre les données à notre aire d'intérêt et à superposer les masques du fonds des arrondissements municipaux avec celui des communes. 
+
+```{python}
+#| code-fold: true
+#| code-summary: "3️⃣ Importer le bon _shapefile_ dans Python"
+#| code-line-numbers: true
+import pandas as pd
+
+# 1. Filtrer les données à l'emprise désirée
+city_shapefile = city_shapefile.loc[
+    city_shapefile['INSEE_DEP'].isin(["75", "92", "93", "94"])
+]
+arrondissement_shapefile = arrondissement_shapefile.loc[
+    arrondissement_shapefile['INSEE_COM'].str[:2] == "75"
+]
+
+# 2. Préparer la superposition des fonds de carte
+city_shapefile = (
+    city_shapefile
+    .loc[city_shapefile["INSEE_DEP"] != "75"]
+)
+city_shapefile['INSEE_COG'] = city_shapefile['INSEE_COM'] #<1>
+arrondissement_shapefile['INSEE_COG'] = arrondissement_shapefile['INSEE_COM'] #<1>
+arrondissement_shapefile['INSEE_COM'] = "75056" #<2>
+
+geodataframe_cartiflette_like = pd.concat(
+    [city_shapefile, arrondissement_shapefile]
+)
+``` 
+1. On crée les variables `INSEE_COG` et `INSEE_COM` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
+2. Code commune de la ville de Paris
+
+```{python}
+#| echo: false
+end_time_no_cartiflette = time.time()
+```
+
+## Bilan 
+
+## Volume de données téléchargées
+
+
+
+### Nombre de lignes de code
+
+### Temps de traitement 
+
+En premier lieu, 
 
 ```{python}
 #| echo: false
