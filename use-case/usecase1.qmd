@@ -556,7 +556,7 @@ En ce qui concerne le temps de développement de ce code, on est sur quelques se
 
 ::: {.content-visible when-format="ipynb"}
 
-La récupération des données avec cartiflette ne demande que 13 lignes de code contre 18 sans cartiflette
+La récupération des données avec cartiflette ne demande que 13 lignes de code contre 78 sans cartiflette
 
 :::
 
@@ -654,7 +654,7 @@ nrows_no_cartiflette = labels.map(label => {
     return maxLineNumber;
 })
 
-nrows_cartiflette = labels.map(label => {
+nrows_cartiflette = labels_cartiflette.map(label => {
     const maxLineNumber = getMaxLineNumber(label);
     return maxLineNumber;
 })
