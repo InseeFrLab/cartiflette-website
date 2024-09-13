@@ -36,7 +36,7 @@ jobs:
           render: false
           target: gh-pages
   build-notebook:
-    runs-on: ubuntu-latest
+    runs-on: inseefrlab/onyxia-vscode-python
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +62,7 @@ jobs:
       - name: Convert in ipynb with Quarto
         run: |
           quarto render --profile complete --to ipynb
+          mc cp _site/use-case/ s3/projet-cartiflette/resources/notebooks
       - name: Pushes to another repository
         uses: linogaliana/github-action-push-to-another-repository@main
         env:
