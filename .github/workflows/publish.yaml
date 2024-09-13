@@ -56,4 +56,16 @@ jobs:
       - name: Convert in ipynb with Quarto
         run: |
           quarto render --profile complete --to ipynb
-          ls
+      - name: Pushes to another repository
+        uses: linogaliana/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: '_site/use-case/'
+          destination-repository-username: 'linogaliana'
+          destination-repository-name: 'cartiflette-notebooks'
+          user-email: lino.galiana@insee.fr
+          destination-github-username: linogaliana
+          #target-branch: test
+          create-target-branch-if-needed: true
+          reset-repo: true
