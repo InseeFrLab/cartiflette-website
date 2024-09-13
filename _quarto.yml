@@ -24,6 +24,7 @@ format:
       dark: sketchy
     css: [_extensions/quarto-ext/fontawesome/assets/css/all.css]
     toc: true
+  ipynb: default
 
 
 

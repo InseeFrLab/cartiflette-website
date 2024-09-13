@@ -1,5 +1,5 @@
 ---
-title: "Associer des arrondissements à des données communales avec `cartiflette`"
+title: "Associer des arrondissements à des données communales avec cartiflette"
 output: true
 number-sections: true
 code-annotations: hover
@@ -8,7 +8,7 @@ code-annotations: hover
 
 
 
-::: {.callout-important}
+::: {.important}
 Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
 :::
 
@@ -19,7 +19,7 @@ Ce besoin classique est illustré à travers la construction d'une carte de la d
 L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne.
 
 
-::: {.callout-tip}
+::: {.tip}
 ## Pourquoi utiliser `cartiflette` pour ce type de besoins ?
 
 - Beaucoup [moins de ligne de code]{.yellow} à écrire :
@@ -33,7 +33,7 @@ L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² da
 :::
 
 
-::: {.callout-note}
+::: {.note}
 ## Et Lyon et Marseille ?
 
 `cartiflette` fournit le même découpage par arrondissement pour les villes de Lyon et Marseille. Pour cela, il suffit de demander une zone géographique englobant Lyon et Marseille, par exemple le département du Rhône ou la région Provence Alpes Côte d'Azur. 
@@ -41,7 +41,7 @@ L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² da
 :::
 
 
-::: {.callout-caution collapse="true"}
+::: {.caution collapse="true"}
 ## Pour en apprendre plus sur le traitement de données géographiques avec `Python` {{< fa brands python >}}
 
 Ce tutoriel présuppose une connaissance minimale de l'écosystème `Python` pour le traitement de données spatiales. Pour se familiariser à celui-ci, vous pouvez consulter ce cours d'[Introduction à `Python` {{< fa brands python >}} pour la _data science_](https://pythonds.linogaliana.fr/content/manipulation/03_geopandas_intro.html) de l'ENSAE ParisTech. 

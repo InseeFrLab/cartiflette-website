@@ -13,3 +13,6 @@ website:
       - about.qmd
       - href: use-case/index.qmd
         text: Galerie d'exemples
+
+filters:
+  - src/lua/callout.lua

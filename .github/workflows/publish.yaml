@@ -35,3 +35,25 @@ jobs:
         with:
           render: false
           target: gh-pages
+  build-notebook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install -r requirements.txt
+          pip install geopandas -U 
+
+      - name: Set up quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.5.57
+
+      - name: Convert in ipynb with Quarto
+        run: |
+          quarto render --profile complete --to ipynb
+          ls
