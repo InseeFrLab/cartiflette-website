@@ -537,7 +537,7 @@ DisplayTree(directory)
 
 ```{ojs}
 //| echo: false
-md`La récupération des données avec \`cartiflette\` ne demande que __${nlines_cartiflette} lignes de code__ contre __${nlines_cartiflette} sans \`cartiflette\`__`
+md`La récupération des données avec \`cartiflette\` ne demande que __${nlines_cartiflette} lignes de code__ contre __${nlines_no_cartiflette} sans \`cartiflette\`__`
 ```
 
 ```{ojs}
