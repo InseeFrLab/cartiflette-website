@@ -41,6 +41,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure safe.directory  # Workaround for actions/checkout#760
+        run: |
+          git config --global --add safe.directory /__w/cartiflette-website/cartiflette-website
+          git config --global --add safe.directory /__w/cartiflette-website/cartiflette-notebooks
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
