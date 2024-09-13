@@ -36,7 +36,7 @@ jobs:
           render: false
           target: gh-pages
   build-notebook:
-    runs-on: inseefrlab/onyxia-vscode-python:py3.12.4-2024.09.09
+    runs-on: linogaliana/python-datascientist
     steps:
       - name: Checkout
         uses: actions/checkout@v4

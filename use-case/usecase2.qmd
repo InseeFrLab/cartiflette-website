@@ -1,0 +1,154 @@
+---
+title: "Faire une carte avec les DROM rapprochés grâce à cartiflette"
+output: true
+number-sections: true
+code-annotations: hover
+---
+
+::: {.important}
+Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
+:::
+
+Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où [un deuxième]{.yellow}__.  
+
+Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin "Plus de vaches ou d'habitants"](https://x.com/JulesGrandin/status/1531631375505399809?mx=2)
+
+
+```{python}
+import pandas as pd
+
+def import_cheptel():
+    url_cheptel = "https://www.insee.fr/fr/statistiques/fichier/2012795/TCRD_073.xlsx"
+
+    cheptel2022 = pd.read_excel(url_cheptel, header=3, na_values="nd")
+    type_cheptel = cheptel2022.columns[~cheptel2022.columns.str.startswith("Unnamed")]
+    cheptel2022.loc[:, type_cheptel] = cheptel2022.loc[:, type_cheptel].mul(1000)
+    cheptel2022 = cheptel2022.rename(
+        {
+            "Unnamed: 0": "code",
+            "Unnamed: 1": "departement",
+            "Volailles gallus": "Volailles",
+        },
+        axis="columns",
+    )
+    type_cheptel = type_cheptel.str.replace(" gallus", "")
+    return cheptel2022, type_cheptel
+```
+
+
+```{python}
+cheptel = import_cheptel()
+```
+
+
+```{python}
+from cartiflette import carti_download
+dep = carti_download(
+    values=["France"],
+    crs=4326,
+    borders="DEPARTEMENT",
+    vectorfile_format="geojson",
+    filter_by="FRANCE_ENTIERE_DROM_RAPPROCHES",
+    source="EXPRESS-COG-CARTO-TERRITOIRE",
+    year=2022,
+)
+```
+
+
+```{python}
+cheptel_geospatial = dep.merge(
+    cheptel[0], left_on="INSEE_DEP", right_on = "code"
+)
+```
+
+```{python}
+def ratio_cheptel(type_cheptel, data_departement):
+    data_departement = data_departement.copy()
+    data_departement["ratio_" + type_cheptel] = data_departement.loc[
+        :, type_cheptel
+    ].div(data_departement["POPULATION"], axis=0)
+    data_departement["more_" + type_cheptel] = (
+        data_departement["ratio_" + type_cheptel] > 1
+    )
+    return data_departement.loc[:, "more_" + type_cheptel]
+```
+
+
+```{python}
+eval_ratio = pd.concat(
+    [ratio_cheptel(bete, cheptel_geospatial) for bete in cheptel[1]],
+    axis = 1
+)
+cheptel_geospatial = pd.concat(
+    [cheptel_geospatial, eval_ratio],
+    axis = 1
+)
+```
+
+title = {
+    "Bovins": "Plus de vaches 🐮 ou d'habitants ?",
+    "Porcins": "Plus de cochons 🐷 ou d'habitants ?",
+    "Ovins": "Plus de chèvres 🐐 ou d'habitants ?"
+}
+
+
+```{python}
+import folium
+import branca
+import leafmap.foliumap as leafmap
+
+palettes = {
+    "Bovins": {True: "#f9b439", False: "#d8d4d3"},
+    "Porcins": {True: "#ec6569", False: "#d8d4d3"},
+    "Ovins": {True: "#5eb04e", False: "#d8d4d3"}
+}
+
+# Function to apply color based on the 'more_Bovins' value
+def style_function(feature, bete):
+    more_bovins = feature['properties'][f'more_{bete}']
+    return {
+        'fillColor': palettes[bete][more_bovins],
+        'color': 'black',
+        'weight': 1,
+        'fillOpacity': 0.7,
+    }
+
+
+def map_repartition(cheptel_geospatial, bete):
+    # Create a white image of 4 pixels, and embed it in a url.
+    white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
+
+    # Initialize a folium map
+    m = folium.Map(location=[cheptel_geospatial.geometry.centroid.y.mean(), 
+                            cheptel_geospatial.geometry.centroid.x.mean()], 
+                zoom_start=5,
+                tiles=white_tile, attr="white tile")
+
+
+    # Add GeoJson layer to the map
+    folium.GeoJson(
+        cheptel_geospatial,
+        style_function=lambda x: style_function(x, bete),
+        tooltip=folium.GeoJsonTooltip(
+            fields=['LIBELLE_DEPARTEMENT', 'POPULATION', bete],
+            aliases=['Department:', 'Population:', f'{bete}:'],
+            localize=True
+        )
+    ).add_to(m)
+
+
+    return m
+```
+
+```{python}
+map_repartition(cheptel_geospatial, "Bovins")
+```
+
+
+```{python}
+map_repartition(cheptel_geospatial, "Porcins")
+```
+
+```{python}
+map_repartition(cheptel_geospatial, "Ovins")
+```
