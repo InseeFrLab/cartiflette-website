@@ -1,0 +1,39 @@
+/*-- scss:defaults --*/
+$primary: #343a40;
+
+/*-- scss:rules --*/
+.nav-link, .navbar-title {
+    color: #fff !important;
+}
+.nav-link:hover, .navbar-title:hover {
+    color: #000 !important;
+}
+
+.active {
+    color: #000 !important;
+}
+.active:hover {
+    color: #fff !important;
+}
+
+.btn-quarto {
+    background-color: $primary;
+    color: #fff;
+}
+
+.code-bloc-title {
+    background-color: $primary;
+    color: #fff;
+}
+
+div[name="choice-code"] > form > label, div[name="choice-code_departements"] > form > label {
+    color: #fff;
+}
+
+.code, div[name="choice-code"], div[name="choice-code_departements"] {
+    border: solid 0.1rem $primary;
+}
+
+div[name="choice-code"] > form > label, div[name="choice-code_departements"] > form > label {
+    background-color: $primary;
+}
