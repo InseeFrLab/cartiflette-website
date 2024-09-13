@@ -95,7 +95,6 @@ title = {
 ```{python}
 import folium
 import branca
-import leafmap.foliumap as leafmap
 
 palettes = {
     "Bovins": {True: "#f9b439", False: "#d8d4d3"},
