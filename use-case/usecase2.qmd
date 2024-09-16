@@ -292,7 +292,9 @@ Pour cela, il vaut mieux utiliser `Javascript` par le biais d'`Observable` dont 
 ::: {.callout-tip collapse="true"}
 ## Comment faire avec `Javascript` ?
 
-Ce tutoriel utilise le _framework_ `Observable` par le biais de `Quarto`, l'outil de construction de site web développé par `Posit`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/master/use-case/usecase2.qmd).
+Ce tutoriel utilise le _framework_ `Observable` par le biais de `Quarto`, l'outil de construction de site web développé par `Posit`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/master/use-case/usecase2.qmd)[^asynchrone].
+
+[^asynchrone]: `Javascript` est un langage asynchrone donc l'exécution du code ne dépend pas de l'ordre de définition des objets dans le code, contrairement à `Python`. Il est donc normal de voir dans les codes ci-dessous une utilisation d'une variable, par exemple `bete`, qui n'est pas définie en amont. Celle-ci peut être définie plus loin dans le code, c'est `Javascript` qui va réordonner de manière logique l'exécution du code. 
 
 Pour se simplifier la tâche, on va créer une fonction graphique qui prend en _input_ un `Array` et un type d'élevage (par exemple _"Bovins"_) et renvoie une carte:
 
@@ -399,20 +401,17 @@ viewof bete = Inputs.radio(
 Il ne manque qu'à importer les données nécessaires à la carte dans `Javascript`. La fonction [`ojs_define`](https://quarto.org/docs/interactive/ojs/data-sources.html)  permettant la transmission d'un objet `Python` à `R` ne fonctionnant pas pour un `GeoPandas`, le plus simple est de créer un GeoJSON en `Python` : 
 
 ```{python}
-#| echo: false
-cheptel_geospatial.to_file("cheptel.json", driver="GeoJSON")
+cheptel_geospatial.to_file(
+    "cheptel.json", driver="GeoJSON"
+)
 ```
 
-Il suffit ensuite d'importer celui-ci avec la fonction [`FileAttachment`](https://quarto.org/docs/interactive/ojs/data-sources.html) d'Observable
+Il suffit ensuite d'importer celui-ci avec la fonction [`FileAttachment`](https://quarto.org/docs/interactive/ojs/data-sources.html) d'`Observable`
 
 ```{ojs}
-//| echo: false
 cheptel = FileAttachment("cheptel.json").json()
 ```
 
-
-
-
-
-
 :::
+
+# Comment faire sans `cartiflette` ? {.sans-cartiflette}
