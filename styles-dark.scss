@@ -1,39 +1,13 @@
 /*-- scss:defaults --*/
 $primary: #343a40;
-
-/*-- scss:rules --*/
-.nav-link, .navbar-title {
-    color: #fff !important;
-}
-.nav-link:hover, .navbar-title:hover {
-    color: #000 !important;
-}
-
-.active {
-    color: #000 !important;
-}
-.active:hover {
-    color: #fff !important;
-}
-
-.btn-quarto {
-    background-color: $primary;
-    color: #fff;
-}
-
-.code-bloc-title {
-    background-color: $primary;
-    color: #fff;
-}
-
-div[name="choice-code"] > form > label, div[name="choice-code_departements"] > form > label {
-    color: #fff;
-}
-
-.code, div[name="choice-code"], div[name="choice-code_departements"] {
-    border: solid 0.1rem $primary;
-}
-
-div[name="choice-code"] > form > label, div[name="choice-code_departements"] > form > label {
-    background-color: $primary;
-}
+$background_color: #212529;
+$text_color: #eceeef;
+$background_button: #f8f9fa;
+$text_button: #5a5a5a;
+$navlink_text: #fff;
+$navlink_hover: #000;
+$navlink_active: #000;
+$navlink_active_hover: #fff;
+$placeholder: #b9bbbd;
+$geoviewer: #f7f8f9;
+$geoviewer_text: #000;
