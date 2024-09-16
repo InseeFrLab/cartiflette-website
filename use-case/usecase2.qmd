@@ -7,6 +7,8 @@ code-annotations: hover
 
 ::: {.important}
 Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
+
+Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd)
 :::
 
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où [un deuxième]{.yellow}__.  

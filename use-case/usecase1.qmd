@@ -6,17 +6,19 @@ code-annotations: hover
 ---
 
 
-
-
 ::: {.important}
 Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
+
+Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd)
 :::
 
 
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte mélangeant les niveaux administratifs différents que sont [communes]{.yellow} et [arrondissements]{.yellow}__.  
 
 Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la petite couronne parisienne (Paris intra-muros et départements limitrophes). 
-L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne.
+L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne. Il illustre, pas à pas, la manière dont `cartiflette` simplifie la création d'une carte comme celle-ci:
+
+
 
 
 ::: {.tip}
