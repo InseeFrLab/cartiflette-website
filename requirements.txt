@@ -2,6 +2,7 @@ nbformat
 nbclient
 ipykernel
 jupyter
+tqdm
 cartiflette @ git+https://github.com/inseefrlab/cartiflette
 py7zr
 folium
