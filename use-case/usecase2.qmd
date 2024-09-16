@@ -16,15 +16,23 @@ Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __réc
 Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin "Plus de vaches ou d'habitants"](https://x.com/JulesGrandin/status/1531631375505399809?mx=2)
 
 
+# Préliminaire: récupération des cheptels français
+
+La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l'analyse statistique et cartographique avec `Python` 😌
+
+
 ```{python}
+#| code-fold: true
+#| code-summary: "Préparation des données avec Pandas"
+
 import pandas as pd
 
 def import_cheptel():
     url_cheptel = "https://www.insee.fr/fr/statistiques/fichier/2012795/TCRD_073.xlsx"
 
-    cheptel2022 = pd.read_excel(url_cheptel, header=3, na_values="nd")
-    type_cheptel = cheptel2022.columns[~cheptel2022.columns.str.startswith("Unnamed")]
-    cheptel2022.loc[:, type_cheptel] = cheptel2022.loc[:, type_cheptel].mul(1000)
+    cheptel2022 = pd.read_excel(url_cheptel, header=3, na_values="nd") #<1>
+    type_cheptel = cheptel2022.columns[~cheptel2022.columns.str.startswith("Unnamed")] #<2>
+    cheptel2022.loc[:, type_cheptel] = cheptel2022.loc[:, type_cheptel].mul(1000) #<3>
     cheptel2022 = cheptel2022.rename(
         {
             "Unnamed: 0": "code",
@@ -34,13 +42,17 @@ def import_cheptel():
         axis="columns",
     )
     type_cheptel = type_cheptel.str.replace(" gallus", "")
-    return cheptel2022, type_cheptel
-```
+    return cheptel2022, type_cheptel #<4>
 
-
-```{python}
 cheptel = import_cheptel()
 ```
+1. Les premières lignes sont de la documentation, les données ne commencent réellement que ligne 4
+2. Extraction du type de bêtes, cela sera plus utile ultérieurement 
+3. Les données sont en milliers de tête, on ajuste pour pouvoir comparer à la population
+4. On renvoie la donnée et la liste des bêtes
+
+
+# Récupérer les contours nécessaires via `cartiflette`
 
 
 ```{python}
@@ -143,14 +155,17 @@ def map_repartition(cheptel_geospatial, bete):
 
 
 ```{python}
+#| eval: false
 map_repartition(cheptel_geospatial, "Bovins")
 ```
 
 
 ```{python}
+#| eval: false
 map_repartition(cheptel_geospatial, "Porcins")
 ```
 
 ```{python}
+#| eval: false
 map_repartition(cheptel_geospatial, "Ovins")
 ```
