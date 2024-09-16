@@ -35,31 +35,3 @@ jobs:
         with:
           render: false
           target: gh-pages
-  build-notebook:
-    runs-on: linogaliana/python-datascientist
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure safe.directory  # Workaround for actions/checkout#760
-        run: |
-          git config --global --add safe.directory /__w/cartiflette-website/cartiflette-website
-          git config --global --add safe.directory /__w/cartiflette-website/cartiflette-notebooks
-          git config --global --add safe.directory /tmp/
-        
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: |
-          pip install -r requirements.txt
-          pip install geopandas -U 
-
-      - name: Set up quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          version: 1.5.57
-
-      - name: Convert in ipynb with Quarto
-        run: |
-          quarto render --profile complete --to ipynb
-          mc cp _site/use-case/ s3/projet-cartiflette/resources/notebooks

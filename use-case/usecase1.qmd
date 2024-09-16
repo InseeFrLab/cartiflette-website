@@ -3,6 +3,7 @@ title: "Associer des arrondissements à des données communales avec cartiflette
 output: true
 number-sections: true
 code-annotations: hover
+author: "Lino Galiana"
 ---
 
 
@@ -196,7 +197,8 @@ Pour voir le code permettant d'obtenir un `GeoDataFrame` équivalent sans passer
 
 ## Le reste du travail après avoir utilisé `cartiflette`
 
-La suite du travail n'est pas lié à `cartiflette` mais est de la manipulation de données spatiales. 
+La suite du travail n'est pas intrinsèquement lié à `cartiflette` mais correspond à de la manipulation de données spatiales. 
+
 
 Comme nous avons besoin de localiser les stations dans les arrondissements, nous faisons une jointure spatiale entre notre fonds de carte et nos données Vélib
 

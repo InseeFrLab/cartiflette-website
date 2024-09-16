@@ -3,6 +3,7 @@ title: "Faire une carte avec les DROM rapprochés grâce à cartiflette"
 output: true
 number-sections: true
 code-annotations: hover
+author: "Lino Galiana"
 ---
 
 ::: {.important}
@@ -11,14 +12,40 @@ Cette page est un _work in progress_! Des exemples dans d'autres langages que `P
 Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd)
 :::
 
-Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où [un deuxième]{.yellow}__.  
+Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où on voit [un zoom sur l'Ile de France]{.yellow}__.  
 
 Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin "Plus de vaches ou d'habitants"](https://x.com/JulesGrandin/status/1531631375505399809?mx=2)
+L'objectif final de ce tutoriel est de faire cette carte:
+
+```{ojs}
+//| echo: false
+html`<div>${carte_interactive_js}</div>`
+```
+
+
+```{ojs}
+//| echo: false
+viewof beteview = Inputs.bind(
+    Inputs.radio(
+        new Map([["Vaches 🐮", "Bovins"], ["Cochons 🐷", "Porcins"], ["Moutons 🐑", "Ovins"]]), {value: "Bovins"}
+    ),
+    viewof bete
+)
+```
+
+```{ojs}
+//| echo: false
+carte_interactive_js = html`
+<div class="bouton-cheptel">${viewof beteview}</div>
+<div class="titre-carte-cheptel"><h3>${title_chosen}</h3></div>
+<div class="carte-cheptel">${produceMap(cheptel, bete)}<div>
+`
+```
 
 
 # Préliminaire: récupération des cheptels français
 
-La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l'analyse statistique et cartographique avec `Python` 😌
+La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l'analyse statistique et cartographique avec `Python` {{< fa brands python >}} 😌
 
 
 ```{python}
@@ -40,25 +67,50 @@ def import_cheptel():
             "Volailles gallus": "Volailles",
         },
         axis="columns",
-    )
+    ) #<4>
     type_cheptel = type_cheptel.str.replace(" gallus", "")
-    return cheptel2022, type_cheptel #<4>
+    return cheptel2022, type_cheptel #<5>
 
 cheptel = import_cheptel()
+
+cheptel[0].head(4)
 ```
 1. Les premières lignes sont de la documentation, les données ne commencent réellement que ligne 4
 2. Extraction du type de bêtes, cela sera plus utile ultérieurement 
 3. Les données sont en milliers de tête, on ajuste pour pouvoir comparer à la population
-4. On renvoie la donnée et la liste des bêtes
+4. La ligne correspondant aux noms de variable n'est pas complète dans le Excel. Il faut donc retravailler les noms de colonnes.
+5. On renvoie la donnée et la liste des bêtes
+
+En ce qui concerne la population, qui nous servira au dénominateur de notre indicateur, nous allons utiliser la variable fournie dans les données récupérées par le biais de `cartiflette`[^pop-legale].
+
+[^pop-legale]: Dans l'idéal, nous utiliserions les [populations légales](https://www.insee.fr/fr/statistiques/7728787?sommaire=7728826) mesurées par l'Insee. Les fonds de carte de l'IGN proposent néanmoins déjà une variable `POPULATION` qui est celle qui sera utilisée ici. Des travaux ultérieurs sur `cartiflette` viseront à remplacer cette variable par les populations légales pour assurer que les métadonnées utilisées par les fonds de carte correspondent, au même titre que les découpages géométriques, aux données officielles.  
 
 
-# Récupérer les contours nécessaires via `cartiflette`
+# Récupérer les contours modifiés via `cartiflette`
 
+## La récupération des données utilisant `cartiflette`
 
 ```{python}
+#| echo: false
+import time
+start_time_cartiflette = time.time()
+```
+
+Notre objectif est de faire une carte aux caractéristiques suivantes:
+
+* Les DROM sont rapprochés de la France hexagonale en étant placés sous celle-ci ;
+* Un cartogramme zoomé de la petite couronne parisienne (départements de la Seine, Hauts-de-Seine, Seine-Saint-Denis et Val de Marne) est disponible en haut à gauche de celle-ci.
+
+Construire soi-même ce fonds de carte est fastidieux, comme l'illustre la partie [Comment faire sans cartiflette](#sans-cartiflette). Avec `cartiflette`, ce fonds de carte est préconstruit à partir des découpages officiels de l'IGN. Il suffit de remplace le niveau `FRANCE_ENTIERE` en `FRANCE_ENTIERE_DROM_RAPPROCHES` dans l'appel à `carti_download`.  
+
+::: {#lst-cartiflette-example lst-cap="Example d'utilisation de cartiflette"}
+
+```{python}
+#| code-line-numbers: true
 from cartiflette import carti_download
-dep = carti_download(
-    values=["France"],
+
+departements = carti_download(
+    values="France",
     crs=4326,
     borders="DEPARTEMENT",
     vectorfile_format="geojson",
@@ -68,55 +120,105 @@ dep = carti_download(
 )
 ```
 
+:::
 
 ```{python}
-cheptel_geospatial = dep.merge(
+#| echo: false
+end_time_cartiflette = time.time()
+```
+
+`departements` est un `GeoDataFrame` classique proposant les métadonnées usuelles de `cartiflette` avec des géographies modifiées pour rapprocher la France des DROM[^warning-crs].  
+
+[^warning-crs]: Ce fonds de carte est en géométrie WGS84 (CRS: 4326). Ce n'est néanmoins qu'une apparence car les géométries nécessaires pour représenter les DROM et l'Ile de France sur cette carte ne correspondent à aucune réalité terrestre. Il ne faut donc considérer ce fonds de carte que pour la cartographie finale, pas la manipulation de données géographique (par exemple pour un calcul de distance terrestre). Pour celles-ci, le fonds de carte normal à utiliser est `FRANCE_ENTIERE`. 
+
+```{python}
+departements.boundary.plot(edgecolor = "black", linewidth=0.2)
+```
+
+
+
+## Association du fonds de carte `cartiflette` au jeu de données initial
+
+La suite du travail n'est pas intrinsèquement lié à `cartiflette` mais correspond à de la manipulation de données spatiales nécessaires à la finalisation de la carte. 
+
+Comme nous avons besoin de localiser les décomptes départements de bétail, nous faisons une jointure spatiale entre notre fonds de carte et nos cheptels
+
+```{python}
+cheptel_geospatial = departements.merge(
     cheptel[0], left_on="INSEE_DEP", right_on = "code"
 )
 ```
 
+A partir de là, on finalise notre travail sur le 
+jeu de données pour calculer le ratio entre le nombre
+de têtes et la population:
+
 ```{python}
+#| code-fold: true
+#| code-summary: "Dérouler pour voir la finalisation du travail de données"
+
 def ratio_cheptel(type_cheptel, data_departement):
+    """
+    Fonction permettant de rapporter, pour un type de bête donné,
+    le nombre de têtes par habitant d'un département 
+    """
     data_departement = data_departement.copy()
-    data_departement["ratio_" + type_cheptel] = data_departement.loc[
-        :, type_cheptel
-    ].div(data_departement["POPULATION"], axis=0)
+    data_departement["ratio_" + type_cheptel] = (
+        data_departement.loc[:, type_cheptel]
+        .div(data_departement["POPULATION"], axis=0)
+    )
     data_departement["more_" + type_cheptel] = (
         data_departement["ratio_" + type_cheptel] > 1
     )
     return data_departement.loc[:, "more_" + type_cheptel]
-```
 
-
-```{python}
 eval_ratio = pd.concat(
     [ratio_cheptel(bete, cheptel_geospatial) for bete in cheptel[1]],
     axis = 1
-)
+) #<1>
+
 cheptel_geospatial = pd.concat(
     [cheptel_geospatial, eval_ratio],
     axis = 1
-)
+) #<2>
+```
+1. Un _DataFrame_ temporaire permettant de définir, par le biais d'une boucle, nos indicateurs de population.
+2. On associe ces nouvelles colonnes à nos données initiales
+
+Le jeu de données prêt à l'emploi prend la forme suivante:
+
+```{python}
+cheptel_geospatial.head(2)
 ```
 
-title = {
-    "Bovins": "Plus de vaches 🐮 ou d'habitants ?",
-    "Porcins": "Plus de cochons 🐷 ou d'habitants ?",
-    "Ovins": "Plus de chèvres 🐐 ou d'habitants ?"
-}
+## Production de la carte interactive
+
+On peut maintenant se concentrer sur la carte. Pour la rendre plus informative, il est utile de contextualiser les départements en permettant aux spectateurs de la carte de connaître le nom des départements ayant un cheptel plus important que sa population. 
+
+Cela peut être fait comme sur la carte d'origine de Jules Grandin en inscrivant les noms des départements concernés sur celle-ci. Cela nécessite tout de même un travail manuel important pour qui n'utilise pas une interface comme QGIS. 
+
+Il est plus simple, pour les utilisateurs de logiciels comme `Python`, `R` ou `Javascript` de produire une carte interactive qui permet d'afficher des valeurs lorsqu'on passe la souris dessus. Il existe plusieurs écosystèmes pour faire cela, plus ou moins directement reliés à `Javascript`, le langage consacré pour ce type d'applications réactives. 
+
+Les exemples ci-dessous proposent un code en `Python` pour faire une carte interactive par le biais de la librairie `Folium`. Cette manière de procéder étant un peu fastidieuse, car `Folium` n'est pas initialement conçu pour ce type de cartes, il est recommandé de privilégier la solution `Observable` qui est un _framework_ `Javascript` ressemblant beaucoup à `Python` mais plus adapté que ce dernier pour la _dataviz_.
+
+
+En premier lieu, on définit une fonction générique qui permet de construire, pour un type de cheptel donné, la carte qui sera créée:
 
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Définition d'une fonction générique pour créer la carte"
 import folium
 import branca
 
 palettes = {
     "Bovins": {True: "#f9b439", False: "#d8d4d3"},
     "Porcins": {True: "#ec6569", False: "#d8d4d3"},
-    "Ovins": {True: "#5eb04e", False: "#d8d4d3"}
+    "Ovins": {True: "#5eb04e", False: "#d8d4d3"},
+    "Caprins": {True: "#5eb04e", False: "#d8d4d3"}
 }
 
-# Function to apply color based on the 'more_Bovins' value
+# Function to apply color based on the 'more_XXXXX' values
 def style_function(feature, bete):
     more_bovins = feature['properties'][f'more_{bete}']
     return {
@@ -128,14 +230,16 @@ def style_function(feature, bete):
 
 
 def map_repartition(cheptel_geospatial, bete):
-    # Create a white image of 4 pixels, and embed it in a url.
-    white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
+    white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]]) #<1>
 
     # Initialize a folium map
-    m = folium.Map(location=[cheptel_geospatial.geometry.centroid.y.mean(), 
-                            cheptel_geospatial.geometry.centroid.x.mean()], 
-                zoom_start=5,
-                tiles=white_tile, attr="white tile")
+    m = folium.Map(
+        location=[
+            cheptel_geospatial.geometry.centroid.y.mean(), cheptel_geospatial.geometry.centroid.x.mean()
+        ],
+        zoom_start=5,
+        tiles=white_tile, attr="white tile"
+    )
 
 
     # Add GeoJson layer to the map
@@ -151,21 +255,155 @@ def map_repartition(cheptel_geospatial, bete):
 
     return m
 ```
+1. `Folium` est une librairie qui est pensée, avant tout, pour proposer un fonds de carte type `OpenStreetMap` en arrière-plan. Celui-ci ne nous intéresse pas ici car nous avons créé des éléments sans contrepartie sur la Terre (les DROM sous la France, le zoom de l'Ile de France au nord ouest de la Normandie). Nous créons donc un fond blanc qui est utilisé de manière détournée par Folium. 
 
+
+Pour créer celles-ci, il suffit dès lors d'appliquer la fonction sur le type d'élevage désiré:
 
 
 ```{python}
 #| eval: false
+#| code-fold: true
+#| code-summary: "Visualiser par le biais de Folium"
 map_repartition(cheptel_geospatial, "Bovins")
-```
-
-
-```{python}
-#| eval: false
 map_repartition(cheptel_geospatial, "Porcins")
-```
-
-```{python}
-#| eval: false
 map_repartition(cheptel_geospatial, "Ovins")
 ```
+
+Néanmoins, ce n'est pas la méthode adoptée pour créer les cartes ci-dessous:
+
+
+```{ojs}
+//| echo: false
+html`<div>${carte_interactive_js2}</div>`
+```
+
+Pour cela, il vaut mieux utiliser `Javascript` par le biais d'`Observable` dont le code est disponible dans la boite déroulable ci-dessous:
+
+::: {.callout-tip collapse="true"}
+## Comment faire avec `Javascript` ?
+
+Ce tutoriel utilise le _framework_ `Observable` par le biais de `Quarto`, l'outil de construction de site web développé par `Posit`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/master/use-case/usecase2.qmd).
+
+Pour se simplifier la tâche, on va créer une fonction graphique qui prend en _input_ un `Array` et un type d'élevage (par exemple _"Bovins"_) et renvoie une carte:
+
+```{ojs}
+//| echo: false
+import {addTooltips} from "@mkfreeman/plot-tooltip"
+
+function produceMap(cheptel, bete){
+    const carte = addTooltips(
+        Plot.plot({ 
+            marginLeft: 0,
+            marginRight: 0,
+            width: 400,
+            height: 400,  
+            color: {
+            legend: true,
+            value: [
+                labels.filter(d => d.type == bete)[0].true,
+                labels.filter(d => d.type == bete)[0].false        
+            ],
+            range: [
+                palettes.filter(d => d.name == bete)[0].trueColor,
+                palettes.filter(d => d.name == bete)[0].falseColor
+            ],
+            label: "Alors ?"
+            },
+            y: {axis: null},
+            x: {axis: null},
+            marks: [
+            Plot.geo(cheptel, {
+                fill: (d) => labels.filter(d => d.type == bete)[0][d.properties[bete] > d.properties.POPULATION],
+                sort: {
+                color: "fill",
+                reverse: true
+                },
+                title: (d) => `${d.properties.LIBELLE_DEPARTEMENT} (${d.properties.INSEE_DEP}) \nCheptel: ${d.properties[bete]} \nPopulation: ${d.properties.POPULATION}  \n Ratio: ${(d.properties[bete]/d.properties.POPULATION).toLocaleString(undefined, {maximumSignificantDigits: 2})}`,
+            })
+            ]
+        })
+    )
+    return carte
+}
+```
+
+Celle-ci utilise un certain nombre d'ingrédients. En premier lieu, des _arrays_ permettant de changer les valeurs affichées en fonction de la valeur du _widget_ sélectionné :
+
+```{ojs}
+labels = [
+    {type: "Bovins", true: "Plus de vaches 🐮", false: "Plus d'habitants"},
+    {type: "Porcins", true: "Plus de cochons 🐷", false: "Plus d'habitants"},
+    {type: "Ovins", true: "Plus de moutons 🐑", false: "Plus d'habitants"},
+    {type: "Caprins", true: "Plus de chèvres 🐐", false: "Plus d'habitants"}
+]
+title = [
+    {type: "Bovins", title: "Plus de vaches 🐮 ou d'habitants ?"},
+    {type: "Porcins", title: "Plus de cochons 🐷 ou d'habitants ?"},
+    {type: "Ovins", title: "Plus de moutons 🐑 ou d'habitants ?"},
+    {type: "Caprins", title: "Plus de chèvres 🐐 ou d'habitants ?"}
+]
+palettes = [
+    {
+        name: "Bovins",
+        trueColor: "#f9b439",
+        falseColor: "#d8d4d3"
+    },
+    {
+        name: "Porcins",
+        trueColor: "#ec6569",
+        falseColor: "#d8d4d3"
+    },
+    {
+        name: "Ovins",
+        trueColor: "#5eb04e",
+        falseColor: "#d8d4d3"
+    },
+    {
+        name: "Caprins",
+        trueColor: "#00b5ed",
+        falseColor: "#d8d4d3"
+    }
+]
+
+title_chosen = title.filter(d => d.type == bete)[0].title
+```
+
+
+```{ojs}
+//| echo: false
+carte_interactive_js2 = html`
+<div class="bouton-cheptel">${viewof bete}</div>
+<div class="titre-carte-cheptel"><h3>${title_chosen}</h3></div>
+<div class="carte-cheptel">${produceMap(cheptel, bete)}<div>
+`
+```
+
+Ce _widget_ est un [radio button](https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/radio) qui peut être créé par le code suivant, permettant à la fois d'exposer celui-ci sur l'interface et de stocker sa valeur active dans la variable `bete`
+
+```{ojs}
+viewof bete = Inputs.radio(
+    new Map([["Vaches 🐮", "Bovins"], ["Cochons 🐷", "Porcins"], ["Moutons 🐑", "Ovins"]]), {value: "Bovins"}
+)
+```
+
+Il ne manque qu'à importer les données nécessaires à la carte dans `Javascript`. La fonction [`ojs_define`](https://quarto.org/docs/interactive/ojs/data-sources.html)  permettant la transmission d'un objet `Python` à `R` ne fonctionnant pas pour un `GeoPandas`, le plus simple est de créer un GeoJSON en `Python` : 
+
+```{python}
+#| echo: false
+cheptel_geospatial.to_file("cheptel.json", driver="GeoJSON")
+```
+
+Il suffit ensuite d'importer celui-ci avec la fonction [`FileAttachment`](https://quarto.org/docs/interactive/ojs/data-sources.html) d'Observable
+
+```{ojs}
+//| echo: false
+cheptel = FileAttachment("cheptel.json").json()
+```
+
+
+
+
+
+
+:::
