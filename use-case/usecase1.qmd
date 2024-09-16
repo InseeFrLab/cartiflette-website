@@ -9,16 +9,38 @@ code-annotations: hover
 ::: {.important}
 Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
 
-Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd)
+Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd).
 :::
 
 
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte mélangeant les niveaux administratifs différents que sont [communes]{.yellow} et [arrondissements]{.yellow}__.  
 
 Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la petite couronne parisienne (Paris intra-muros et départements limitrophes). 
-L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne. Il illustre, pas à pas, la manière dont `cartiflette` simplifie la création d'une carte comme celle-ci:
+L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne. Il illustre, pas à pas, la manière dont `cartiflette` simplifie la création de la @fig-map :
 
+```{ojs}
+//| echo: false
+html`<div class="destination-content">
+  <!-- Content will be inserted here automatically -->
+</div>`
+```
 
+```{ojs}
+//| echo: false
+//| output: false
+window.onload = function() {
+    // Capture the content within the 'final-map' class, targeting the nested 'cell-output cell-output-display' class
+    const finalMapElement = document.querySelector('.final-map .cell-output.cell-output-display');
+
+    if (finalMapElement) {
+        const finalMapContent = finalMapElement.innerHTML;
+        document.querySelector('.destination-content').innerHTML = finalMapContent;
+    } else {
+        console.error("The element with class 'cell-output cell-output-display' within 'final-map' was not found.");
+    }
+};
+
+```
 
 
 ::: {.tip}
@@ -241,27 +263,49 @@ df_points["geometry"] = df_points["geometry"].centroid
 
 Finalement, on obtient la carte avec le code suivant
 
+::: {.final-map}
+
 ```{python}
 #| code-fold: true
 #| code-summary: "Dérouler 👇️ pour voir le code permettant de faire la carte"
+#| fig-cap: "Carte obtenue à l'issue de ce tutoriel"
+#| label: fig-map
 import matplotlib.pyplot as plt
 
-ax = comptes_velib_by_city_arrt.plot(
-    color="lightgray", edgecolor="grey", figsize=(7, 7), linewidth=0.4, alpha=0.3
+# Create a figure and axes object
+fig, ax = plt.subplots(figsize=(7, 7))
+
+# Plot the base map
+comptes_velib_by_city_arrt.plot(
+    ax=ax,
+    color="lightgray",
+    edgecolor="grey",
+    linewidth=0.4,
+    alpha=0.3
 )
+
+# Plot the points with customized colors and sizes
 df_points.plot(
     ax=ax,
     column="markercolor",
     markersize="markersize",
-    alpha=0.7,  # categorical=False,
+    alpha=0.7,
     legend=True,
     legend_kwds={"loc": "upper center", "ncol": 2, "bbox_to_anchor": (0.5, 0.05)},
     cmap="viridis",
 )
+
+# Plot the department boundaries
 departements.boundary.plot(ax=ax, edgecolor="black", alpha=0.3)
+
+# Remove axes and set the title
 ax.axis("off")
-ax.set(title="Densité de population dans la petite couronne")
+ax.set_title("Densité de population dans la petite couronne")
+
+# Customize the legend title
 ax.get_legend().set_title("Nombre de vélib par km²")
+
+# Add source text
 plt.figtext(
     0.3,
     0.15,
@@ -271,7 +315,12 @@ plt.figtext(
     fontsize=8,
     style="italic",
 )
+
+# Show the final plot
+plt.show()
 ```
+
+:::
 
 # Comment faire sans `cartiflette` ? {.sans-cartiflette}
 
@@ -665,3 +714,5 @@ nrows_cartiflette = labels_cartiflette.map(label => {
 ```
 
 :::
+
+

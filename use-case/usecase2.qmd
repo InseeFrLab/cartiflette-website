@@ -137,9 +137,10 @@ def map_repartition(cheptel_geospatial, bete):
         )
     ).add_to(m)
 
-
     return m
 ```
+
+
 
 ```{python}
 map_repartition(cheptel_geospatial, "Bovins")
