@@ -14,7 +14,7 @@ Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités
 
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où on voit [un zoom sur l'Ile de France]{.yellow}__.  
 
-Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin "Plus de vaches ou d'habitants"](https://x.com/JulesGrandin/status/1531631375505399809?mx=2)
+Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin pour son podcast "La Minute Cartographique"](https://www.youtube.com/watch?v=mK7Hr2x895k)
 L'objectif final de ce tutoriel est de faire cette carte:
 
 ```{ojs}
@@ -42,6 +42,15 @@ carte_interactive_js = html`
 `
 ```
 
+<details>
+<summary>
+Voir l'épisode en question de  "La Minute Cartographique"
+</summary>
+
+{{< video https://www.youtube.com/embed/mK7Hr2x895k?si=6nNRsJziuUjGsP5B >}}
+
+
+<details>
 
 # Préliminaire: récupération des cheptels français
 
