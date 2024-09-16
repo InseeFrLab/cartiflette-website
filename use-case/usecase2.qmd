@@ -50,7 +50,7 @@ Voir l'épisode en question de  "La Minute Cartographique"
 {{< video https://www.youtube.com/embed/mK7Hr2x895k?si=6nNRsJziuUjGsP5B >}}
 
 
-<details>
+</details>
 
 # Préliminaire: récupération des cheptels français
 
