@@ -1,0 +1,49 @@
+```{ojs}
+//| echo: false
+function extractLineNumbers(label) {
+    const selector = `[aria-describedby^="${label}"]`;
+    const blocks = document.querySelectorAll(selector);
+
+    let lineNumbers = [];
+
+    blocks.forEach(block => {
+        // Search for ids matching "annotated-cell-XX-N"
+        const annotatedCells = block.querySelectorAll('[id^="annotated-cell-"]');
+        annotatedCells.forEach(cell => {
+            const match = cell.id.match(/annotated-cell-\d+-(\d+)/);
+            if (match) {
+                lineNumbers.push(parseInt(match[1], 10));
+            }
+        });
+
+        // Search for ids matching "cbXX-N"
+        const cbCells = block.querySelectorAll('[id^="cb"]');
+        cbCells.forEach(cell => {
+            const match = cell.id.match(/cb\d+-(\d+)/);
+            if (match) {
+                lineNumbers.push(parseInt(match[1], 10));
+            }
+        });
+    });
+
+    return lineNumbers;
+}
+
+function getMaxLineNumber(label) {
+    const lineNumbers = extractLineNumbers(label);
+    return Math.max(...lineNumbers);
+}
+
+// Iterate over labels to get max line numbers
+nrows_no_cartiflette = labels.map(label => {
+    const maxLineNumber = getMaxLineNumber(label);
+    return maxLineNumber;
+})
+
+nrows_cartiflette = labels_cartiflette.map(label => {
+    const maxLineNumber = getMaxLineNumber(label);
+    return maxLineNumber;
+})
+
+
+```

@@ -1,0 +1,31 @@
+```{python}
+#| echo: false
+import datetime
+
+def human_readable_time(duration):
+    # Convert the duration to seconds if it's not already
+    if isinstance(duration, datetime.timedelta):
+        total_seconds = int(duration.total_seconds())
+    else:
+        total_seconds = int(duration)
+    
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if hours > 0:
+        return f"{hours} heures, {minutes} minutes et {seconds} secondes"
+    elif minutes > 0:
+        return f"{minutes}minutes et {seconds} secondes"
+    else:
+        return f"{seconds} secondes"
+
+time_cartiflette_exact = end_time_cartiflette - start_time_cartiflette
+time_no_cartiflette_exact = end_time_no_cartiflette - start_time_no_cartiflette
+
+time_cartiflette = human_readable_time(
+    time_cartiflette_exact
+)
+time_no_cartiflette = human_readable_time(
+    time_no_cartiflette_exact
+)
+```

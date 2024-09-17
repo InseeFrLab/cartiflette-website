@@ -1,0 +1,27 @@
+```{python}
+#| echo: false
+import glob
+
+directory = "extracted_files"
+file_list = glob.glob(f"{directory}/**/*", recursive=True)
+# Filter out directories (we want to count only files)
+file_list = [file for file in file_list if not os.path.isdir(file)]
+
+nbre_fichiers = len(file_list)
+```
+
+L'arborescence du dossier décompressé est également assez conséquente: nous avons `{python} nbre_fichiers` fichiers. L'arborescence complète obtenue sans `cartiflette` est disponible ci-dessous. Avec `cartiflette` aucun fichier n'est écrit sur disque, tout est directement accessible dans la session `Python`.
+
+<details>
+
+<summary>
+Arborescence complète
+</summary>
+
+```{python}
+#| echo: false
+from directory_tree import DisplayTree
+DisplayTree(directory)
+```
+
+</details>
