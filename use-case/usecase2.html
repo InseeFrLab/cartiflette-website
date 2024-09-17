@@ -112,6 +112,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
+<link rel="stylesheet" href="../styles.scss">
+<link rel="stylesheet" href="../styles-dark.scss">
 <link rel="stylesheet" href="../site_libs/quarto-contrib/quarto-project/quarto-ext/fontawesome/assets/css/all.css">
 </head>
 
@@ -178,6 +180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#association-du-fonds-de-carte-cartiflette-au-jeu-de-données-initial" id="toc-association-du-fonds-de-carte-cartiflette-au-jeu-de-données-initial" class="nav-link" data-scroll-target="#association-du-fonds-de-carte-cartiflette-au-jeu-de-données-initial"><span class="header-section-number">2.2</span> Association du fonds de carte <code>cartiflette</code> au jeu de données initial</a></li>
   <li><a href="#production-de-la-carte-interactive" id="toc-production-de-la-carte-interactive" class="nav-link" data-scroll-target="#production-de-la-carte-interactive"><span class="header-section-number">2.3</span> Production de la carte interactive</a></li>
   </ul></li>
+  <li><a href="#comment-faire-sans-cartiflette" id="toc-comment-faire-sans-cartiflette" class="nav-link" data-scroll-target="#comment-faire-sans-cartiflette"><span class="header-section-number">3</span> Comment faire sans <code>cartiflette</code> ?</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="usecase2.ipynb" download="usecase2.ipynb"><i class="bi bi-journal-code"></i>Jupyter</a></li></ul></div></nav>
     </div>
@@ -266,11 +269,11 @@ Important
 Voir l’épisode en question de “La Minute Cartographique”
 </summary>
 <div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/mK7Hr2x895k?si=6nNRsJziuUjGsP5B" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<details>
+</details>
 <section id="préliminaire-récupération-des-cheptels-français" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Préliminaire: récupération des cheptels français</h1>
 <p>La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l’analyse statistique et cartographique avec <code>Python</code> <i class="fa-brands fa-python" aria-label="python"></i> 😌</p>
-<div id="18c8dd22" class="cell" data-execution_count="1">
+<div id="4edb9841" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Préparation des données avec Pandas</summary>
 <div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -402,7 +405,7 @@ Voir l’épisode en question de “La Minute Cartographique”
 Listing&nbsp;1: Example d’utilisation de cartiflette
 </figcaption>
 <div aria-describedby="lst-cartiflette-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="42c9ae37" class="cell" data-execution_count="3">
+<div id="e47c12cf" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">from</span> cartiflette <span class="im">import</span> carti_download</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>departements <span class="op">=</span> carti_download(</span>
@@ -419,7 +422,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </figure>
 </div>
 <p><code>departements</code> est un <code>GeoDataFrame</code> classique proposant les métadonnées usuelles de <code>cartiflette</code> avec des géographies modifiées pour rapprocher la France des DROM<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
-<div id="5f49d1e0" class="cell" data-execution_count="5">
+<div id="e99447bd" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>departements.boundary.plot(edgecolor <span class="op">=</span> <span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -434,13 +437,13 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 <h2 data-number="2.2" class="anchored" data-anchor-id="association-du-fonds-de-carte-cartiflette-au-jeu-de-données-initial"><span class="header-section-number">2.2</span> Association du fonds de carte <code>cartiflette</code> au jeu de données initial</h2>
 <p>La suite du travail n’est pas intrinsèquement lié à <code>cartiflette</code> mais correspond à de la manipulation de données spatiales nécessaires à la finalisation de la carte.</p>
 <p>Comme nous avons besoin de localiser les décomptes départements de bétail, nous faisons une jointure spatiale entre notre fonds de carte et nos cheptels</p>
-<div id="feb5833f" class="cell" data-execution_count="6">
+<div id="c71fa417" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial <span class="op">=</span> departements.merge(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    cheptel[<span class="dv">0</span>], left_on<span class="op">=</span><span class="st">"INSEE_DEP"</span>, right_on <span class="op">=</span> <span class="st">"code"</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A partir de là, on finalise notre travail sur le jeu de données pour calculer le ratio entre le nombre de têtes et la population:</p>
-<div id="9248bd67" class="cell" data-execution_count="7">
+<div id="ff3f6fd3" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Dérouler pour voir la finalisation du travail de données</summary>
 <div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio_cheptel(type_cheptel, data_departement):</span>
@@ -482,7 +485,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </div>
 </div>
 <p>Le jeu de données prêt à l’emploi prend la forme suivante:</p>
-<div id="e9591fe1" class="cell" data-execution_count="8">
+<div id="4dac7b59" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial.head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
@@ -569,7 +572,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 <p>Il est plus simple, pour les utilisateurs de logiciels comme <code>Python</code>, <code>R</code> ou <code>Javascript</code> de produire une carte interactive qui permet d’afficher des valeurs lorsqu’on passe la souris dessus. Il existe plusieurs écosystèmes pour faire cela, plus ou moins directement reliés à <code>Javascript</code>, le langage consacré pour ce type d’applications réactives.</p>
 <p>Les exemples ci-dessous proposent un code en <code>Python</code> pour faire une carte interactive par le biais de la librairie <code>Folium</code>. Cette manière de procéder étant un peu fastidieuse, car <code>Folium</code> n’est pas initialement conçu pour ce type de cartes, il est recommandé de privilégier la solution <code>Observable</code> qui est un <em>framework</em> <code>Javascript</code> ressemblant beaucoup à <code>Python</code> mais plus adapté que ce dernier pour la <em>dataviz</em>.</p>
 <p>En premier lieu, on définit une fonction générique qui permet de construire, pour un type de cheptel donné, la carte qui sera créée:</p>
-<div id="24b9ac1c" class="cell" data-execution_count="9">
+<div id="cb5cf98d" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Définition d’une fonction générique pour créer la carte</summary>
 <div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span>
@@ -629,7 +632,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </div>
 </div>
 <p>Pour créer celles-ci, il suffit dès lors d’appliquer la fonction sur le type d’élevage désiré:</p>
-<div id="7ce1d3e6" class="cell" data-execution_count="10">
+<div id="632f7758" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Visualiser par le biais de Folium</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>map_repartition(cheptel_geospatial, <span class="st">"Bovins"</span>)</span>
@@ -659,46 +662,46 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Ce tutoriel utilise le <em>framework</em> <code>Observable</code> par le biais de <code>Quarto</code>, l’outil de construction de site web développé par <code>Posit</code>. Le code source de cette page est disponible <a href="https://github.com/InseeFrLab/cartiflette-website/blob/master/use-case/usecase2.qmd">ici</a>.</p>
+<p>Ce tutoriel utilise le <em>framework</em> <code>Observable</code> par le biais de <code>Quarto</code>, l’outil de construction de site web développé par <code>Posit</code>. Le code source de cette page est disponible <a href="https://github.com/InseeFrLab/cartiflette-website/blob/master/use-case/usecase2.qmd">ici</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>Pour se simplifier la tâche, on va créer une fonction graphique qui prend en <em>input</em> un <code>Array</code> et un type d’élevage (par exemple <em>“Bovins”</em>) et renvoie une carte:</p>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="301" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 300;"><span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {addTooltips} <span class="im">from</span> <span class="st">"@mkfreeman/plot-tooltip"</span></span>
-<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">produceMap</span>(cheptel<span class="op">,</span> bete){</span>
-<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> carte <span class="op">=</span> <span class="fu">addTooltips</span>(</span>
-<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">plot</span>({ </span>
-<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a>            <span class="dt">width</span><span class="op">:</span> <span class="dv">400</span><span class="op">,</span></span>
-<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a>            <span class="dt">height</span><span class="op">:</span> <span class="dv">400</span><span class="op">,</span>  </span>
-<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a>            <span class="dt">color</span><span class="op">:</span> {</span>
-<span id="cb10-311"><a href="#cb10-311" aria-hidden="true" tabindex="-1"></a>            <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
-<span id="cb10-312"><a href="#cb10-312" aria-hidden="true" tabindex="-1"></a>            <span class="dt">value</span><span class="op">:</span> [</span>
-<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a>                labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">true</span><span class="op">,</span></span>
-<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a>                labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">false</span>        </span>
-<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
-<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a>            <span class="dt">range</span><span class="op">:</span> [</span>
-<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a>                palettes<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">name</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">trueColor</span><span class="op">,</span></span>
-<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>                palettes<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">name</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">falseColor</span></span>
-<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
-<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">"Alors ?"</span></span>
-<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
-<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a>            <span class="dt">y</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a>            <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
-<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a>            Plot<span class="op">.</span><span class="fu">geo</span>(cheptel<span class="op">,</span> {</span>
-<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a>                <span class="dt">fill</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>][d<span class="op">.</span><span class="at">properties</span>[bete] <span class="op">&gt;</span> d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span>]<span class="op">,</span></span>
-<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a>                <span class="dt">sort</span><span class="op">:</span> {</span>
-<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a>                <span class="dt">color</span><span class="op">:</span> <span class="st">"fill"</span><span class="op">,</span></span>
-<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a>                <span class="dt">reverse</span><span class="op">:</span> <span class="kw">true</span></span>
-<span id="cb10-330"><a href="#cb10-330" aria-hidden="true" tabindex="-1"></a>                }<span class="op">,</span></span>
-<span id="cb10-331"><a href="#cb10-331" aria-hidden="true" tabindex="-1"></a>                <span class="dt">title</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">LIBELLE_DEPARTEMENT</span><span class="sc">}</span><span class="vs"> (</span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">INSEE_DEP</span><span class="sc">}</span><span class="vs">) </span><span class="sc">\n</span><span class="vs">Cheptel: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span>[bete]<span class="sc">}</span><span class="vs"> </span><span class="sc">\n</span><span class="vs">Population: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span><span class="sc">}</span><span class="vs">  </span><span class="sc">\n</span><span class="vs"> Ratio: </span><span class="sc">${</span>(d<span class="op">.</span><span class="at">properties</span>[bete]<span class="op">/</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span>)<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="kw">undefined</span><span class="op">,</span> {<span class="dt">maximumSignificantDigits</span><span class="op">:</span> <span class="dv">2</span>})<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a>            })</span>
-<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a>            ]</span>
-<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a>        })</span>
-<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> carte</span>
-<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="303" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 302;"><span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {addTooltips} <span class="im">from</span> <span class="st">"@mkfreeman/plot-tooltip"</span></span>
+<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">produceMap</span>(cheptel<span class="op">,</span> bete){</span>
+<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> carte <span class="op">=</span> <span class="fu">addTooltips</span>(</span>
+<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">plot</span>({ </span>
+<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a>            <span class="dt">width</span><span class="op">:</span> <span class="dv">400</span><span class="op">,</span></span>
+<span id="cb10-311"><a href="#cb10-311" aria-hidden="true" tabindex="-1"></a>            <span class="dt">height</span><span class="op">:</span> <span class="dv">400</span><span class="op">,</span>  </span>
+<span id="cb10-312"><a href="#cb10-312" aria-hidden="true" tabindex="-1"></a>            <span class="dt">color</span><span class="op">:</span> {</span>
+<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a>            <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a>            <span class="dt">value</span><span class="op">:</span> [</span>
+<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a>                labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">true</span><span class="op">,</span></span>
+<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a>                labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">false</span>        </span>
+<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
+<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a>            <span class="dt">range</span><span class="op">:</span> [</span>
+<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a>                palettes<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">name</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">trueColor</span><span class="op">,</span></span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a>                palettes<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">name</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">falseColor</span></span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>            ]<span class="op">,</span></span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a>            <span class="dt">label</span><span class="op">:</span> <span class="st">"Alors ?"</span></span>
+<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
+<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a>            <span class="dt">y</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a>            <span class="dt">x</span><span class="op">:</span> {<span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span>}<span class="op">,</span></span>
+<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a>            <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb10-327"><a href="#cb10-327" aria-hidden="true" tabindex="-1"></a>            Plot<span class="op">.</span><span class="fu">geo</span>(cheptel<span class="op">,</span> {</span>
+<span id="cb10-328"><a href="#cb10-328" aria-hidden="true" tabindex="-1"></a>                <span class="dt">fill</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> labels<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>][d<span class="op">.</span><span class="at">properties</span>[bete] <span class="op">&gt;</span> d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span>]<span class="op">,</span></span>
+<span id="cb10-329"><a href="#cb10-329" aria-hidden="true" tabindex="-1"></a>                <span class="dt">sort</span><span class="op">:</span> {</span>
+<span id="cb10-330"><a href="#cb10-330" aria-hidden="true" tabindex="-1"></a>                <span class="dt">color</span><span class="op">:</span> <span class="st">"fill"</span><span class="op">,</span></span>
+<span id="cb10-331"><a href="#cb10-331" aria-hidden="true" tabindex="-1"></a>                <span class="dt">reverse</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb10-332"><a href="#cb10-332" aria-hidden="true" tabindex="-1"></a>                }<span class="op">,</span></span>
+<span id="cb10-333"><a href="#cb10-333" aria-hidden="true" tabindex="-1"></a>                <span class="dt">title</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">LIBELLE_DEPARTEMENT</span><span class="sc">}</span><span class="vs"> (</span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">INSEE_DEP</span><span class="sc">}</span><span class="vs">) </span><span class="sc">\n</span><span class="vs">Cheptel: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span>[bete]<span class="sc">}</span><span class="vs"> </span><span class="sc">\n</span><span class="vs">Population: </span><span class="sc">${</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span><span class="sc">}</span><span class="vs">  </span><span class="sc">\n</span><span class="vs"> Ratio: </span><span class="sc">${</span>(d<span class="op">.</span><span class="at">properties</span>[bete]<span class="op">/</span>d<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">POPULATION</span>)<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="kw">undefined</span><span class="op">,</span> {<span class="dt">maximumSignificantDigits</span><span class="op">:</span> <span class="dv">2</span>})<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb10-334"><a href="#cb10-334" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> carte</span>
+<span id="cb10-339"><a href="#cb10-339" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-5-1" data-nodetype="declaration">
@@ -716,42 +719,42 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 <p>Celle-ci utilise un certain nombre d’ingrédients. En premier lieu, des <em>arrays</em> permettant de changer les valeurs affichées en fonction de la valeur du <em>widget</em> sélectionné :</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11" data-startfrom="343" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 342;"><span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [</span>
-<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de vaches 🐮"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
-<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de cochons 🐷"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
-<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de moutons 🐑"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
-<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de chèvres 🐐"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}</span>
-<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>title <span class="op">=</span> [</span>
-<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de vaches 🐮 ou d'habitants ?"</span>}<span class="op">,</span></span>
-<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de cochons 🐷 ou d'habitants ?"</span>}<span class="op">,</span></span>
-<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de moutons 🐑 ou d'habitants ?"</span>}<span class="op">,</span></span>
-<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de chèvres 🐐 ou d'habitants ?"</span>}</span>
-<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a>palettes <span class="op">=</span> [</span>
-<span id="cb11-356"><a href="#cb11-356" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span></span>
-<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#f9b439"</span><span class="op">,</span></span>
-<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
-<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb11-361"><a href="#cb11-361" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb11-362"><a href="#cb11-362" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span></span>
-<span id="cb11-363"><a href="#cb11-363" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#ec6569"</span><span class="op">,</span></span>
-<span id="cb11-364"><a href="#cb11-364" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
-<span id="cb11-365"><a href="#cb11-365" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb11-366"><a href="#cb11-366" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb11-367"><a href="#cb11-367" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span></span>
-<span id="cb11-368"><a href="#cb11-368" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#5eb04e"</span><span class="op">,</span></span>
-<span id="cb11-369"><a href="#cb11-369" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
-<span id="cb11-370"><a href="#cb11-370" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
-<span id="cb11-371"><a href="#cb11-371" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb11-372"><a href="#cb11-372" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span></span>
-<span id="cb11-373"><a href="#cb11-373" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#00b5ed"</span><span class="op">,</span></span>
-<span id="cb11-374"><a href="#cb11-374" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
-<span id="cb11-375"><a href="#cb11-375" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb11-376"><a href="#cb11-376" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb11-377"><a href="#cb11-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-378"><a href="#cb11-378" aria-hidden="true" tabindex="-1"></a>title_chosen <span class="op">=</span> title<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11" data-startfrom="345" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 344;"><span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [</span>
+<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de vaches 🐮"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
+<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de cochons 🐷"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
+<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de moutons 🐑"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}<span class="op">,</span></span>
+<span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span> <span class="dt">true</span><span class="op">:</span> <span class="st">"Plus de chèvres 🐐"</span><span class="op">,</span> <span class="dt">false</span><span class="op">:</span> <span class="st">"Plus d'habitants"</span>}</span>
+<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>title <span class="op">=</span> [</span>
+<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de vaches 🐮 ou d'habitants ?"</span>}<span class="op">,</span></span>
+<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de cochons 🐷 ou d'habitants ?"</span>}<span class="op">,</span></span>
+<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de moutons 🐑 ou d'habitants ?"</span>}<span class="op">,</span></span>
+<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">type</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span> <span class="dt">title</span><span class="op">:</span> <span class="st">"Plus de chèvres 🐐 ou d'habitants ?"</span>}</span>
+<span id="cb11-356"><a href="#cb11-356" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a>palettes <span class="op">=</span> [</span>
+<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Bovins"</span><span class="op">,</span></span>
+<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#f9b439"</span><span class="op">,</span></span>
+<span id="cb11-361"><a href="#cb11-361" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
+<span id="cb11-362"><a href="#cb11-362" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb11-363"><a href="#cb11-363" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb11-364"><a href="#cb11-364" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Porcins"</span><span class="op">,</span></span>
+<span id="cb11-365"><a href="#cb11-365" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#ec6569"</span><span class="op">,</span></span>
+<span id="cb11-366"><a href="#cb11-366" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
+<span id="cb11-367"><a href="#cb11-367" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb11-368"><a href="#cb11-368" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb11-369"><a href="#cb11-369" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Ovins"</span><span class="op">,</span></span>
+<span id="cb11-370"><a href="#cb11-370" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#5eb04e"</span><span class="op">,</span></span>
+<span id="cb11-371"><a href="#cb11-371" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
+<span id="cb11-372"><a href="#cb11-372" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb11-373"><a href="#cb11-373" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb11-374"><a href="#cb11-374" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> <span class="st">"Caprins"</span><span class="op">,</span></span>
+<span id="cb11-375"><a href="#cb11-375" aria-hidden="true" tabindex="-1"></a>        <span class="dt">trueColor</span><span class="op">:</span> <span class="st">"#00b5ed"</span><span class="op">,</span></span>
+<span id="cb11-376"><a href="#cb11-376" aria-hidden="true" tabindex="-1"></a>        <span class="dt">falseColor</span><span class="op">:</span> <span class="st">"#d8d4d3"</span></span>
+<span id="cb11-377"><a href="#cb11-377" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb11-378"><a href="#cb11-378" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-379"><a href="#cb11-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-380"><a href="#cb11-380" aria-hidden="true" tabindex="-1"></a>title_chosen <span class="op">=</span> title<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">type</span> <span class="op">==</span> bete)[<span class="dv">0</span>]<span class="op">.</span><span class="at">title</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-6-1" data-nodetype="declaration">
@@ -782,11 +785,11 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="383" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 382;"><span id="cb12-383"><a href="#cb12-383" aria-hidden="true" tabindex="-1"></a>carte_interactive_js2 <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
-<span id="cb12-384"><a href="#cb12-384" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="bouton-cheptel"&gt;</span><span class="sc">${</span>viewof bete<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb12-385"><a href="#cb12-385" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="titre-carte-cheptel"&gt;&lt;h3&gt;</span><span class="sc">${</span>title_chosen<span class="sc">}</span><span class="vs">&lt;/h3&gt;&lt;/div&gt;</span></span>
-<span id="cb12-386"><a href="#cb12-386" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="carte-cheptel"&gt;</span><span class="sc">${</span><span class="fu">produceMap</span>(cheptel<span class="op">,</span> bete)<span class="sc">}</span><span class="vs">&lt;div&gt;</span></span>
-<span id="cb12-387"><a href="#cb12-387" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="385" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 384;"><span id="cb12-385"><a href="#cb12-385" aria-hidden="true" tabindex="-1"></a>carte_interactive_js2 <span class="op">=</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb12-386"><a href="#cb12-386" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="bouton-cheptel"&gt;</span><span class="sc">${</span>viewof bete<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb12-387"><a href="#cb12-387" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="titre-carte-cheptel"&gt;&lt;h3&gt;</span><span class="sc">${</span>title_chosen<span class="sc">}</span><span class="vs">&lt;/h3&gt;&lt;/div&gt;</span></span>
+<span id="cb12-388"><a href="#cb12-388" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="carte-cheptel"&gt;</span><span class="sc">${</span><span class="fu">produceMap</span>(cheptel<span class="op">,</span> bete)<span class="sc">}</span><span class="vs">&lt;div&gt;</span></span>
+<span id="cb12-389"><a href="#cb12-389" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-7" data-nodetype="declaration">
 
@@ -795,9 +798,9 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 <p>Ce <em>widget</em> est un <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/radio">radio button</a> qui peut être créé par le code suivant, permettant à la fois d’exposer celui-ci sur l’interface et de stocker sa valeur active dans la variable <code>bete</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13" data-startfrom="393" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 392;"><span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a>viewof bete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
-<span id="cb13-394"><a href="#cb13-394" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">Map</span>([[<span class="st">"Vaches 🐮"</span><span class="op">,</span> <span class="st">"Bovins"</span>]<span class="op">,</span> [<span class="st">"Cochons 🐷"</span><span class="op">,</span> <span class="st">"Porcins"</span>]<span class="op">,</span> [<span class="st">"Moutons 🐑"</span><span class="op">,</span> <span class="st">"Ovins"</span>]])<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="st">"Bovins"</span>}</span>
-<span id="cb13-395"><a href="#cb13-395" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13" data-startfrom="395" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 394;"><span id="cb13-395"><a href="#cb13-395" aria-hidden="true" tabindex="-1"></a>viewof bete <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb13-396"><a href="#cb13-396" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="bu">Map</span>([[<span class="st">"Vaches 🐮"</span><span class="op">,</span> <span class="st">"Bovins"</span>]<span class="op">,</span> [<span class="st">"Cochons 🐷"</span><span class="op">,</span> <span class="st">"Porcins"</span>]<span class="op">,</span> [<span class="st">"Moutons 🐑"</span><span class="op">,</span> <span class="st">"Ovins"</span>]])<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="st">"Bovins"</span>}</span>
+<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-8" data-nodetype="declaration">
 
@@ -805,9 +808,14 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 </div>
 <p>Il ne manque qu’à importer les données nécessaires à la carte dans <code>Javascript</code>. La fonction <a href="https://quarto.org/docs/interactive/ojs/data-sources.html"><code>ojs_define</code></a> permettant la transmission d’un objet <code>Python</code> à <code>R</code> ne fonctionnant pas pour un <code>GeoPandas</code>, le plus simple est de créer un GeoJSON en <code>Python</code> :</p>
-<p>Il suffit ensuite d’importer celui-ci avec la fonction <a href="https://quarto.org/docs/interactive/ojs/data-sources.html"><code>FileAttachment</code></a> d’Observable</p>
+<div id="68f2f4f1" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial.to_file(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cheptel.json"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Il suffit ensuite d’importer celui-ci avec la fonction <a href="https://quarto.org/docs/interactive/ojs/data-sources.html"><code>FileAttachment</code></a> d’<code>Observable</code></p>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="409" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 408;"><span id="cb14-409"><a href="#cb14-409" aria-hidden="true" tabindex="-1"></a>cheptel <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"cheptel.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15" data-startfrom="411" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 410;"><span id="cb15-411"><a href="#cb15-411" aria-hidden="true" tabindex="-1"></a>cheptel <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"cheptel.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-9" data-nodetype="declaration">
 
@@ -817,17 +825,121 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="comment-faire-sans-cartiflette" class="level1 sans-cartiflette" data-number="3">
+<h1 class="sans-cartiflette" data-number="3"><span class="header-section-number">3</span> Comment faire sans <code>cartiflette</code> ?</h1>
+<ul>
+<li>1️⃣ Télécharger les données et les enregistrer sur le disque, en local.</li>
+<li>2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l’arborescence obtenue sur le disque.</li>
+<li>3️⃣ Importer le bon <em>shapefile</em> dans <code>Python</code> et découper celui-ci en différents espaces qui seront reprojetés</li>
+<li>4️⃣ Pour chaque DROM et département de l’Île de France, modifier la géométrie en jouant sur des translations et rotations</li>
+<li>5️⃣ Consolider le fond de carte à partir des différents éléments obtenus</li>
+</ul>
+<p>La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l’IGN. L’archive étant assez volumineuse, le code proposé propose une barre de progrès pour s’assurer que le téléchargement progresse.</p>
+<p>Le code étant assez long, il n’est pas apparent par défaut mais il suffit de cliquer ci-dessous:</p>
+<div id="lst-example-download-adminexpress" class="listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-example-download-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;2: 1️⃣ Code pour télécharger les données
+</figcaption>
+<div aria-describedby="lst-example-download-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="88673339" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>1️⃣ Code pour télécharger les données</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a><span class="im">import</span> os</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="im">import</span> requests</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="im">import</span> py7zr</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co"># Step 1: Download the file with progress bar</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a>url <span class="op">=</span> <span class="st">"https://data.geopf.fr/telechargement/download/ADMIN-EXPRESS-COG-CARTO/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15.7z"</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>file_name <span class="op">=</span> url.split(<span class="st">"/"</span>)[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb16-9"><a href="#cb16-9"></a></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="kw">def</span> download_7z_archive(file_name):</span>
+<span id="cb16-11"><a href="#cb16-11"></a>    <span class="cf">if</span> os.path.exists(file_name) <span class="kw">is</span> <span class="va">False</span>:</span>
+<span id="cb16-12"><a href="#cb16-12"></a>        <span class="co"># Streaming download with progress bar</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>        <span class="bu">print</span>(<span class="st">"Downloading file..."</span>)</span>
+<span id="cb16-14"><a href="#cb16-14"></a>        response <span class="op">=</span> requests.get(url, stream<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-15"><a href="#cb16-15"></a>        total_size <span class="op">=</span> <span class="bu">int</span>(response.headers.get(<span class="st">'content-length'</span>, <span class="dv">0</span>))</span>
+<span id="cb16-16"><a href="#cb16-16"></a></span>
+<span id="cb16-17"><a href="#cb16-17"></a>        <span class="cf">with</span> <span class="bu">open</span>(file_name, <span class="st">'wb'</span>) <span class="im">as</span> <span class="bu">file</span>, tqdm(</span>
+<span id="cb16-18"><a href="#cb16-18"></a>                desc<span class="op">=</span>file_name,</span>
+<span id="cb16-19"><a href="#cb16-19"></a>                total<span class="op">=</span>total_size,</span>
+<span id="cb16-20"><a href="#cb16-20"></a>                unit<span class="op">=</span><span class="st">'iB'</span>,</span>
+<span id="cb16-21"><a href="#cb16-21"></a>                unit_scale<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb16-22"><a href="#cb16-22"></a>                unit_divisor<span class="op">=</span><span class="dv">1024</span>,</span>
+<span id="cb16-23"><a href="#cb16-23"></a>            ) <span class="im">as</span> bar:</span>
+<span id="cb16-24"><a href="#cb16-24"></a>            <span class="cf">for</span> chunk <span class="kw">in</span> response.iter_content(chunk_size<span class="op">=</span><span class="dv">8192</span>):</span>
+<span id="cb16-25"><a href="#cb16-25"></a>                size <span class="op">=</span> <span class="bu">file</span>.write(chunk)</span>
+<span id="cb16-26"><a href="#cb16-26"></a>                bar.update(size)</span>
+<span id="cb16-27"><a href="#cb16-27"></a></span>
+<span id="cb16-28"><a href="#cb16-28"></a>        <span class="bu">print</span>(<span class="ss">f"Downloaded </span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-29"><a href="#cb16-29"></a>        <span class="cf">return</span> file_name</span>
+<span id="cb16-30"><a href="#cb16-30"></a>    <span class="cf">else</span>:</span>
+<span id="cb16-31"><a href="#cb16-31"></a>        <span class="bu">print</span>(<span class="st">"File exists, please delete it before going further"</span>)</span>
+<span id="cb16-32"><a href="#cb16-32"></a></span>
+<span id="cb16-33"><a href="#cb16-33"></a>download_7z_archive(file_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</figure>
+</div>
+<p>La deuxième étape consiste à dézipper la version téléchargée en local</p>
+<div id="lst-example-unzip-adminexpress" class="listing quarto-float quarto-figure quarto-figure-left anchored">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-example-unzip-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;3: 2️⃣ Dézipper la version téléchargée
+</figcaption>
+<div aria-describedby="lst-example-unzip-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="9c1d36f9" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>2️⃣ Dézipper la version téléchargée</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">def</span> extract_7z_archive(</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    file_name, output_dir <span class="op">=</span> <span class="st">"extracted_files"</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>):</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    <span class="co"># Step 2: Extract the .7z file</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a>    os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-6"><a href="#cb17-6"></a></span>
+<span id="cb17-7"><a href="#cb17-7"></a>    <span class="bu">print</span>(<span class="st">"Extracting the file..."</span>)</span>
+<span id="cb17-8"><a href="#cb17-8"></a>    <span class="cf">with</span> py7zr.SevenZipFile(file_name, mode<span class="op">=</span><span class="st">'r'</span>) <span class="im">as</span> z:</span>
+<span id="cb17-9"><a href="#cb17-9"></a>        z.extractall(path<span class="op">=</span>output_dir)</span>
+<span id="cb17-10"><a href="#cb17-10"></a>    <span class="bu">print</span>(<span class="ss">f"Extracted to </span><span class="sc">{</span>output_dir<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb17-11"><a href="#cb17-11"></a>    <span class="cf">return</span> output_dir</span>
+<span id="cb17-12"><a href="#cb17-12"></a></span>
+<span id="cb17-13"><a href="#cb17-13"></a>extract_7z_archive(file_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</figure>
+</div>
+<div id="1fb8c94b" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>path_extraction <span class="op">=</span> <span class="st">"./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Limites communales</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>france <span class="op">=</span> gpd.read_file(<span class="ss">f"</span><span class="sc">{</span>path_extraction<span class="sc">}</span><span class="ss">/COMMUNE.shp"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>hexagone <span class="op">=</span> france.loc[</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">~</span>france[<span class="st">"INSEE_DEP"</span>].isin([<span class="st">"971"</span>, <span class="st">"972"</span>, <span class="st">"973"</span>, <span class="st">"974"</span>, <span class="st">"976"</span>])</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>guadeloupe <span class="op">=</span> france.loc[france[<span class="st">"INSEE_DEP"</span>] <span class="op">==</span> <span class="st">"971"</span>]</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>martinique <span class="op">=</span> france.loc[france[<span class="st">"INSEE_DEP"</span>] <span class="op">==</span> <span class="st">"972"</span>]</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>guyane <span class="op">=</span> france.loc[france[<span class="st">"INSEE_DEP"</span>] <span class="op">==</span> <span class="st">"973"</span>]</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>reunion <span class="op">=</span> france.loc[france[<span class="st">"INSEE_DEP"</span>] <span class="op">==</span> <span class="st">"974"</span>]</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>mayotte <span class="op">=</span> france.loc[france[<span class="st">"INSEE_DEP"</span>] <span class="op">==</span> <span class="st">"976"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
-</section>
 
 
-</details></details><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Dans l’idéal, nous utiliserions les <a href="https://www.insee.fr/fr/statistiques/7728787?sommaire=7728826">populations légales</a> mesurées par l’Insee. Les fonds de carte de l’IGN proposent néanmoins déjà une variable <code>POPULATION</code> qui est celle qui sera utilisée ici. Des travaux ultérieurs sur <code>cartiflette</code> viseront à remplacer cette variable par les populations légales pour assurer que les métadonnées utilisées par les fonds de carte correspondent, au même titre que les découpages géométriques, aux données officielles.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Ce fonds de carte est en géométrie WGS84 (CRS: 4326). Ce n’est néanmoins qu’une apparence car les géométries nécessaires pour représenter les DROM et l’Ile de France sur cette carte ne correspondent à aucune réalité terrestre. Il ne faut donc considérer ce fonds de carte que pour la cartographie finale, pas la manipulation de données géographique (par exemple pour un calcul de distance terrestre). Pour celles-ci, le fonds de carte normal à utiliser est <code>FRANCE_ENTIERE</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><code>Javascript</code> est un langage asynchrone donc l’exécution du code ne dépend pas de l’ordre de définition des objets dans le code, contrairement à <code>Python</code>. Il est donc normal de voir dans les codes ci-dessous une utilisation d’une variable, par exemple <code>bete</code>, qui n’est pas définie en amont. Celle-ci peut être définie plus loin dans le code, c’est <code>Javascript</code> qui va réordonner de manière logique l’exécution du code.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script type="ojs-module-contents">
