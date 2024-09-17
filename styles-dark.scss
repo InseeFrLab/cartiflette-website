@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+$primary: #343a40;
+$background_color: #212529;
+$text_color: #eceeef;
+$background_button: #f8f9fa;
+$text_button: #5a5a5a;
+$navlink_text: #fff;
+$navlink_hover: #000;
+$navlink_active: #000;
+$navlink_active_hover: #fff;
+$placeholder: #b9bbbd;
+$geoviewer: #f7f8f9;
+$geoviewer_text: #000;
+$yellow-cartiflette: #ffce67 ;
+
+
+a {
+    color: $yellow-cartiflette !important;
+}
+
+
+p code:not(.sourceCode), li code:not(.sourceCode), td code:not(.sourceCode) {
+    background-color: $yellow-cartiflette !important;
+    color: $background_color;
+}
+
+
