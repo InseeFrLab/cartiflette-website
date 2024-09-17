@@ -415,3 +415,132 @@ cheptel = FileAttachment("cheptel.json").json()
 :::
 
 # Comment faire sans `cartiflette` ? {.sans-cartiflette}
+
+* 1️⃣ Télécharger les données et les enregistrer sur le disque, en local.
+* 2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l'arborescence obtenue sur le disque.
+* 3️⃣ Importer le bon _shapefile_ dans `Python` et découper celui-ci en différents espaces qui seront reprojetés
+* 4️⃣ Pour chaque DROM et département de l'Île de France, modifier la géométrie en jouant sur des translations et rotations
+* 5️⃣ Consolider le fond de carte à partir des différents éléments obtenus
+
+La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN. L'archive étant assez volumineuse, le code proposé propose une barre de progrès pour s'assurer que le téléchargement progresse.
+
+Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
+
+::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
+
+{{< include "/use-case/scripts/_01_telecharger_admin.qmd" >}}
+
+:::
+
+
+La deuxième étape consiste à dézipper la version téléchargée en local
+
+
+::: {#lst-example-unzip-adminexpress lst-cap="2️⃣ Dézipper la version téléchargée"}
+
+{{< include "/use-case/scripts/_02_unzip_admin.qmd" >}}
+
+:::
+
+
+```{python}
+import geopandas as gpd
+
+path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
+
+# Limites communales
+france = gpd.read_file(f"{path_extraction}/COMMUNE.shp")
+hexagone = france.loc[
+    ~france["INSEE_DEP"].isin(["971", "972", "973", "974", "976"])
+]
+guadeloupe = france.loc[france["INSEE_DEP"] == "971"]
+martinique = france.loc[france["INSEE_DEP"] == "972"]
+guyane = france.loc[france["INSEE_DEP"] == "973"]
+reunion = france.loc[france["INSEE_DEP"] == "974"]
+mayotte = france.loc[france["INSEE_DEP"] == "976"]
+```
+
+
+```{python}
+#| eval: false
+#| echo: false
+
+from shapely.affinity import translate, scale
+martinique_mod = martinique.copy()
+x_offset = -6.0  # Par exemple, translation vers l'ouest
+y_offset = 10.0  # Par exemple, translation vers le nord
+
+# Translation de la Martinique (6480000, 3505000 en unités de la projection)
+x_shift = 6480000
+y_shift = 3505000
+martinique['geometry'] = martinique['geometry'].apply(lambda geom: translate(geom, xoff=x_shift, yoff=y_shift))
+
+# Mise à l'échelle de la Martinique (1.5x)
+scale_factor = 1.5
+martinique['geometry'] = martinique['geometry'].apply(lambda geom: scale(geom, xfact=scale_factor, yfact=scale_factor, origin=(0, 0)))
+martinique.to_crs(4326)
+
+martinique_mod = martinique.copy().to_crs(3857)
+martinique_mod["trans_geometry"] = (
+    martinique_mod
+    .scale(
+        xfact=1.5, yfact=1.5, origin=(0, 0)
+    )
+    .translate(6480000, 3505000)
+)
+martinique_mod = (
+    martinique_mod
+    .set_geometry("trans_geometry", crs=3857)
+    .drop("geometry", axis="columns")
+    .to_crs(4326)
+)
+pd.concat([hexagone, martinique_mod]).plot()
+
+reunion = dev.get_vectorfile_ign(level="COMMUNE", field="reunion")
+reunion_mod = reunion
+reunion_mod.crs = 2154
+reunion_mod["trans_geometry"] = (
+    reunion_mod.scale(xfact=1.75, yfact=1.75, origin=(0, 0))
+    .to_crs(2154)
+    .translate(-422169, -7132230)
+)
+reunion_mod = reunion_mod.set_geometry("trans_geometry", crs=2154).drop(
+    "geometry", axis="columns"
+)
+
+
+guadeloupe = dev.get_vectorfile_ign(level="COMMUNE", field="guadeloupe")
+guadeloupe = guadeloupe
+guadeloupe.crs = 2154
+guadeloupe["trans_geometry"] = (
+    guadeloupe.scale(xfact=1.32, yfact=1.32, origin=(0, 0))
+    .to_crs(2154)
+    .translate(-699983, 4269050)
+    .to_crs(4326)
+)
+guadeloupe = guadeloupe.set_geometry("trans_geometry", crs=2154).drop(
+    "geometry", axis="columns"
+)
+
+guyane = dev.get_vectorfile_ign(level="COMMUNE", field="guyane")
+guyane = guyane
+guyane.crs = 2154
+guyane["trans_geometry"] = (
+    guyane.scale(xfact=0.25, yfact=0.25, origin=(0, 0))
+    .to_crs(2154)
+    .translate(118687, 6286270)
+    .to_crs(4326)
+)
+guyane = guyane.set_geometry("trans_geometry", crs=2154).drop(
+    "geometry", axis="columns"
+)
+
+zoom = france.loc[france["INSEE_DEP"].isin(["75", "92", "93", "94"])]
+zoom["trans_geometry"] = (
+    zoom.scale(xfact=2.78, yfact=2.78, origin=(0, 0))
+    .to_crs(2154)
+    .translate(-1634506, -12046235)
+    .to_crs(4326)
+)
+zoom = zoom.set_geometry("trans_geometry", crs=2154).drop("geometry", axis="columns")
+```
