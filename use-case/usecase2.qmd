@@ -52,6 +52,21 @@ Voir l'épisode en question de  "La Minute Cartographique"
 
 </details>
 
+
+::: {.tip}
+## Pourquoi utiliser `cartiflette` pour ce type de besoins ?
+
+- Beaucoup [moins de ligne de code]{.yellow} à écrire :
+    + Réduit le temps nécessaire avant d'obtenir une carte exploratoire, ce qui permet de se concentrer sur la construction de celle-ci plutôt que les étapes antérieures
+    + Réduit la difficulté à mettre à jour le code ;
+- [Moins de bande passante]{.yellow} et d'espace disque utilisé car seule la donnée nécessaire est téléchargée ;
+- [Moindre besoin d'expertise en SIG]{.yellow} car la librairie fournit un `GeoDataFrame` prêt à l'emploi ce qui ne nécessite pas une connaissance pointue dans le domaine (système de projection, format _shapefile_, etc.) ;
+- [Moins de risque d'erreur]{.yellow} que lorsqu'on fait soi-même la combinaison de sources à des niveaux administratifs différents (accoler le masque des arrondissements à celui des communes limitrophes nécessite beaucoup de précautions) ;
+- [Bénéficier de métadonnées supplémentaires]{.yellow} sur les communes que les fonds de carte `AdminExpress`
+
+:::
+
+
 # Préliminaire: récupération des cheptels français
 
 La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l'analyse statistique et cartographique avec `Python` {{< fa brands python >}} 😌
@@ -312,8 +327,8 @@ function produceMap(cheptel, bete){
             color: {
             legend: true,
             value: [
-                labels.filter(d => d.type == bete)[0].true,
-                labels.filter(d => d.type == bete)[0].false        
+                labels_widgets.filter(d => d.type == bete)[0].true,
+                labels_widgets.filter(d => d.type == bete)[0].false        
             ],
             range: [
                 palettes.filter(d => d.name == bete)[0].trueColor,
@@ -325,7 +340,7 @@ function produceMap(cheptel, bete){
             x: {axis: null},
             marks: [
             Plot.geo(cheptel, {
-                fill: (d) => labels.filter(d => d.type == bete)[0][d.properties[bete] > d.properties.POPULATION],
+                fill: (d) => labels_widgets.filter(d => d.type == bete)[0][d.properties[bete] > d.properties.POPULATION],
                 sort: {
                 color: "fill",
                 reverse: true
@@ -342,7 +357,7 @@ function produceMap(cheptel, bete){
 Celle-ci utilise un certain nombre d'ingrédients. En premier lieu, des _arrays_ permettant de changer les valeurs affichées en fonction de la valeur du _widget_ sélectionné :
 
 ```{ojs}
-labels = [
+labels_widgets = [
     {type: "Bovins", true: "Plus de vaches 🐮", false: "Plus d'habitants"},
     {type: "Porcins", true: "Plus de cochons 🐷", false: "Plus d'habitants"},
     {type: "Ovins", true: "Plus de moutons 🐑", false: "Plus d'habitants"},
@@ -416,6 +431,16 @@ cheptel = FileAttachment("cheptel.json").json()
 
 # Comment faire sans `cartiflette` ? {.sans-cartiflette}
 
+```{python}
+#| echo: false
+start_time_no_cartiflette = time.time()
+```
+
+L'approche est nettement plus fastidieuse sans `cartiflette` et nécessite une expertise assez avancée en géomatique pour manipuler les géométries des objets `Python`.
+
+Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par cinq étapes principales:
+
+
 * 1️⃣ Télécharger les données et les enregistrer sur le disque, en local.
 * 2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l'arborescence obtenue sur le disque.
 * 3️⃣ Importer le bon _shapefile_ dans `Python` et découper celui-ci en différents espaces qui seront reprojetés
@@ -443,13 +468,20 @@ La deuxième étape consiste à dézipper la version téléchargée en local
 :::
 
 
+La troisième étape consiste à importer les contours administratifs dans `Python` et à séparer les DROM de la France hexagonale
+
+::: {#lst-example-split-adminexpress lst-cap="3️⃣ Découper les données"}
+
 ```{python}
+#| code-fold: true
+#| code-summary: "Code Python pour découper le fond de carte AdminExpress"
+#| code-line-numbers: true
 import geopandas as gpd
 
 path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
 
 # Limites communales
-france = gpd.read_file(f"{path_extraction}/COMMUNE.shp")
+france = gpd.read_file(f"{path_extraction}/COMMUNE.shp").to_crs(2154) #<1>
 hexagone = france.loc[
     ~france["INSEE_DEP"].isin(["971", "972", "973", "974", "976"])
 ]
@@ -459,88 +491,232 @@ guyane = france.loc[france["INSEE_DEP"] == "973"]
 reunion = france.loc[france["INSEE_DEP"] == "974"]
 mayotte = france.loc[france["INSEE_DEP"] == "976"]
 ```
+1. Pour les opérations géométriques ultérieures, il est nécessaire d'adopter le référentiel Lambert 93.
+
+:::
+
+La quatrième étape est celle faisant appel à une expertise dans le domaine géomatique. Il est nécessaire de déplacer les départements d'Outre Mer. Du point de vue géométrique, cela implique de trouver les bonnes translations et rotations. Celles-ci sont données telles quelles. 
+
+
+::: {#lst-example-split-adminexpress-1 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guadeloupe)"}
 
 
 ```{python}
-#| eval: false
-#| echo: false
+#| code-line-numbers: true
+#| code-fold: true
+guadeloupe_mod = guadeloupe.copy().to_crs(5490)
 
-from shapely.affinity import translate, scale
-martinique_mod = martinique.copy()
-x_offset = -6.0  # Par exemple, translation vers l'ouest
-y_offset = 10.0  # Par exemple, translation vers le nord
+guadeloupe_mod["geometry"] = (
+    guadeloupe_mod.scale(xfact=1.32, yfact=1.32, origin=(0, 0))
+    .translate( -699983, 4269050)
+)
+guadeloupe_mod = guadeloupe_mod.set_geometry("geometry", crs=2154)
+```
 
-# Translation de la Martinique (6480000, 3505000 en unités de la projection)
-x_shift = 6480000
-y_shift = 3505000
-martinique['geometry'] = martinique['geometry'].apply(lambda geom: translate(geom, xoff=x_shift, yoff=y_shift))
+:::
 
-# Mise à l'échelle de la Martinique (1.5x)
-scale_factor = 1.5
-martinique['geometry'] = martinique['geometry'].apply(lambda geom: scale(geom, xfact=scale_factor, yfact=scale_factor, origin=(0, 0)))
-martinique.to_crs(4326)
+::: {#lst-example-split-adminexpress-2 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Martinique)"}
 
-martinique_mod = martinique.copy().to_crs(3857)
-martinique_mod["trans_geometry"] = (
+```{python}
+#| code-line-numbers: true
+#| code-fold: true
+martinique_mod = martinique.copy().to_crs(5490)
+
+martinique_mod["geometry"] = (
     martinique_mod
     .scale(
-        xfact=1.5, yfact=1.5, origin=(0, 0)
+        xfact=1.85, yfact=1.85, origin=(0, 0)
     )
-    .translate(6480000, 3505000)
+    .translate(-1134525, 3517169)
 )
 martinique_mod = (
     martinique_mod
-    .set_geometry("trans_geometry", crs=3857)
-    .drop("geometry", axis="columns")
-    .to_crs(4326)
+    .set_geometry("geometry", crs=2154)
 )
-pd.concat([hexagone, martinique_mod]).plot()
+```
 
-reunion = dev.get_vectorfile_ign(level="COMMUNE", field="reunion")
-reunion_mod = reunion
-reunion_mod.crs = 2154
-reunion_mod["trans_geometry"] = (
+:::
+
+
+::: {#lst-example-split-adminexpress-3 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guyane)"}
+
+
+```{python}
+#| code-line-numbers: true
+#| code-fold: true
+guyane_mod = guyane.copy().to_crs(2972)
+guyane_mod["geometry"] = (
+    guyane_mod.scale(xfact=0.25, yfact=0.25, origin=(0, 0))
+    .translate(118687, 6286270)
+)
+guyane_mod = (
+    guyane_mod
+    .set_geometry("geometry", crs=2154)
+)
+```
+
+:::
+
+::: {#lst-example-split-adminexpress-4 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Réunion)"}
+
+
+```{python}
+#| code-line-numbers: true
+#| code-fold: true
+reunion_mod = reunion.copy().to_crs(2975)
+reunion_mod["geometry"] = (
     reunion_mod.scale(xfact=1.75, yfact=1.75, origin=(0, 0))
-    .to_crs(2154)
     .translate(-422169, -7132230)
 )
-reunion_mod = reunion_mod.set_geometry("trans_geometry", crs=2154).drop(
-    "geometry", axis="columns"
-)
+reunion_mod = reunion_mod.set_geometry("geometry", crs=2154)
+```
+
+:::
+
+::: {#lst-example-split-adminexpress-5 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Zoom Ile de France)"}
 
 
-guadeloupe = dev.get_vectorfile_ign(level="COMMUNE", field="guadeloupe")
-guadeloupe = guadeloupe
-guadeloupe.crs = 2154
-guadeloupe["trans_geometry"] = (
-    guadeloupe.scale(xfact=1.32, yfact=1.32, origin=(0, 0))
-    .to_crs(2154)
-    .translate(-699983, 4269050)
-    .to_crs(4326)
+```{python}
+#| code-line-numbers: true
+#| code-fold: true
+zoom = (
+    france
+    .loc[france["INSEE_DEP"].isin(["75", "92", "93", "94"])]
+    .copy()
 )
-guadeloupe = guadeloupe.set_geometry("trans_geometry", crs=2154).drop(
-    "geometry", axis="columns"
-)
-
-guyane = dev.get_vectorfile_ign(level="COMMUNE", field="guyane")
-guyane = guyane
-guyane.crs = 2154
-guyane["trans_geometry"] = (
-    guyane.scale(xfact=0.25, yfact=0.25, origin=(0, 0))
-    .to_crs(2154)
-    .translate(118687, 6286270)
-    .to_crs(4326)
-)
-guyane = guyane.set_geometry("trans_geometry", crs=2154).drop(
-    "geometry", axis="columns"
-)
-
-zoom = france.loc[france["INSEE_DEP"].isin(["75", "92", "93", "94"])]
-zoom["trans_geometry"] = (
+zoom["geometry"] = (
     zoom.scale(xfact=2.78, yfact=2.78, origin=(0, 0))
     .to_crs(2154)
     .translate(-1634506, -12046235)
-    .to_crs(4326)
 )
-zoom = zoom.set_geometry("trans_geometry", crs=2154).drop("geometry", axis="columns")
+zoom = zoom.set_geometry("geometry", crs=2154)
 ```
+
+:::
+
+Enfin, la dernière étape consiste à consolider notre fonds de carte en réunissant les géométries ensemble[^emplacement-drom]. On obtient un fonds de carte équivalent à celui de `cartiflette` qui pourrait être utilisé de la même manière que précédemment ☝️.
+
+[^emplacement-drom]: L'emplacement des DROM produit par ce code `Python` est différent de celui du fond de carte de `cartiflette`. Ce dernier est généré grâce à `mapshaper` en s'inspirant d'un [tutoriel d'Eric Mauvière](https://www.icem7.fr/cartographie/un-fond-de-carte-france-par-commune-optimise-pour-le-web-et-lanalyse-statistique/). Celui proposé ici en `Python` est inspiré d'un code `R` d'un éminent collègue de l'Insee, Lionel Cacheux. 
+
+::: {#lst-example-merge-adminexpress lst-cap="4️⃣ Réunir toutes les géométries ensemble"}
+
+```{python}
+#| code-line-numbers: true
+#| code-fold: true
+france_modif = pd.concat(
+    [
+        hexagone,
+        guadeloupe_mod,
+        martinique_mod,
+        guyane_mod,
+        reunion_mod,
+        guyane_mod,
+        zoom
+    ]
+)
+
+france_modif.plot()
+```
+
+:::
+
+
+```{python}
+#| echo: false
+end_time_no_cartiflette = time.time()
+```
+
+# Bilan 
+
+Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-unzip-adminexpress, @lst-example-split-adminexpress-1, @lst-example-split-adminexpress-2,
+@lst-example-split-adminexpress-3,
+@lst-example-split-adminexpress-4,
+@lst-example-split-adminexpress-5,@lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
+
+## Volume de données téléchargées
+
+
+{{< include "/use-case/scripts/_03_volume_download.qmd" >}}
+
+
+```{python}
+#| output: false
+#| code-fold: true
+#| code-summary: "Evaluation de la taille des mêmes données issues de cartiflette"
+
+writedir = "cartiflette-data/usecase2"
+os.makedirs(writedir, exist_ok=True)
+departements.to_file(
+    f"{writedir}/contours.shp"
+) #<1>
+
+poids_archive_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.shp")
+poids_archive_cartiflette = convert_size(
+    poids_archive_cartiflette_bytes
+)
+```
+1. On crée un _shapefile_ avec le `GeoDataFrame` obtenu depuis `cartiflette` afin d'avoir une comparaison honnête avec le fonds de carte issu du site de l'IGN. 
+
+
+La première base de comparaison possible est la taille sur disque des fonds de carte récupérés par `cartiflette` ou sans passer par ce _package_. Le code ci-dessus ☝️ permet de construire les statistiques suivantes:
+
+* Les données `cartiflette` représenteraient __`{python} poids_archive_cartiflette`__ si elles étaient stockées sur disque. 
+* Sans passer par `cartiflette`, on a besoin de __`{python} poids_archive_decompressee`__ pour stocker les fonds de carte décompressés auxquels il faut ajouter `{python} poids_archive_compressee` pour stocker l'archive compressée. 
+
+Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round((zipped_size + size_dir)/poids_archive_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
+
+{{< include "/use-case/scripts/_04_arborescence.qmd" >}}
+
+## Nombre de lignes de code
+
+
+::: {.content-visible when-format="html"}
+
+```{ojs}
+//| echo: false
+md`La récupération des données avec \`cartiflette\` ne demande que __${nlines_cartiflette} lignes de code__ contre __${nlines_no_cartiflette} sans \`cartiflette\`__`
+```
+
+
+En ce qui concerne le temps de développement de ce code, on est sur quelques secondes pour le code avec `cartiflette` en utilisant la [documentation interactive d'exemples](index.qmd) contre plusieurs dizaines de minutes pour le code sans `cartiflette`. 
+
+:::
+
+
+
+## Temps de traitement 
+
+{{< include "/use-case/scripts/_06_timing.qmd" >}}
+
+Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`. Sans `cartiflette`, soit un rapport de 1 à `{python} round(time_no_cartiflette_exact/time_cartiflette_exact)` pour cette tâche.
+
+
+::: {.content-visible when-format="html"}
+
+<!------------
+Retrieve number of lines
+-------------->
+
+```{ojs}
+//| echo: false
+labels = [
+    'lst-example-download-adminexpress',
+    'lst-example-unzip-adminexpress',
+    'lst-example-split-adminexpress-1',
+    'lst-example-split-adminexpress-2',
+    'lst-example-split-adminexpress-3',
+    'lst-example-split-adminexpress-4',
+    'lst-example-split-adminexpress-5',
+    'lst-example-merge-adminexpres'
+]
+labels_cartiflette = [
+    'lst-cartiflette-example'
+]
+nlines_no_cartiflette = d3.sum(nrows_no_cartiflette)
+nlines_cartiflette = d3.sum(nrows_cartiflette)
+```
+
+
+{{< include "/use-case/scripts/_05_number_lines.qmd" >}}
+
+:::

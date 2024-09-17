@@ -432,43 +432,7 @@ Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartif
 
 ## Volume de données téléchargées
 
-```{python}
-#| code-fold: true
-#| code-summary: "Fonction convert_size pour avoir les tailles de fichiers dans un format lisible par un humain"
-# Convert to a human-readable format (e.g., MB, GB)
-def convert_size(size_bytes):
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(size_bytes / p, 2)
-    return f"{s} {size_name[i]}"
-```
-
-
-```{python}
-#| code-fold: true
-#| code-summary: "Evaluation de la taille des fichiers issus d'AdminExpress"
-import math
-import os
-from pathlib import Path
-
-# Path to the zipped file
-zipped_file = "ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15.7z"
-
-# Get the size of the zipped file in bytes
-zipped_size = os.path.getsize(zipped_file)
-
-# Path to the directory containing unzipped files
-unzipped_dir = "./extracted_files"
-
-root_directory = Path(unzipped_dir)
-size_dir = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
-
-poids_archive_compressee = convert_size(zipped_size)
-poids_archive_decompressee = convert_size(size_dir)
-```
+{{< include "/use-case/scripts/_03_volume_download.qmd" >}}
 
 ```{python}
 #| output: false
@@ -495,33 +459,8 @@ La première base de comparaison possible est la taille sur disque des fonds de 
 
 Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round((zipped_size + size_dir)/poids_archive_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
 
-```{python}
-#| echo: false
-import glob
 
-directory = "extracted_files"
-file_list = glob.glob(f"{directory}/**/*", recursive=True)
-# Filter out directories (we want to count only files)
-file_list = [file for file in file_list if not os.path.isdir(file)]
-
-nbre_fichiers = len(file_list)
-```
-
-L'arborescence du dossier décompressé est également assez conséquente: nous avons `{python} nbre_fichiers` fichiers. L'arborescence complète obtenue sans `cartiflette` est disponible ci-dessous. Avec `cartiflette` aucun fichier n'est écrit sur disque, tout est directement accessible dans la session `Python`.
-
-<details>
-
-<summary>
-Arborescence complète
-</summary>
-
-```{python}
-#| echo: false
-from directory_tree import DisplayTree
-DisplayTree(directory)
-```
-
-</details>
+{{< include "/use-case/scripts/_04_arborescence.qmd" >}}
 
 
 ## Nombre de lignes de code
@@ -534,15 +473,6 @@ DisplayTree(directory)
 md`La récupération des données avec \`cartiflette\` ne demande que __${nlines_cartiflette} lignes de code__ contre __${nlines_no_cartiflette} sans \`cartiflette\`__`
 ```
 
-```{ojs}
-//| echo: false
-nlines_no_cartiflette = d3.sum(nrows_no_cartiflette)
-```
-
-```{ojs}
-//| echo: false
-nlines_cartiflette = d3.sum(nrows_cartiflette)
-```
 
 En ce qui concerne le temps de développement de ce code, on est sur quelques secondes pour le code avec `cartiflette` en utilisant la [documentation interactive d'exemples](index.qmd) contre plusieurs dizaines de minutes pour le code sans `cartiflette`. 
 
@@ -556,37 +486,7 @@ La récupération des données avec cartiflette ne demande que 13 lignes de code
 
 ## Temps de traitement 
 
-```{python}
-#| echo: false
-import datetime
-
-def human_readable_time(duration):
-    # Convert the duration to seconds if it's not already
-    if isinstance(duration, datetime.timedelta):
-        total_seconds = int(duration.total_seconds())
-    else:
-        total_seconds = int(duration)
-    
-    hours, remainder = divmod(total_seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-
-    if hours > 0:
-        return f"{hours} heures, {minutes} minutes et {seconds} secondes"
-    elif minutes > 0:
-        return f"{minutes}minutes et {seconds} secondes"
-    else:
-        return f"{seconds} secondes"
-
-time_cartiflette_exact = end_time_cartiflette - start_time_cartiflette
-time_no_cartiflette_exact = end_time_no_cartiflette - start_time_no_cartiflette
-
-time_cartiflette = human_readable_time(
-    time_cartiflette_exact
-)
-time_no_cartiflette = human_readable_time(
-    time_no_cartiflette_exact
-)
-```
+{{< include "/use-case/scripts/_06_timing.qmd" >}}
 
 Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`. Sans `cartiflette`, soit un rapport de 1 à `{python} round(time_no_cartiflette_exact/time_cartiflette_exact)` pour cette tâche.
 
@@ -607,54 +507,12 @@ labels = [
 labels_cartiflette = [
     'lst-cartiflette-example'
 ]
-
-function extractLineNumbers(label) {
-    const selector = `[aria-describedby^="${label}"]`;
-    const blocks = document.querySelectorAll(selector);
-
-    let lineNumbers = [];
-
-    blocks.forEach(block => {
-        // Search for ids matching "annotated-cell-XX-N"
-        const annotatedCells = block.querySelectorAll('[id^="annotated-cell-"]');
-        annotatedCells.forEach(cell => {
-            const match = cell.id.match(/annotated-cell-\d+-(\d+)/);
-            if (match) {
-                lineNumbers.push(parseInt(match[1], 10));
-            }
-        });
-
-        // Search for ids matching "cbXX-N"
-        const cbCells = block.querySelectorAll('[id^="cb"]');
-        cbCells.forEach(cell => {
-            const match = cell.id.match(/cb\d+-(\d+)/);
-            if (match) {
-                lineNumbers.push(parseInt(match[1], 10));
-            }
-        });
-    });
-
-    return lineNumbers;
-}
-
-function getMaxLineNumber(label) {
-    const lineNumbers = extractLineNumbers(label);
-    return Math.max(...lineNumbers);
-}
-
-// Iterate over labels to get max line numbers
-nrows_no_cartiflette = labels.map(label => {
-    const maxLineNumber = getMaxLineNumber(label);
-    return maxLineNumber;
-})
-
-nrows_cartiflette = labels_cartiflette.map(label => {
-    const maxLineNumber = getMaxLineNumber(label);
-    return maxLineNumber;
-})
-
-
+nlines_no_cartiflette = d3.sum(nrows_no_cartiflette)
+nlines_cartiflette = d3.sum(nrows_cartiflette)
 ```
+
+
+{{< include "/use-case/scripts/_05_number_lines.qmd" >}}
 
 :::
 
