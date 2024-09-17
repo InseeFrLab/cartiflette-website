@@ -30,7 +30,6 @@ grid_departements =  {
     if (availableWidth>smallScreen){
         grid = html`
         <div style="
-            background: #fff;
             margin: 0;
             border: none;
             display: grid;
@@ -64,8 +63,10 @@ grid_departements =  {
                 <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
                     <span class="code-bloc-title">
                         Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                    </span> 
-                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                    </span>
+                    <span class="code-content">
+                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                    </span>
                 </div>
             </div>
 
@@ -80,7 +81,6 @@ grid_departements =  {
 
     grid = html`
     <div style="
-        background: #fff;
         margin: 0;
         border: none;
         display: grid;
@@ -120,7 +120,9 @@ grid_departements =  {
                 <span class="code-bloc-title">
                     Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
                 </span>
-                ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                <span class="code-content">
+                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                </span>
             </div>
         </div>
 
@@ -145,7 +147,6 @@ grid = {
     if (availableWidth>smallScreen){
         grid = html`
         <div class="cartiflette-example" style="
-            background: #fff;
             margin: 0;
             border: none;
             display: grid;
@@ -180,7 +181,9 @@ grid = {
                     <span class="code-bloc-title">
                         Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
                     </span>
-                    ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                    <span class="code-content">
+                        ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                    </span>
                 </div>
             </div>
 
@@ -195,7 +198,6 @@ grid = {
 
     grid = html`
     <div class="cartiflette-example" style="
-        background: #fff;
         margin: 0;
         border: none;
         display: grid;
@@ -235,7 +237,9 @@ grid = {
                 <span class="code-bloc-title">
                     Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
                 </span>
-                ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                <span class="code-content">
+                    ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+                </span>
             </div>
         </div>
 

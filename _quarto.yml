@@ -21,8 +21,8 @@ format:
   html:
     theme:
       light: [minty, styles.scss]
-      dark: sketchy
-    css: [_extensions/quarto-ext/fontawesome/assets/css/all.css]
+      dark: [minty, styles-dark.scss, styles.scss]
+    css: [styles.scss, styles-dark.scss, _extensions/quarto-ext/fontawesome/assets/css/all.css]
     toc: true
   ipynb: default
 
