@@ -1,0 +1,20 @@
+```{python}
+#| code-fold: true
+#| code-summary: "2️⃣ Dézipper la version téléchargée"
+#| code-line-numbers: true
+#| output: false
+
+def extract_7z_archive(
+    file_name, output_dir = "extracted_files"
+):
+    # Step 2: Extract the .7z file
+    os.makedirs(output_dir, exist_ok=True)
+
+    print("Extracting the file...")
+    with py7zr.SevenZipFile(file_name, mode='r') as z:
+        z.extractall(path=output_dir)
+    print(f"Extracted to {output_dir}")
+    return output_dir
+
+extract_7z_archive(file_name)
+```
