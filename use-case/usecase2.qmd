@@ -38,8 +38,22 @@ viewof beteview = Inputs.bind(
 carte_interactive_js = html`
 <div class="bouton-cheptel">${viewof beteview}</div>
 <div class="titre-carte-cheptel"><h3>${title_chosen}</h3></div>
-<div class="carte-cheptel">${produceMap(cheptel, bete)}<div>
+<div class="carte-cheptel">${produceMap(cheptel, bete)}</div>
+<div>${messageBelowMap}</div>
 `
+```
+
+
+```{ojs}
+messageBelowMap = {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    let messageBelowMap = `<div><i>Passer la souris sur la carte pour afficher des informations sur chaque département</i></div>`
+    if (isMobile) {
+    let messageBelowMap = `<div><i>Cliquer sur la carte pour afficher des informations sur chaque département</i></div>`
+    }
+
+    return messageBelowMap
+}
 ```
 
 <details>
@@ -314,7 +328,6 @@ Ce tutoriel utilise le _framework_ `Observable` par le biais de `Quarto`, l'outi
 Pour se simplifier la tâche, on va créer une fonction graphique qui prend en _input_ un `Array` et un type d'élevage (par exemple _"Bovins"_) et renvoie une carte:
 
 ```{ojs}
-//| echo: false
 import {addTooltips} from "@mkfreeman/plot-tooltip"
 
 function produceMap(cheptel, bete){
