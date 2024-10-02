@@ -12,6 +12,55 @@ echo: false
 ## Récupérer un fond de carte France entière
 
 ```{ojs}
+sources_annotations = d3.json(
+        "https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/annotations.json"
+)
+
+```
+
+```{ojs}
+sources_origines = d3.json(
+        "https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/sources.json"
+)
+```
+
+
+```{ojs}
+function annotateColumn(columnName) {
+
+  const sourceData = sources_origines.filter(d => d.variable == columnName)[0];
+  const sourceSelected = sourceData['source'];
+  const url = sources_annotations.filter(d => d.source == sourceSelected)[0]['url'];
+  const annotation = sources_annotations.filter(d => d.source == sourceSelected)[0]['note'];
+
+  // Generate the HTML with a colored footnote, and add an anchor tag to link to the source documentation
+  return html`
+    <span style="font-weight: bold;"><span style="background-color: #ffcc00; color: black; padding: 2px 5px; border-radius: 3px; cursor: pointer;">
+    <a href="${url}" target="_blank" style="color: black; text-decoration: none;" title="${sourceSelected} - ${annotation}">
+      ${annotation}
+    </a>
+  </span></span>
+  `;
+}
+```
+
+```{ojs}
+function generateHeaderMapping(dataArray) {
+  // Get unique column names by extracting keys from the first object
+  const columnNames = Object.keys(dataArray[0]);
+
+  // Create the header mapping object by applying annotateColumn to each column name
+  const headerMapping = columnNames.reduce((headerObj, columnName) => {
+    // Applying annotateColumn to get annotated HTML for each column
+    headerObj[columnName] = annotateColumn(columnName);
+    return headerObj;
+  }, {});
+
+  return headerMapping;
+}
+```
+
+```{ojs}
 //| output: true
 html`<div>${grid}</div>`
 ```
@@ -142,6 +191,46 @@ Objets utiles
 ---------->
 
 ```{ojs}
+right_spanner_map_france =  (choice_print_map_france == "Carte") ? spanner_code_france : ""
+```
+
+```{ojs}
+spanner_code_france = html`
+<div name="code-bloc" class="code-bloc">
+    <div name="choice-code" style="grid-area: choice-code; position: relative;">
+        ${viewof langage_requete}
+    </div>
+    <div name="code" style="grid-area: code; position: relative;" class="code">
+        <span class="code-bloc-title">
+            Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
+        </span>
+        <span class="code-content">
+            ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
+        </span>
+    </div>
+</div>
+`
+```
+
+```{ojs}
+grid_structure = (choice_print_map_france == "Carte") ?
+    `'selectors map choice-code'
+                '. map code'
+                '. map .'
+                '. map .'
+                'download map .'`
+    :
+    `'selectors map'
+                '. map'
+                '. map'
+                'download map'
+                'code code'`
+grid_repartition =  (choice_print_map_france == "Carte") ?
+    '23% 45% 32%' :
+    '23% 72%'
+```
+
+```{ojs}
 // Source: https://observablehq.com/@mbostock/dashboard
 grid = {
 
@@ -154,13 +243,8 @@ grid = {
             border: none;
             display: grid;
             width: ${availableWidth};
-            grid-template-areas: 
-                'selectors map choice-code'
-                '. map code'
-                '. map .'
-                '. map .'
-                'download map .';
-            grid-template-columns: 23% 45% 32%;
+            grid-template-areas: ${grid_structure};
+            grid-template-columns: ${grid_repartition};
             ">
             
             <div name="selectors" style="grid-area: selectors; position: relative;">
@@ -176,20 +260,7 @@ grid = {
                 ${object_print_map_france}
             </div>
 
-            <div name="code-bloc" class="code-bloc">
-                <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                    ${viewof langage_requete}
-                </div>
-
-                <div name="code" style="grid-area: code; position: relative;" class="code">
-                    <span class="code-bloc-title">
-                        Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-                    </span>
-                    <span class="code-content">
-                        ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
-                    </span>
-                </div>
-            </div>
+            ${right_spanner_map_france}
 
             <div name="download-button" style="grid-area: download; position: relative;">
                 ${button_france}
@@ -282,10 +353,78 @@ object_print_map_france = (choice_print_map_france == "Carte") ?
 ```
 
 ```{ojs}
+//| output: false
+html`<div>${toto}</div>`
+
+toto = {
+
+    const columns = Object.keys(attributes_map_france[0]);
+
+    // Create the header row dynamically
+    const header = `
+    <tr>
+        ${columns.map(col => `<th>${ annotateColumn(col) }</th>`).join('')}
+    </tr>
+    `;
+
+    // Create the rows dynamically using the keys
+    const rows = attributes_map_france.map(obj => {
+    return `
+        <tr>
+        ${columns.map(col => `<td>${obj[col]}</td>`).join('')}
+        </tr>
+    `;
+    }).join('');
+
+    // Combine the header and rows to form the complete table
+    const tableHTML = `
+    <table border="1">
+        <thead>
+        ${header}
+        </thead>
+        <tbody>
+        ${rows}
+        </tbody>
+    </table>
+    `;
+
+    return `<div>${tableHTML}</div>`
+}
+
+```
+
+```{ojs}
+function annotateFields(x) {
+    // Extract the keys from the input object
+    const fields = Object.keys(x[0]);
+
+    // Create a new object with annotated values for each field
+    const annotatedObject = {};
+    fields.forEach(field => {
+        annotatedObject[field] = annotateColumn(field);
+    });
+
+    // Return an array where the first element is the annotated object and the second is the original object
+    return [annotatedObject, ...x];
+}
+```
+
+```{ojs}
+mapping = Object.keys(attributes_map_france[0]).reduce((acc, key) => {
+    acc[key] = (d) => html`<div>${d}</div>`;
+    return acc;
+}, {})
+```
+
+```{ojs}
 viewof table_attributes_map_france = Inputs.table(
-    attributes_map_france
+    annotateFields(attributes_map_france),
+    {
+        format: mapping
+    }
 )
 ```
+
 
 ```{ojs}
 viewof choice_print_map_departement  = Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"})
