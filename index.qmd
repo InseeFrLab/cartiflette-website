@@ -18,6 +18,7 @@ html`<div>${grid}</div>`
 
 ## Récupérer un fond de carte sur une emprise limitée
 
+
 ```{ojs}
 //| output: true
 html`<div>${grid_departements}</div>`
@@ -44,6 +45,7 @@ grid_departements =  {
             ">
             
             <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
+                ${viewof choice_print_map_departement}
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -52,7 +54,7 @@ grid_departements =  {
             </div>
             
             <div name="map_departements" style="grid-area: map_departements; position: relative;">
-                ${map_multiple_departement}
+                ${object_print_map_departement}
             </div>
 
             <div name="code-bloc-departement" class="code-bloc">
@@ -96,6 +98,7 @@ grid_departements =  {
         ">
 
         <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
+                ${viewof choice_print_map_departement}
                 ${viewof selected_departements}
                 ${year_emprise}
                 ${format_emprise}
@@ -104,7 +107,7 @@ grid_departements =  {
         </div>
         
         <div name="map_departements" style="grid-area: map_departements; position: relative;">
-            ${map_multiple_departement}
+            ${object_print_map_departement}
         </div>
 
         <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
@@ -161,6 +164,7 @@ grid = {
             ">
             
             <div name="selectors" style="grid-area: selectors; position: relative;">
+                ${viewof choice_print_map_france}
                 ${viewof year}
                 ${viewof selectedlevel}
                 ${viewof format}
@@ -169,7 +173,7 @@ grid = {
             </div>
             
             <div name="map" style="grid-area: map; position: relative;">
-                ${map_france}
+                ${object_print_map_france}
             </div>
 
             <div name="code-bloc" class="code-bloc">
@@ -213,6 +217,7 @@ grid = {
         ">
 
         <div name="selectors" style="grid-area: selectors; position: relative;">
+            ${viewof choice_print_map_france}
             ${viewof year}
             ${viewof selectedlevel}
             ${viewof format}
@@ -221,7 +226,7 @@ grid = {
         </div>
         
         <div name="map" style="grid-area: map; position: relative;">
-            ${map_france}
+            ${object_print_map_france}
         </div>
 
         <div name="download-button" style="grid-area: download; position: relative;">
@@ -262,5 +267,36 @@ map_france = topohelper
         availableWidth > smallScreen ? availableWidth*0.4 : availableWidth*0.95, availableHeight * 0.6
     ]})
 ```
+
+```{ojs}
+viewof choice_print_map_france  = Inputs.bind(
+    Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"}),
+    viewof choice_print_map_departement
+)
+```
+
+```{ojs}
+object_print_map_france = (choice_print_map_france == "Carte") ?
+    map_france :
+    viewof table_attributes_map_france
+```
+
+```{ojs}
+viewof table_attributes_map_france = Inputs.table(
+    attributes_map_france
+)
+```
+
+```{ojs}
+viewof choice_print_map_departement  = Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"})
+```
+
+```{ojs}
+object_print_map_departement = (choice_print_map_departement == "Carte") ?
+    map_multiple_departement :
+    viewof table_attributes_map_department
+```
+
+
 
 :::

@@ -2,6 +2,13 @@
 data_france = get_france(selectedlevel, "topojson", year, drom_rapproches, simplification_percent)
 ```
 
+```{ojs}
+attributes_map_france = topojson
+    .feature(data_france, data_france.objects.France)
+    .features
+    .map(d=>d.properties)
+```
+
 
 ```{ojs}
 button_france = html`
@@ -56,6 +63,16 @@ map_multiple_departement = topohelper.fromGeojson(
         size: [
             availableWidth > smallScreen ? availableWidth*0.4 : availableWidth*0.95, availableHeight * 0.6
     ]})
+```
+
+```{ojs}
+attributes_map_departement = data_multiple_departement_combined.features.map(d => d.properties)
+```
+
+```{ojs}
+viewof table_attributes_map_department = Inputs.table(
+    attributes_map_departement
+)
 ```
 
 ```{ojs}
