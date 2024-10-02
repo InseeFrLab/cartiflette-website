@@ -9,29 +9,36 @@ echo: false
 {{< include "./src/_inputs.qmd" >}}
 {{< include "./src/_programs.qmd" >}}
 
+
+```{ojs}
+//| eval: false
+// pb de timing
+Inputs.table(
+    annotationsSources,
+    {format: {note: (d) => annotateColumn(d, annotationsSources)}}
+)
+```
+
 ## Récupérer un fond de carte France entière
 
 ```{ojs}
-sources_annotations = d3.json(
-        "https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/annotations.json"
-)
-
+db = DuckDBClient.of({})
 ```
 
 ```{ojs}
-sources_origines = d3.json(
-        "https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/sources.json"
+annotationsSources = await db.query(
+  "SELECT * FROM read_csv_auto('https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/sources_annotations.csv', header=true) "
 )
 ```
 
 
 ```{ojs}
-function annotateColumn(columnName) {
+function annotateColumn(columnName, annotationsSources) {
 
-  const sourceData = sources_origines.filter(d => d.variable == columnName)[0];
+  const sourceData = annotationsSources.filter(d => d.variable == columnName)[0];
   const sourceSelected = sourceData['source'];
-  const url = sources_annotations.filter(d => d.source == sourceSelected)[0]['url'];
-  const annotation = sources_annotations.filter(d => d.source == sourceSelected)[0]['note'];
+  const url = sourceData['url'];
+  const annotation = sourceData['note'];
 
   // Generate the HTML with a colored footnote, and add an anchor tag to link to the source documentation
   return html`
@@ -44,21 +51,6 @@ function annotateColumn(columnName) {
 }
 ```
 
-```{ojs}
-function generateHeaderMapping(dataArray) {
-  // Get unique column names by extracting keys from the first object
-  const columnNames = Object.keys(dataArray[0]);
-
-  // Create the header mapping object by applying annotateColumn to each column name
-  const headerMapping = columnNames.reduce((headerObj, columnName) => {
-    // Applying annotateColumn to get annotated HTML for each column
-    headerObj[columnName] = annotateColumn(columnName);
-    return headerObj;
-  }, {});
-
-  return headerMapping;
-}
-```
 
 ```{ojs}
 //| output: true
@@ -220,14 +212,14 @@ grid_structure = (choice_print_map_france == "Carte") ?
                 '. map .'
                 'download map .'`
     :
-    `'selectors map'
-                '. map'
-                '. map'
-                'download map'
-                'code code'`
+    `'selectors map info'
+                '. map info'
+                '. map info'
+                'download map info'
+                'code code info'`
 grid_repartition =  (choice_print_map_france == "Carte") ?
     '23% 45% 32%' :
-    '23% 72%'
+    '23% 65% 12%'
 ```
 
 ```{ojs}
@@ -352,56 +344,16 @@ object_print_map_france = (choice_print_map_france == "Carte") ?
     viewof table_attributes_map_france
 ```
 
-```{ojs}
-//| output: false
-html`<div>${toto}</div>`
-
-toto = {
-
-    const columns = Object.keys(attributes_map_france[0]);
-
-    // Create the header row dynamically
-    const header = `
-    <tr>
-        ${columns.map(col => `<th>${ annotateColumn(col) }</th>`).join('')}
-    </tr>
-    `;
-
-    // Create the rows dynamically using the keys
-    const rows = attributes_map_france.map(obj => {
-    return `
-        <tr>
-        ${columns.map(col => `<td>${obj[col]}</td>`).join('')}
-        </tr>
-    `;
-    }).join('');
-
-    // Combine the header and rows to form the complete table
-    const tableHTML = `
-    <table border="1">
-        <thead>
-        ${header}
-        </thead>
-        <tbody>
-        ${rows}
-        </tbody>
-    </table>
-    `;
-
-    return `<div>${tableHTML}</div>`
-}
-
-```
 
 ```{ojs}
-function annotateFields(x) {
+function annotateFields(x, annotationsSources) {
     // Extract the keys from the input object
     const fields = Object.keys(x[0]);
 
     // Create a new object with annotated values for each field
     const annotatedObject = {};
     fields.forEach(field => {
-        annotatedObject[field] = annotateColumn(field);
+        annotatedObject[field] = annotateColumn(field, annotationsSources);
     });
 
     // Return an array where the first element is the annotated object and the second is the original object
@@ -418,7 +370,7 @@ mapping = Object.keys(attributes_map_france[0]).reduce((acc, key) => {
 
 ```{ojs}
 viewof table_attributes_map_france = Inputs.table(
-    annotateFields(attributes_map_france),
+    annotateFields(attributes_map_france, annotationsSources),
     {
         format: mapping
     }
