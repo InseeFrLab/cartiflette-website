@@ -10,46 +10,7 @@ echo: false
 {{< include "./src/_programs.qmd" >}}
 
 
-```{ojs}
-//| eval: false
-// pb de timing
-Inputs.table(
-    annotationsSources,
-    {format: {note: (d) => annotateColumn(d, annotationsSources)}}
-)
-```
-
 ## Récupérer un fond de carte France entière
-
-```{ojs}
-db = DuckDBClient.of({})
-```
-
-```{ojs}
-annotationsSources = await db.query(
-  "SELECT * FROM read_csv_auto('https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/sources_annotations.csv', header=true) "
-)
-```
-
-
-```{ojs}
-function annotateColumn(columnName, annotationsSources) {
-
-  const sourceData = annotationsSources.filter(d => d.variable == columnName)[0];
-  const sourceSelected = sourceData['source'];
-  const url = sourceData['url'];
-  const annotation = sourceData['note'];
-
-  // Generate the HTML with a colored footnote, and add an anchor tag to link to the source documentation
-  return html`
-    <span style="font-weight: bold;"><span style="background-color: #ffcc00; color: black; padding: 2px 5px; border-radius: 3px; cursor: pointer;">
-    <a href="${url}" target="_blank" style="color: black; text-decoration: none;" title="${sourceSelected} - ${annotation}">
-      ${annotation}
-    </a>
-  </span></span>
-  `;
-}
-```
 
 
 ```{ojs}
@@ -65,124 +26,15 @@ html`<div>${grid}</div>`
 html`<div>${grid_departements}</div>`
 ```
 
-```{ojs}
-grid_departements =  {
-    let grid ;
 
-    if (availableWidth>smallScreen){
-        grid = html`
-        <div style="
-            margin: 0;
-            border: none;
-            display: grid;
-            width: ${availableWidth};
-            grid-template-areas: 
-                'selectors_departements map_departements choice-code_departements'
-                '. map_departements code_departements'
-                '. map_departements .'
-                '. map_departements .'
-                'download_departements map_departements .';
-            grid-template-columns: 23% 45% 32%;
-            ">
-            
-            <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
-                ${viewof choice_print_map_departement}
-                ${viewof selected_departements}
-                ${year_emprise}
-                ${format_emprise}
-                ${simplification_percent_emprise}
-                ${viewof arrondissement}
-            </div>
-            
-            <div name="map_departements" style="grid-area: map_departements; position: relative;">
-                ${object_print_map_departement}
-            </div>
-
-            <div name="code-bloc-departement" class="code-bloc">
-                <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
-                    ${language_emprise_departements}
-                </div>
-
-                <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
-                    <span class="code-bloc-title">
-                        Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                    </span>
-                    <span class="code-content">
-                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                    </span>
-                </div>
-            </div>
-
-            <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
-                ${button_departements}
-            </div>
-
-        </div>
-        `
-        return grid
-    }
-
-    grid = html`
-    <div style="
-        margin: 0;
-        border: none;
-        display: grid;
-        width: ${availableWidth};
-        grid-template-areas: 
-            'selectors_departements'
-            'map_departements'
-            'download_departements'
-            'choice-code_departements'
-            'code_departements';
-        grid-template-rows: auto auto auto auto auto;
-        grid-gap: 10px;
-        ">
-
-        <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
-                ${viewof choice_print_map_departement}
-                ${viewof selected_departements}
-                ${year_emprise}
-                ${format_emprise}
-                ${simplification_percent_emprise}
-                ${viewof arrondissement}
-        </div>
-        
-        <div name="map_departements" style="grid-area: map_departements; position: relative;">
-            ${object_print_map_departement}
-        </div>
-
-        <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
-            ${button_departements}
-        </div>
-
-        <div name="code-bloc-departement" class="code-bloc">
-            <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
-                ${language_emprise_departements}
-            </div>
-
-            <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
-                <span class="code-bloc-title">
-                    Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                </span>
-                <span class="code-content">
-                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                </span>
-            </div>
-        </div>
-
-    </div>
-    `
-
-    return grid
-}
-```
-
-
-<!--------
-Objets utiles
----------->
+<!----------------------
+Conteneurs
+------------------------>
 
 ```{ojs}
+// spanner pour les exemples de code
+// là si on a une carte,
+// pas là si on affiche les métadonnées (pour laisser plus de places)
 right_spanner_map_france =  (choice_print_map_france == "Carte") ? spanner_code_france : ""
 ```
 
@@ -318,6 +170,127 @@ grid = {
 ```
 
 ```{ojs}
+grid_departements =  {
+    let grid ;
+
+    if (availableWidth>smallScreen){
+        grid = html`
+        <div style="
+            margin: 0;
+            border: none;
+            display: grid;
+            width: ${availableWidth};
+            grid-template-areas: 
+                'selectors_departements map_departements choice-code_departements'
+                '. map_departements code_departements'
+                '. map_departements .'
+                '. map_departements .'
+                'download_departements map_departements .';
+            grid-template-columns: 23% 45% 32%;
+            ">
+            
+            <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
+                ${viewof choice_print_map_departement}
+                ${viewof selected_departements}
+                ${year_emprise}
+                ${format_emprise}
+                ${simplification_percent_emprise}
+                ${viewof arrondissement}
+            </div>
+            
+            <div name="map_departements" style="grid-area: map_departements; position: relative;">
+                ${object_print_map_departement}
+            </div>
+
+            <div name="code-bloc-departement" class="code-bloc">
+                <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                    ${language_emprise_departements}
+                </div>
+
+                <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
+                    <span class="code-bloc-title">
+                        Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                    </span>
+                    <span class="code-content">
+                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                    </span>
+                </div>
+            </div>
+
+            <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+                ${button_departements}
+            </div>
+
+        </div>
+        `
+        return grid
+    }
+
+    grid = html`
+    <div style="
+        margin: 0;
+        border: none;
+        display: grid;
+        width: ${availableWidth};
+        grid-template-areas: 
+            'selectors_departements'
+            'map_departements'
+            'download_departements'
+            'choice-code_departements'
+            'code_departements';
+        grid-template-rows: auto auto auto auto auto;
+        grid-gap: 10px;
+        ">
+
+        <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
+                ${viewof choice_print_map_departement}
+                ${viewof selected_departements}
+                ${year_emprise}
+                ${format_emprise}
+                ${simplification_percent_emprise}
+                ${viewof arrondissement}
+        </div>
+        
+        <div name="map_departements" style="grid-area: map_departements; position: relative;">
+            ${object_print_map_departement}
+        </div>
+
+        <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
+            ${button_departements}
+        </div>
+
+        <div name="code-bloc-departement" class="code-bloc">
+            <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
+                ${language_emprise_departements}
+            </div>
+
+            <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
+                <span class="code-bloc-title">
+                    Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                </span>
+                <span class="code-content">
+                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                </span>
+            </div>
+        </div>
+
+    </div>
+    `
+
+    return grid
+}
+```
+
+
+<!-----------------
+Objets affichés
+------------------>
+
+<!----
+Carte France
+----->
+
+```{ojs}
 map_france = topohelper
   .from(
     await data_france
@@ -331,37 +304,22 @@ map_france = topohelper
     ]})
 ```
 
-```{ojs}
-viewof choice_print_map_france  = Inputs.bind(
-    Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"}),
-    viewof choice_print_map_departement
-)
-```
 
 ```{ojs}
+// On affiche la carte ou les métadonnées selon la valeur du bouton radio
 object_print_map_france = (choice_print_map_france == "Carte") ?
     map_france :
     viewof table_attributes_map_france
 ```
 
 
-```{ojs}
-function annotateFields(x, annotationsSources) {
-    // Extract the keys from the input object
-    const fields = Object.keys(x[0]);
+<!----
+Tableau métadonnées France
+----->
 
-    // Create a new object with annotated values for each field
-    const annotatedObject = {};
-    fields.forEach(field => {
-        annotatedObject[field] = annotateColumn(field, annotationsSources);
-    });
-
-    // Return an array where the first element is the annotated object and the second is the original object
-    return [annotatedObject, ...x];
-}
-```
 
 ```{ojs}
+// Injecter un formattage html pour le tableau de métadonnées 
 mapping = Object.keys(attributes_map_france[0]).reduce((acc, key) => {
     acc[key] = (d) => html`<div>${d}</div>`;
     return acc;
@@ -376,6 +334,10 @@ viewof table_attributes_map_france = Inputs.table(
     }
 )
 ```
+
+<!----
+Tableau métadonnées départements
+----->
 
 
 ```{ojs}

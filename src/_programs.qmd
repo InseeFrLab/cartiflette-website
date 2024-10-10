@@ -37,3 +37,47 @@ function print_program_france(langage, selectedlevel, format, year, rapproche_dr
     }
 }
 ```
+
+
+
+<!---------------------------------------------
+Fonctions pour manipuler le tableau de métadonnées
+---------------------------------------------->
+
+
+```{ojs}
+function annotateFields(x, annotationsSources) {
+    // Extract the keys from the input object
+    const fields = Object.keys(x[0]);
+
+    // Create a new object with annotated values for each field
+    const annotatedObject = {};
+    fields.forEach(field => {
+        annotatedObject[field] = annotateColumn(field, annotationsSources);
+    });
+
+    // Return an array where the first element is the annotated object and the second is the original object
+    return [annotatedObject, ...x];
+}
+```
+
+
+
+```{ojs}
+function annotateColumn(columnName, annotationsSources) {
+
+  const sourceData = annotationsSources.filter(d => d.variable == columnName)[0];
+  const sourceSelected = sourceData['source'];
+  const url = sourceData['url'];
+  const annotation = sourceData['note'];
+
+  // Generate the HTML with a colored footnote, and add an anchor tag to link to the source documentation
+  return html`
+    <span style="font-weight: bold;"><span style="background-color: #ffcc00; color: black; padding: 2px 5px; border-radius: 3px; cursor: pointer;">
+    <a href="${url}" target="_blank" style="color: black; text-decoration: none;" title="${sourceSelected} - ${annotation}">
+      ${annotation}
+    </a>
+  </span></span>
+  `;
+}
+```

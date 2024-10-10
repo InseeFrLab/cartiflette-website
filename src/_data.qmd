@@ -103,3 +103,18 @@ data_multiple_departement = {
     return topos
 }
 ```
+
+
+<!--------------
+Tableau d'origine des sources
+---------------->
+
+```{ojs}
+db = DuckDBClient.of({})
+```
+
+```{ojs}
+annotationsSources = await db.query(
+  "SELECT * FROM read_csv_auto('https://minio.lab.sspcloud.fr/projet-cartiflette/documentation-website/sources_annotations.csv', header=true) "
+)
+```

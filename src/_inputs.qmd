@@ -1,7 +1,14 @@
 ```{ojs}
-viewof year = Inputs.select(["2022",], {label: "Année de la géographie de référence"})
+viewof choice_print_map_france  = Inputs.bind(
+    Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"}),
+    viewof choice_print_map_departement
+)
 ```
 
+
+```{ojs}
+viewof year = Inputs.select(["2022",], {label: "Année de la géographie de référence"})
+```
 
 ```{ojs}
 viewof drom_rapproches = Inputs.toggle({label: "Rapprocher les DROM ?", value: true})
