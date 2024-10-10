@@ -306,7 +306,7 @@ Pourquoi utiliser cartiflette pour ce type de besoins ?
 <section id="préliminaire-récupération-des-cheptels-français" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Préliminaire: récupération des cheptels français</h1>
 <p>La vidéo de Jules Grandin évoque une ouverture et préparation des données dans Excel 😱. Néanmois, en quelques lignes de code, on peut render ces données propres à l’analyse statistique et cartographique avec <code>Python</code> <i class="fa-brands fa-python" aria-label="python"></i> 😌</p>
-<div id="6c0ea4c6" class="cell" data-execution_count="1">
+<div id="d747fdf6" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Préparation des données avec Pandas</summary>
 <div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -438,7 +438,7 @@ Pourquoi utiliser cartiflette pour ce type de besoins ?
 Listing&nbsp;1: Example d’utilisation de cartiflette
 </figcaption>
 <div aria-describedby="lst-cartiflette-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="6e3ed901" class="cell" data-execution_count="3">
+<div id="e2ee4ab4" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="im">from</span> cartiflette <span class="im">import</span> carti_download</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>departements <span class="op">=</span> carti_download(</span>
@@ -455,7 +455,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </figure>
 </div>
 <p><code>departements</code> est un <code>GeoDataFrame</code> classique proposant les métadonnées usuelles de <code>cartiflette</code> avec des géographies modifiées pour rapprocher la France des DROM<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
-<div id="07b2c3fa" class="cell" data-execution_count="5">
+<div id="f42f1599" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>departements.boundary.plot(edgecolor <span class="op">=</span> <span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -470,13 +470,13 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 <h2 data-number="2.2" class="anchored" data-anchor-id="association-du-fonds-de-carte-cartiflette-au-jeu-de-données-initial"><span class="header-section-number">2.2</span> Association du fonds de carte <code>cartiflette</code> au jeu de données initial</h2>
 <p>La suite du travail n’est pas intrinsèquement lié à <code>cartiflette</code> mais correspond à de la manipulation de données spatiales nécessaires à la finalisation de la carte.</p>
 <p>Comme nous avons besoin de localiser les décomptes départements de bétail, nous faisons une jointure spatiale entre notre fonds de carte et nos cheptels</p>
-<div id="f47a3831" class="cell" data-execution_count="6">
+<div id="591ac295" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial <span class="op">=</span> departements.merge(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    cheptel[<span class="dv">0</span>], left_on<span class="op">=</span><span class="st">"INSEE_DEP"</span>, right_on <span class="op">=</span> <span class="st">"code"</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A partir de là, on finalise notre travail sur le jeu de données pour calculer le ratio entre le nombre de têtes et la population:</p>
-<div id="e7b4493a" class="cell" data-execution_count="7">
+<div id="0373629b" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Dérouler pour voir la finalisation du travail de données</summary>
 <div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ratio_cheptel(type_cheptel, data_departement):</span>
@@ -518,7 +518,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </div>
 </div>
 <p>Le jeu de données prêt à l’emploi prend la forme suivante:</p>
-<div id="85e7074f" class="cell" data-execution_count="8">
+<div id="cb47f49d" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial.head(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <div>
@@ -605,7 +605,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 <p>Il est plus simple, pour les utilisateurs de logiciels comme <code>Python</code>, <code>R</code> ou <code>Javascript</code> de produire une carte interactive qui permet d’afficher des valeurs lorsqu’on passe la souris dessus. Il existe plusieurs écosystèmes pour faire cela, plus ou moins directement reliés à <code>Javascript</code>, le langage consacré pour ce type d’applications réactives.</p>
 <p>Les exemples ci-dessous proposent un code en <code>Python</code> pour faire une carte interactive par le biais de la librairie <code>Folium</code>. Cette manière de procéder étant un peu fastidieuse, car <code>Folium</code> n’est pas initialement conçu pour ce type de cartes, il est recommandé de privilégier la solution <code>Observable</code> qui est un <em>framework</em> <code>Javascript</code> ressemblant beaucoup à <code>Python</code> mais plus adapté que ce dernier pour la <em>dataviz</em>.</p>
 <p>En premier lieu, on définit une fonction générique qui permet de construire, pour un type de cheptel donné, la carte qui sera créée:</p>
-<div id="8daa6035" class="cell" data-execution_count="9">
+<div id="8919adf4" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Définition d’une fonction générique pour créer la carte</summary>
 <div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> folium</span>
@@ -665,7 +665,7 @@ Listing&nbsp;1: Example d’utilisation de cartiflette
 </div>
 </div>
 <p>Pour créer celles-ci, il suffit dès lors d’appliquer la fonction sur le type d’élevage désiré:</p>
-<div id="d30d9753" class="cell" data-execution_count="10">
+<div id="26eb48fe" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Visualiser par le biais de Folium</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>map_repartition(cheptel_geospatial, <span class="st">"Bovins"</span>)</span>
@@ -870,7 +870,7 @@ Comment faire avec <code>Javascript</code> ?
 </div>
 </div>
 <p>Il ne manque qu’à importer les données nécessaires à la carte dans <code>Javascript</code>. La fonction <a href="https://quarto.org/docs/interactive/ojs/data-sources.html"><code>ojs_define</code></a> permettant la transmission d’un objet <code>Python</code> à <code>R</code> ne fonctionnant pas pour un <code>GeoPandas</code>, le plus simple est de créer un GeoJSON en <code>Python</code> :</p>
-<div id="78563e84" class="cell" data-execution_count="11">
+<div id="ff92d2d8" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cheptel_geospatial.to_file(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cheptel.json"</span>, driver<span class="op">=</span><span class="st">"GeoJSON"</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -908,7 +908,7 @@ Comment faire avec <code>Javascript</code> ?
 Listing&nbsp;2: 1️⃣ Code pour télécharger les données
 </figcaption>
 <div aria-describedby="lst-example-download-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="645a7d28" class="cell" data-execution_count="13">
+<div id="fadbd693" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>1️⃣ Code pour télécharger les données</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="im">import</span> os</span>
@@ -956,7 +956,7 @@ Listing&nbsp;2: 1️⃣ Code pour télécharger les données
 Listing&nbsp;3: 2️⃣ Dézipper la version téléchargée
 </figcaption>
 <div aria-describedby="lst-example-unzip-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="d7f5dfb7" class="cell" data-execution_count="14">
+<div id="201fc604" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>2️⃣ Dézipper la version téléchargée</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">def</span> extract_7z_archive(</span>
@@ -984,7 +984,7 @@ Listing&nbsp;3: 2️⃣ Dézipper la version téléchargée
 Listing&nbsp;4: 3️⃣ Découper les données
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="9168fd82" class="cell" data-execution_count="15">
+<div id="b2ca7281" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code Python pour découper le fond de carte AdminExpress</summary>
 <div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode numberSource python code-annotation-code number-lines code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
@@ -1021,7 +1021,7 @@ Listing&nbsp;4: 3️⃣ Découper les données
 Listing&nbsp;5: 4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guadeloupe)
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="08848c39" class="cell" data-execution_count="16">
+<div id="34efe007" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>guadeloupe_mod <span class="op">=</span> guadeloupe.copy().to_crs(<span class="dv">5490</span>)</span>
@@ -1042,7 +1042,7 @@ Listing&nbsp;5: 4️⃣ Modifier la géométrie en jouant sur des translations e
 Listing&nbsp;6: 4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Martinique)
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="6af01cc7" class="cell" data-execution_count="17">
+<div id="18252176" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>martinique_mod <span class="op">=</span> martinique.copy().to_crs(<span class="dv">5490</span>)</span>
@@ -1069,7 +1069,7 @@ Listing&nbsp;6: 4️⃣ Modifier la géométrie en jouant sur des translations e
 Listing&nbsp;7: 4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guyane)
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="172a23a6" class="cell" data-execution_count="18">
+<div id="c61bd8e7" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a>guyane_mod <span class="op">=</span> guyane.copy().to_crs(<span class="dv">2972</span>)</span>
@@ -1092,7 +1092,7 @@ Listing&nbsp;7: 4️⃣ Modifier la géométrie en jouant sur des translations e
 Listing&nbsp;8: 4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Réunion)
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="e10ee905" class="cell" data-execution_count="19">
+<div id="15b21e8a" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a>reunion_mod <span class="op">=</span> reunion.copy().to_crs(<span class="dv">2975</span>)</span>
@@ -1112,7 +1112,7 @@ Listing&nbsp;8: 4️⃣ Modifier la géométrie en jouant sur des translations e
 Listing&nbsp;9: 4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Zoom Ile de France)
 </figcaption>
 <div aria-describedby="lst-example-split-adminexpress-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="12487954" class="cell" data-execution_count="20">
+<div id="223701c4" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1"></a>zoom <span class="op">=</span> (</span>
@@ -1138,7 +1138,7 @@ Listing&nbsp;9: 4️⃣ Modifier la géométrie en jouant sur des translations e
 Listing&nbsp;10: 4️⃣ Réunir toutes les géométries ensemble
 </figcaption>
 <div aria-describedby="lst-example-merge-adminexpress-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="9276fd3f" class="cell" data-execution_count="21">
+<div id="3e5ea9e5" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1"></a>france_modif <span class="op">=</span> pd.concat(</span>
@@ -1172,7 +1172,7 @@ Listing&nbsp;10: 4️⃣ Réunir toutes les géométries ensemble
 <p>Si le fait qu’il suffise que le code de <code>cartiflette</code> se réduise à <a href="#lst-cartiflette-example" class="quarto-xref">Listing&nbsp;1</a> contre <a href="#lst-example-download-adminexpress" class="quarto-xref">Listing&nbsp;2</a>, <a href="#lst-example-unzip-adminexpress" class="quarto-xref">Listing&nbsp;3</a>, <a href="#lst-example-split-adminexpress-1" class="quarto-xref">Listing&nbsp;5</a>, <a href="#lst-example-split-adminexpress-2" class="quarto-xref">Listing&nbsp;6</a>, <a href="#lst-example-split-adminexpress-3" class="quarto-xref">Listing&nbsp;7</a>, <a href="#lst-example-split-adminexpress-4" class="quarto-xref">Listing&nbsp;8</a>, <a href="#lst-example-split-adminexpress-5" class="quarto-xref">Listing&nbsp;9</a>,<a href="#lst-example-merge-adminexpress" class="quarto-xref">Listing&nbsp;10</a> pour obtenir un résultat équivalent ne suffit pas, si le fait que le <em>GeoDataFrame</em> obtenu avec <code>cartiflette</code> comporte plus de métadonnées que celui créé sans ce <em>package</em> n’est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l’intérêt d’utiliser <code>cartiflette</code>.</p>
 <section id="volume-de-données-téléchargées" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="volume-de-données-téléchargées"><span class="header-section-number">4.1</span> Volume de données téléchargées</h2>
-<div id="e44fc7d6" class="cell" data-execution_count="23">
+<div id="4417f556" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Fonction convert_size pour avoir les tailles de fichiers dans un format lisible par un humain</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a human-readable format (e.g., MB, GB)</span></span>
@@ -1186,7 +1186,7 @@ Listing&nbsp;10: 4️⃣ Réunir toutes les géométries ensemble
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>s<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>size_name[i]<span class="sc">}</span><span class="ss">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a2f92d0f" class="cell" data-execution_count="24">
+<div id="74efcf17" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Evaluation de la taille des fichiers issus d’AdminExpress</summary>
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -1209,7 +1209,7 @@ Listing&nbsp;10: 4️⃣ Réunir toutes les géométries ensemble
 <span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>poids_archive_decompressee <span class="op">=</span> convert_size(size_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="d96b471a" class="cell" data-execution_count="25">
+<div id="d94a8238" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Evaluation de la taille des mêmes données issues de cartiflette</summary>
 <div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a>writedir <span class="op">=</span> <span class="st">"cartiflette-data/usecase2"</span></span>
@@ -1243,7 +1243,7 @@ Listing&nbsp;10: 4️⃣ Réunir toutes les géométries ensemble
 <summary>
 Arborescence complète
 </summary>
-<div id="52b8949f" class="cell" data-execution_count="27">
+<div id="a6ff89d8" class="cell" data-execution_count="27">
 <div class="cell-output cell-output-stdout">
 <pre><code>extracted_files/
 └── ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/
@@ -1338,7 +1338,7 @@ Arborescence complète
 </section>
 <section id="temps-de-traitement" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="temps-de-traitement"><span class="header-section-number">4.3</span> Temps de traitement</h2>
-<p>Le code <code>cartiflette</code> permet de récupérer les éléments contextuels nécessaires en 8 secondes. Sans <code>cartiflette</code>, il faut 15 secondes. Sans <code>cartiflette</code>, soit un rapport de 1 à 2 pour cette tâche.</p>
+<p>Le code <code>cartiflette</code> permet de récupérer les éléments contextuels nécessaires en 12 secondes. Sans <code>cartiflette</code>, il faut 15 secondes. Sans <code>cartiflette</code>, soit un rapport de 1 à 1 pour cette tâche.</p>
 <!------------
 Retrieve number of lines
 -------------->
