@@ -20,7 +20,12 @@ function print_program_france(langage, selectedlevel, format, year, rapproche_dr
             source="EXPRESS-COG-CARTO-TERRITOIRE",
             year=${year})
         `
-    } else{
+    } else if (langage == "R"){
+        return md`
+
+        `
+    }    
+    else{
         return md`
         import {carti_download} from "@linogaliana/cartiflette-js"
         carti_download({
@@ -35,5 +40,42 @@ function print_program_france(langage, selectedlevel, format, year, rapproche_dr
         })
         `
     }
+}
+```
+
+```{ojs}
+// Function to display the code bloc to use Cartiflette for departments
+function print_program_departement_single(langage, value, selectedlevel, format, year){
+
+  if (langage == "Python"){
+    return md`
+      from cartiflette import carti_download
+      shp_communes = carti_download(
+          crs = 4326,
+          values = ["${value.join('", "')}"],
+          borders="${selectedlevel}",
+          vectorfile_format="${format}",
+          filter_by="DEPARTEMENT",
+          source="EXPRESS-COG-CARTO-TERRITOIRE",
+          year=${year})
+        ` ;
+  } else if (langage == "R"){
+    return md`
+
+    `
+} else{
+    return md`
+      import {carti_download} from "@linogaliana/cartiflette-js"
+      carti_download({
+          "value": ["${value.join('", "')}"],
+          "borders": "${selectedlevel}",
+          "vectorfileFormat": "${format}",
+          "year": ${year},
+          crs: 4326,
+          filter_by: "DEPARTEMENT",
+          source: "EXPRESS-COG-CARTO-TERRITOIRE"
+      })  
+      `;
+  }
 }
 ```

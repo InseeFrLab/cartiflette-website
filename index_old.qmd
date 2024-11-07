@@ -245,7 +245,7 @@ import {
 ```
 
 ```{ojs}
-import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_france, print_program_departement_single} from "@linogaliana/cartiflette-doc-utils"
+import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map} from "@linogaliana/cartiflette-doc-utils"
 ```
 
 ```{ojs}
