@@ -5,39 +5,104 @@ et qu'on rappatrie ici pour plus de praticité
 
 ```{ojs}
 // Function to display the code bloc to use Cartiflette for whole France
-function print_program_france(langage, selectedlevel, format, year, rapproche_drom, simplification){
-    const filter_by = rapproche_drom ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE"
-    if (langage == "Python"){
-        return md`
-        from cartiflette import carti_download
-        shp_communes = carti_download(
-            values = ["France"],
-            crs = 4326,
-            borders = "${selectedlevel}",
-            vectorfile_format="${format}",
-            simplification=${simplification},
-            filter_by="${filter_by}",
-            source="EXPRESS-COG-CARTO-TERRITOIRE",
-            year=${year})
-        `
-    } else{
-        return md`
-        import {carti_download} from "@linogaliana/cartiflette-js"
-        carti_download({
-            value: "France",
-            crs: 4326,
-            borders: "${selectedlevel}",
-            vectorfile_format: "${format}",
-            simplification=${simplification},
-            filter_by: ${filter_by}",
-            source: "EXPRESS-COG-CARTO-TERRITOIRE",
-            year:${year}
-        })
-        `
+function print_program_france(langage, selectedlevel, format, year, rapproche_drom, simplification) {
+    const filter_by = rapproche_drom ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE";
+
+    switch (langage) {
+        case "Python":
+            return md`
+            from cartiflette import carti_download
+            shp_communes = carti_download(
+                values = ["France"],
+                crs = 4326,
+                borders = "${selectedlevel}",
+                vectorfile_format="${format}",
+                simplification=${simplification},
+                filter_by="${filter_by}",
+                source="EXPRESS-COG-CARTO-TERRITOIRE",
+                year=${year})
+            `;
+        case "Javascript":
+            return md`
+            import {carti_download} from "@linogaliana/cartiflette-js"
+            carti_download({
+                value: "France",
+                crs: 4326,
+                borders: "${selectedlevel}",
+                vectorfile_format: "${format}",
+                simplification: ${simplification},
+                filter_by: "${filter_by}",
+                source: "EXPRESS-COG-CARTO-TERRITOIRE",
+                year: ${year}
+            });
+            `;
+        case "R":
+            return md`
+            library(cartiflette)
+            shp_communes <- carti_download(
+                values = c("France"),
+                crs = 4326,
+                borders = "${selectedlevel}",
+                vectorfile_format = "${format}",
+                simplification = ${simplification},
+                filter_by = "${filter_by}",
+                source = "EXPRESS-COG-CARTO-TERRITOIRE",
+                year = ${year}
+            )
+            `;
+        default:
+            throw new Error("Unsupported language specified");
     }
 }
 ```
 
+
+```{ojs}
+function print_program_departement_single(langage, value, selectedlevel, format, year) {
+    switch (langage) {
+        case "Python":
+            return md`
+            from cartiflette import carti_download
+            shp_communes = carti_download(
+                crs = 4326,
+                values = "${value}",
+                borders="${selectedlevel}",
+                vectorfile_format="${format}",
+                filter_by="DEPARTEMENT",
+                source="EXPRESS-COG-CARTO-TERRITOIRE",
+                year=${year})
+            `;
+        case "Javascript":
+            return md`
+            import {carti_download} from "@linogaliana/cartiflette-js"
+            carti_download({
+                value: "${value}",
+                borders: "${selectedlevel}",
+                vectorfileFormat: "${format}",
+                year: ${year},
+                crs: 4326,
+                filter_by: "DEPARTEMENT",
+                source: "EXPRESS-COG-CARTO-TERRITOIRE"
+            });
+            `;
+        case "R":
+            return md`
+            library(cartiflette)
+            shp_communes <- carti_download(
+                crs = 4326,
+                values = c("${value}"),
+                borders = "${selectedlevel}",
+                vectorfile_format = "${format}",
+                filter_by = "DEPARTEMENT",
+                source = "EXPRESS-COG-CARTO-TERRITOIRE",
+                year = ${year}
+            )
+            `;
+        default:
+            throw new Error("Unsupported language specified");
+    }
+}
+```
 
 
 <!---------------------------------------------

@@ -58,9 +58,7 @@ import {
   to_single_geojson} from "@linogaliana/cartiflette-js"
 ```
 
-```{ojs}
-import {create_projection2154, map_multiple_2154, map_multiple_4326, make_map, print_program_departement_single} from "@linogaliana/cartiflette-doc-utils"
-```
+{{< include "src/utils/_doc.qmd"   >}}
 
 ```{ojs}
 function download_button(url) {

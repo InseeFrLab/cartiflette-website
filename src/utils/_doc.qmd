@@ -1,0 +1,150 @@
+
+```{ojs}
+function create_projection2154(
+  geodata
+){
+  let proj_epsg2154 = proj4d3(2154)
+  let proj_e4326_to_map_e2154 = proj_epsg2154.fitExtent(map_extent, geodata)
+  return proj_e4326_to_map_e2154
+}
+
+function _proj_epsg2154(proj4d3){
+    return(proj4d3(2154))
+}
+
+
+function map_multiple_2154(data_multiple_departement){
+    Promise.all(data_multiple_departement).then(departments => {
+    
+    // Use .map() to extract the features from each department
+    const departmentFeatures = departments.map(department => topojson.feature(department, "data").features);
+  
+    // Use .concat() to combine all the features into a single array
+    const allFeatures = [].concat(...departmentFeatures);
+  
+    const svg = d3.create("svg")
+                  .attr("viewBox", [0, 0, width, height])
+                  .attr("width", width)
+                  .attr("height", height)
+  
+    const g = svg.append("g");
+  
+    const path = d3.geoPath().projection(
+      proj_epsg2154.fitExtent(map_extent, {type: "FeatureCollection", features: allFeatures})
+    );
+  
+    let paths = svg.selectAll('path')
+                   .data(allFeatures)
+                   .join('path')
+                   .attr('d', path)
+                   .attr("fill", 'white')
+                   .attr("stroke", '#CCC')
+  
+  
+    return svg.node()
+  });
+}
+
+
+function map_multiple_4326(data_multiple_departement){
+
+  if (data_multiple_departement.length === 0){
+    const svg = d3.create("svg")
+                .attr("width", width)
+                .attr("height", height)
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text("Select a region to get a map");
+    
+    return svg.node();
+  }
+
+  let p = Promise.all(data_multiple_departement).then(departments => {
+  
+  // Use .map() to extract the features from each department
+  const departmentFeatures = departments.map(department => topojson.feature(department, "data").features);
+
+  // Use .concat() to combine all the features into a single array
+  const allFeatures = [].concat(...departmentFeatures);
+
+  const svg = d3.create("svg")
+                .attr("viewBox", [0, 0, width, height])
+                .attr("width", width)
+                .attr("height", height)
+
+  const g = svg.append("g");
+
+  const path = d3.geoPath().projection(
+    d3.geoMercator().fitExtent(map_extent, {type: "FeatureCollection", features: allFeatures})
+  );
+
+  let paths = svg.selectAll('path')
+                 .data(allFeatures)
+                 .join('path')
+                 .attr('d', path)
+                 .attr("fill", 'white')
+                 .attr("stroke", '#CCC')
+
+  return svg.node()
+});
+  return p
+}
+
+function make_projection(geodata){
+  let statemesh = topojson.mesh(geodata, geodata.objects.data, (a, b) => a == b)
+  let projection = d3.geoMercator().fitExtent([[0, 0], [width, height]], statemesh)
+  return projection
+}
+
+function make_map(geodata, print_text = "yes", annotation = false) {
+  let projection_map = make_projection(geodata)
+  let temp = topojson.feature(geodata, geodata.objects.data)
+  let p =
+    Plot.plot({
+      width: width,
+      height: height,
+      projection: projection_map,
+      marks: [
+        Plot.geo(temp, {strokeOpacity: 0.4}),
+        print_text == "yes" ?
+          Plot.text(
+            temp.features.map((f) => ({centroid: d3.geoCentroid(f), name: f.properties.NOM})),
+            {
+              x: (d) => d.centroid[0], // longitude
+              y: (d) => d.centroid[1], // latitude
+              //text: "name",
+              //textAnchor: "middle",
+              stroke: "white",
+              fill: "black"
+            }
+          ) :
+          Plot.text(
+            temp.features.map((f) => ({centroid: d3.geoCentroid(f), name: f.properties.NOM})),
+            {
+              x: (d) => d.centroid[0], // longitude
+              y: (d) => d.centroid[1], // latitude
+              stroke: "white",
+              fill: "black",
+              title: "name"
+            }
+          )      
+      ]
+    })
+
+  if (!annotation) {
+    return p
+  }
+
+  let p2 = addTooltips(
+    p,
+    {fill: "grey"}
+  ) ;
+
+  return p2;
+}
+
+```

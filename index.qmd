@@ -2,6 +2,7 @@
 echo: false
 ---
 
+
 ::: {.column-screen-inset}
 
 {{< include "./src/_data.qmd" >}}
@@ -20,7 +21,6 @@ html`<div>${grid}</div>`
 
 ## Récupérer un fond de carte sur une emprise limitée
 
-
 ```{ojs}
 //| output: true
 html`<div>${grid_departements}</div>`
@@ -37,6 +37,7 @@ Conteneurs
 // pas là si on affiche les métadonnées (pour laisser plus de places)
 right_spanner_map_france =  (choice_print_map_france == "Carte") ? spanner_code_france : ""
 ```
+
 
 ```{ojs}
 spanner_code_france = html`
@@ -169,6 +170,7 @@ grid = {
 }
 ```
 
+
 ```{ojs}
 grid_departements =  {
     let grid ;
@@ -282,6 +284,7 @@ grid_departements =  {
 ```
 
 
+
 <!-----------------
 Objets affichés
 ------------------>
@@ -335,9 +338,11 @@ viewof table_attributes_map_france = Inputs.table(
 )
 ```
 
+
 <!----
 Tableau métadonnées départements
 ----->
+
 
 
 ```{ojs}
