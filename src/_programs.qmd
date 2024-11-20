@@ -65,7 +65,7 @@ function print_program_departement_single(langage, value, selectedlevel, format,
             from cartiflette import carti_download
             shp_communes = carti_download(
                 crs = 4326,
-                values = "${value}",
+                values = ["${value.join('", "')}"],
                 borders="${selectedlevel}",
                 vectorfile_format="${format}",
                 filter_by="DEPARTEMENT",
@@ -76,7 +76,7 @@ function print_program_departement_single(langage, value, selectedlevel, format,
             return md`
             import {carti_download} from "@linogaliana/cartiflette-js"
             carti_download({
-                value: "${value}",
+                values = ["${value.join('", "')}"],
                 borders: "${selectedlevel}",
                 vectorfileFormat: "${format}",
                 year: ${year},
@@ -90,7 +90,7 @@ function print_program_departement_single(langage, value, selectedlevel, format,
             library(cartiflette)
             shp_communes <- carti_download(
                 crs = 4326,
-                values = c("${value}"),
+                values = c("${value.join('", "')}"),
                 borders = "${selectedlevel}",
                 vectorfile_format = "${format}",
                 filter_by = "DEPARTEMENT",
