@@ -216,6 +216,10 @@ grid_departements =  {
                     <span class="code-content">
                         ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
                     </span>
+                    </span>
+                    <span class="code-content">
+                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
+                    </span>
                 </div>
             </div>
 
@@ -269,6 +273,9 @@ grid_departements =  {
             <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
                 <span class="code-bloc-title">
                     Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
+                </span>
+                <span class="code-content">
+                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
                 </span>
                 <span class="code-content">
                     ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
