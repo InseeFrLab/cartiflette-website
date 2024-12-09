@@ -5,10 +5,12 @@ echo: false
 
 ::: {.column-screen-inset}
 
+
 {{< include "./src/_data.qmd" >}}
 {{< include "./src/_globals.qmd" >}}
 {{< include "./src/_inputs.qmd" >}}
 {{< include "./src/_programs.qmd" >}}
+
 
 
 ## Récupérer un fond de carte France entière
@@ -212,10 +214,6 @@ grid_departements =  {
                 <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
                     <span class="code-bloc-title">
                         Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                    </span>
-                    <span class="code-content">
-                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                    </span>
                     </span>
                     <span class="code-content">
                         ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}

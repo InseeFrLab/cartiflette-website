@@ -1,16 +1,5 @@
 /*-- scss:defaults --*/
-$primary: #ffce67 ;
-$background_color: #fff;
-$text_color: #000;
-$background_button: #ffce67;
-$text_button: #000;
-$navlink_text: #000;
-$navlink_hover: #fff;
-$navlink_active: #fff;
-$navlink_active_hover: #000;
-$placeholder: #000;
-$geoviewer: #fff;
-$geoviewer_text: #000;
+$primary: #ffce67;
 $background_color: #fff;
 $text_color: #000;
 $background_button: #ffce67;
@@ -29,35 +18,19 @@ body {
     color: $text_color !important;
 }
 
-// Texte de la navbar
-body {
-    background-color: $background_color !important;
-    color: $text_color !important;
-}
-
-// Texte de la navbar
 .nav-link, .navbar-title {
-    color: $navlink_text !important;
     color: $navlink_text !important;
 }
 .nav-link:hover, .navbar-title:hover {
     color: $navlink_hover !important;
-    color: $navlink_hover !important;
 }
 .active {
-    color: $navlink_active !important;
     color: $navlink_active !important;
 }
 .active:hover {
     color: $navlink_active_hover !important;
-    color: $navlink_active_hover !important;
 }
 
-// Les boutons, sauf le bouton reset de la carte
-.btn-quarto:not(#buttonReset) {
-    background-color: $background_button !important;
-    color: $text_button !important;
-// Les boutons, sauf le bouton reset de la carte
 .btn-quarto:not(#buttonReset) {
     background-color: $background_button !important;
     color: $text_button !important;
@@ -65,29 +38,8 @@ body {
     margin-bottom: 0.15rem;
     font-size: x-small;
 }
-.btn-download {
-    font-size: medium !important;
-    font-size: x-small;
-}
-.btn-download {
-    font-size: medium !important;
-}
 
-// Les boutons départements
-// Les boutons départements
-output[name="output"] .btn {
-    vertical-align: text-bottom;
-}
-output[name="output"] .btn .cross-delete-item {
-output[name="output"] .btn .cross-delete-item {
-    vertical-align: middle;
-}
-
-// Le bloc à droite avec les exemples de code
-// Le bloc à droite avec les exemples de code
 .code-bloc-title {
-    background-color: $primary !important;
-    color: $text_color !important;
     background-color: $primary !important;
     color: $text_color !important;
     padding: 0.5rem;
@@ -97,43 +49,11 @@ output[name="output"] .btn .cross-delete-item {
     font-weight: bold;
     align-items: center;
 }
-.code, div[name="choice-code"], div[name="choice-code_departements"] {
-    border: solid 0.1rem $primary !important;
-    border: solid 0.1rem $primary !important;
-}
-div[name="choice-code"] > form, div[name="choice-code_departements"] > form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    --label-width: auto;
-    gap: 0.3rem;
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-}
-div[name="choice-code"] > form > label, div[name="choice-code_departements"] > form > label {
-    background-color: $primary !important;
-    color: $text_color !important;
-    background-color: $primary !important;
-    color: $text_color !important;
-    padding: 0.5rem;
-    font-weight: bold;
-    align-self: stretch;
-    margin-right: 0;
-    text-align: center;
-}
-div[name="choice-code"] > form > div > label, div[name="choice-code_departements"] > form > div > label {
-    align-items: baseline;
-}
-.code-content > pre > code {
-    color: $text_color !important;
-}
 
-// Les titres
 :is(h1, h2, h3, h4, h5, h6) {
     color: $text_color !important;
 }
 
-// Les champs de formulaire
 select, input {
     background-color: $background_color !important;
     border-radius: 8px;
@@ -142,33 +62,8 @@ input::placeholder {
     color: $placeholder !important;
 }
 
-// La carte
-#geoviewer {
-    background-color: $geoviewer !important;
-    color: $geoviewer_text !important;
-    border-radius: 15px;
-.code-content > pre > code {
-    color: $text_color !important;
-}
-
-// Les titres
-:is(h1, h2, h3, h4, h5, h6) {
-    color: $text_color !important;
-}
-
-// Les champs de formulaire
-select, input {
-    background-color: $background_color !important;
-    border-radius: 8px;
-}
-input::placeholder {
-    color: $placeholder !important;
-}
-
-// La carte
 #geoviewer {
     background-color: $geoviewer !important;
     color: $geoviewer_text !important;
     border-radius: 15px;
 }
-
