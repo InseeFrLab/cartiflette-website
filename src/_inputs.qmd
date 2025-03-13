@@ -20,7 +20,7 @@ viewof selectedlevel = Inputs.select(['DEPARTEMENT', 'REGION', 'BASSIN_VIE', 'AI
 
 ```{ojs}
 viewof format = Inputs.select(
-  ["topojson", "geojson"],
+  ["geojson", "topojson"],
   {label: "Format désiré:"})
 ```
 
