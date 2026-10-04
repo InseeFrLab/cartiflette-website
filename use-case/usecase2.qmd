@@ -6,12 +6,6 @@ code-annotations: hover
 author: "Lino Galiana"
 ---
 
-::: {.important}
-Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
-
-Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd)
-:::
-
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte dont les [DROM sont rapprochés]{.yellow} et où on voit [un zoom sur l'Ile de France]{.yellow}__.  
 
 Ce besoin classique est illustré en répliquant la carte faite par [Jules Grandin pour son podcast "La Minute Cartographique"](https://www.youtube.com/watch?v=mK7Hr2x895k)
@@ -128,7 +122,7 @@ Notre objectif est de faire une carte aux caractéristiques suivantes:
 * Les DROM sont rapprochés de la France hexagonale en étant placés sous celle-ci ;
 * Un cartogramme zoomé de la petite couronne parisienne (départements de la Seine, Hauts-de-Seine, Seine-Saint-Denis et Val de Marne) est disponible en haut à gauche de celle-ci.
 
-Construire soi-même ce fonds de carte est fastidieux, comme l'illustre la partie [Comment faire sans cartiflette](#sans-cartiflette). Avec `cartiflette`, ce fonds de carte est préconstruit à partir des découpages officiels de l'IGN. Il suffit de remplace le niveau `FRANCE_ENTIERE` en `FRANCE_ENTIERE_DROM_RAPPROCHES` dans l'appel à `carti_download`.  
+Construire soi-même ce fonds de carte est fastidieux, comme l'illustre la partie [Comment faire sans cartiflette](#sans-cartiflette). Avec `cartiflette`, ce fonds de carte est préconstruit à partir des découpages officiels de l'IGN. Il suffit de remplacer le niveau `FRANCE_ENTIERE` par `FRANCE_ENTIERE_DROM_RAPPROCHES` dans l'appel à `carti_download`.
 
 ::: {#lst-cartiflette-example lst-cap="Example d'utilisation de cartiflette"}
 
@@ -138,12 +132,9 @@ from cartiflette import carti_download
 
 departements = carti_download(
     values="France",
-    crs=4326,
     borders="DEPARTEMENT",
-    vectorfile_format="geojson",
     filter_by="FRANCE_ENTIERE_DROM_RAPPROCHES",
-    source="EXPRESS-COG-CARTO-TERRITOIRE",
-    year=2022,
+    year=2026,
 )
 ```
 
@@ -463,18 +454,19 @@ start_time_no_cartiflette = time.time()
 
 L'approche est nettement plus fastidieuse sans `cartiflette` et nécessite une expertise assez avancée en géomatique pour manipuler les géométries des objets `Python`.
 
-Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par cinq étapes principales:
+Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par quatre étapes principales :
 
+* 1️⃣ Télécharger la couche des départements de l'IGN, pour toute la France.
+* 2️⃣ L'importer dans `Python`, dans une projection adaptée aux transformations géométriques.
+* 3️⃣ Pour chaque DROM et pour les départements de la petite couronne, modifier la géométrie par une mise à l'échelle et une translation.
+* 4️⃣ Consolider le fond de carte à partir des différents éléments obtenus.
 
-* 1️⃣ Télécharger les données et les enregistrer sur le disque, en local.
-* 2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l'arborescence obtenue sur le disque.
-* 3️⃣ Importer le bon _shapefile_ dans `Python` et découper celui-ci en différents espaces qui seront reprojetés
-* 4️⃣ Pour chaque DROM et département de l'Île de France, modifier la géométrie en jouant sur des translations et rotations
-* 5️⃣ Consolider le fond de carte à partir des différents éléments obtenus
+La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN :
 
-La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN. L'archive étant assez volumineuse, le code proposé propose une barre de progrès pour s'assurer que le téléchargement progresse.
-
-Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
+```{python}
+#| echo: false
+couches_ign = ["departement"]
+```
 
 ::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
 
@@ -482,169 +474,79 @@ Le code étant assez long, il n'est pas apparent par défaut mais il suffit de c
 
 :::
 
+La deuxième étape consiste à importer les contours administratifs dans `Python`, en projection Web Mercator (EPSG:3857) : les déplacements sont exprimés en mètres dans cette projection.
 
-La deuxième étape consiste à dézipper la version téléchargée en local
-
-
-::: {#lst-example-unzip-adminexpress lst-cap="2️⃣ Dézipper la version téléchargée"}
-
-{{< include "/use-case/scripts/_02_unzip_admin.qmd" >}}
-
-:::
-
-
-La troisième étape consiste à importer les contours administratifs dans `Python` et à séparer les DROM de la France hexagonale
-
-::: {#lst-example-split-adminexpress lst-cap="3️⃣ Découper les données"}
+::: {#lst-example-split-adminexpress lst-cap="2️⃣ Importer les données"}
 
 ```{python}
 #| code-fold: true
-#| code-summary: "Code Python pour découper le fond de carte AdminExpress"
+#| code-summary: "2️⃣ Importer les départements de l'IGN"
 #| code-line-numbers: true
 import geopandas as gpd
 
-path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
+france = gpd.read_parquet(fichiers_ign["departement"]).to_crs(3857)
+```
 
-# Limites communales
-france = gpd.read_file(f"{path_extraction}/COMMUNE.shp").to_crs(2154) #<1>
-hexagone = france.loc[
-    ~france["INSEE_DEP"].isin(["971", "972", "973", "974", "976"])
+:::
+
+La troisième étape est celle faisant appel à une expertise dans le domaine géomatique. Il faut trouver, pour chaque DROM, une mise à l'échelle et une translation qui le placent sous la France hexagonale, et faire de même pour un zoom sur la petite couronne parisienne. Les paramètres ci-dessous sont ceux qu'utilise `cartiflette` : le résultat est identique à son fond de carte.
+
+::: {#lst-example-move-adminexpress lst-cap="3️⃣ Déplacer les DROM et zoomer sur la petite couronne"}
+
+```{python}
+#| code-fold: true
+#| code-summary: "3️⃣ Déplacer les DROM et zoomer sur la petite couronne"
+#| code-line-numbers: true
+# Translation (en mètres, EPSG:3857) et facteur d'échelle de chaque élément
+DEPLACEMENTS = {
+    "971": ((6_355_000, 3_330_000), 1.5),   # Guadeloupe
+    "972": ((6_480_000, 3_505_000), 1.5),   # Martinique
+    "973": ((5_760_000, 4_720_000), 0.35),  # Guyane
+    "974": ((-6_170_000, 7_560_000), 1.5),  # La Réunion
+    "976": ((-4_885_000, 6_590_000), 1.5),  # Mayotte
+}
+PETITE_COURONNE = ["75", "92", "93", "94"]
+
+
+def deplacer(gdf, translation, echelle):
+    """Agrandit (ou réduit) autour du centre de l'emprise, puis translate."""
+    xmin, ymin, xmax, ymax = gdf.total_bounds
+    centre = ((xmin + xmax) / 2, (ymin + ymax) / 2)
+    geometrie = gdf.geometry.scale(echelle, echelle, origin=centre)
+    return gdf.set_geometry(geometrie.translate(*translation))
+
+
+drom_deplaces = [
+    deplacer(france.loc[france["code_insee"] == code], translation, echelle)
+    for code, (translation, echelle) in DEPLACEMENTS.items()
 ]
-guadeloupe = france.loc[france["INSEE_DEP"] == "971"]
-martinique = france.loc[france["INSEE_DEP"] == "972"]
-guyane = france.loc[france["INSEE_DEP"] == "973"]
-reunion = france.loc[france["INSEE_DEP"] == "974"]
-mayotte = france.loc[france["INSEE_DEP"] == "976"]
+zoom_idf = deplacer(
+    france.loc[france["code_insee"].isin(PETITE_COURONNE)],
+    (-650_000, 275_000),
+    4,
+)
 ```
-1. Pour les opérations géométriques ultérieures, il est nécessaire d'adopter le référentiel Lambert 93.
 
 :::
 
-La quatrième étape est celle faisant appel à une expertise dans le domaine géomatique. Il est nécessaire de déplacer les départements d'Outre Mer. Du point de vue géométrique, cela implique de trouver les bonnes translations et rotations. Celles-ci sont données telles quelles. 
+Enfin, la dernière étape consiste à consolider notre fonds de carte en réunissant les géométries[^emplacement-drom]. On obtient un fonds de carte équivalent à celui de `cartiflette`, qui pourrait être utilisé de la même manière que précédemment ☝️, à ceci près que les noms de colonnes sont ceux de l'IGN (`code_insee`…) et qu'il manque les métadonnées de l'Insee.
 
+[^emplacement-drom]: `cartiflette` construit ce fond de carte avec [`mapshaper`](https://github.com/mbloch/mapshaper), en s'inspirant d'un [tutoriel d'Eric Mauvière](https://www.icem7.fr/cartographie/un-fond-de-carte-france-par-commune-optimise-pour-le-web-et-lanalyse-statistique/).
 
-::: {#lst-example-split-adminexpress-1 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guadeloupe)"}
-
+::: {#lst-example-merge-adminexpress lst-cap="4️⃣ Réunir toutes les géométries"}
 
 ```{python}
 #| code-line-numbers: true
 #| code-fold: true
-guadeloupe_mod = guadeloupe.copy().to_crs(5490)
+import pandas as pd
 
-guadeloupe_mod["geometry"] = (
-    guadeloupe_mod.scale(xfact=1.32, yfact=1.32, origin=(0, 0))
-    .translate( -699983, 4269050)
-)
-guadeloupe_mod = guadeloupe_mod.set_geometry("geometry", crs=2154)
+hexagone = france.loc[~france["code_insee"].isin(DEPLACEMENTS)]
+france_modif = pd.concat([hexagone, *drom_deplaces, zoom_idf]).to_crs(4326)
+
+france_modif.boundary.plot(edgecolor="black", linewidth=0.2)
 ```
 
 :::
-
-::: {#lst-example-split-adminexpress-2 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Martinique)"}
-
-```{python}
-#| code-line-numbers: true
-#| code-fold: true
-martinique_mod = martinique.copy().to_crs(5490)
-
-martinique_mod["geometry"] = (
-    martinique_mod
-    .scale(
-        xfact=1.85, yfact=1.85, origin=(0, 0)
-    )
-    .translate(-1134525, 3517169)
-)
-martinique_mod = (
-    martinique_mod
-    .set_geometry("geometry", crs=2154)
-)
-```
-
-:::
-
-
-::: {#lst-example-split-adminexpress-3 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Guyane)"}
-
-
-```{python}
-#| code-line-numbers: true
-#| code-fold: true
-guyane_mod = guyane.copy().to_crs(2972)
-guyane_mod["geometry"] = (
-    guyane_mod.scale(xfact=0.25, yfact=0.25, origin=(0, 0))
-    .translate(118687, 6286270)
-)
-guyane_mod = (
-    guyane_mod
-    .set_geometry("geometry", crs=2154)
-)
-```
-
-:::
-
-::: {#lst-example-split-adminexpress-4 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Réunion)"}
-
-
-```{python}
-#| code-line-numbers: true
-#| code-fold: true
-reunion_mod = reunion.copy().to_crs(2975)
-reunion_mod["geometry"] = (
-    reunion_mod.scale(xfact=1.75, yfact=1.75, origin=(0, 0))
-    .translate(-422169, -7132230)
-)
-reunion_mod = reunion_mod.set_geometry("geometry", crs=2154)
-```
-
-:::
-
-::: {#lst-example-split-adminexpress-5 lst-cap="4️⃣ Modifier la géométrie en jouant sur des translations et rotations (Zoom Ile de France)"}
-
-
-```{python}
-#| code-line-numbers: true
-#| code-fold: true
-zoom = (
-    france
-    .loc[france["INSEE_DEP"].isin(["75", "92", "93", "94"])]
-    .copy()
-)
-zoom["geometry"] = (
-    zoom.scale(xfact=2.78, yfact=2.78, origin=(0, 0))
-    .to_crs(2154)
-    .translate(-1634506, -12046235)
-)
-zoom = zoom.set_geometry("geometry", crs=2154)
-```
-
-:::
-
-Enfin, la dernière étape consiste à consolider notre fonds de carte en réunissant les géométries ensemble[^emplacement-drom]. On obtient un fonds de carte équivalent à celui de `cartiflette` qui pourrait être utilisé de la même manière que précédemment ☝️.
-
-[^emplacement-drom]: L'emplacement des DROM produit par ce code `Python` est différent de celui du fond de carte de `cartiflette`. Ce dernier est généré grâce à `mapshaper` en s'inspirant d'un [tutoriel d'Eric Mauvière](https://www.icem7.fr/cartographie/un-fond-de-carte-france-par-commune-optimise-pour-le-web-et-lanalyse-statistique/). Celui proposé ici en `Python` est inspiré d'un code `R` d'un éminent collègue de l'Insee, Lionel Cacheux. 
-
-::: {#lst-example-merge-adminexpress lst-cap="4️⃣ Réunir toutes les géométries ensemble"}
-
-```{python}
-#| code-line-numbers: true
-#| code-fold: true
-france_modif = pd.concat(
-    [
-        hexagone,
-        guadeloupe_mod,
-        martinique_mod,
-        guyane_mod,
-        reunion_mod,
-        guyane_mod,
-        zoom
-    ]
-)
-
-france_modif.plot()
-```
-
-:::
-
 
 ```{python}
 #| echo: false
@@ -653,44 +555,29 @@ end_time_no_cartiflette = time.time()
 
 # Bilan 
 
-Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-unzip-adminexpress, @lst-example-split-adminexpress-1, @lst-example-split-adminexpress-2,
-@lst-example-split-adminexpress-3,
-@lst-example-split-adminexpress-4,
-@lst-example-split-adminexpress-5,@lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
+Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-split-adminexpress, @lst-example-move-adminexpress et @lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
 
 ## Volume de données téléchargées
 
-
 {{< include "/use-case/scripts/_03_volume_download.qmd" >}}
-
 
 ```{python}
 #| output: false
 #| code-fold: true
-#| code-summary: "Evaluation de la taille des mêmes données issues de cartiflette"
-
+#| code-summary: "Taille des mêmes données issues de cartiflette"
 writedir = "cartiflette-data/usecase2"
 os.makedirs(writedir, exist_ok=True)
-departements.to_file(
-    f"{writedir}/contours.shp"
-) #<1>
+departements.to_parquet(f"{writedir}/contours.parquet") #<1>
 
-poids_archive_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.shp")
-poids_archive_cartiflette = convert_size(
-    poids_archive_cartiflette_bytes
-)
+poids_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.parquet")
+poids_cartiflette = convert_size(poids_cartiflette_bytes)
 ```
-1. On crée un _shapefile_ avec le `GeoDataFrame` obtenu depuis `cartiflette` afin d'avoir une comparaison honnête avec le fonds de carte issu du site de l'IGN. 
+1. On enregistre le `GeoDataFrame` obtenu avec `cartiflette` au même format (GeoParquet) que la couche de l'IGN, pour une comparaison honnête.
 
+Ici, les deux approches portent sur la France entière, à la même résolution (`carti_download` ne simplifie pas les contours par défaut). Les volumes sont donc proches : l'intérêt de `cartiflette` tient surtout au code évité et aux métadonnées ajoutées.
 
-La première base de comparaison possible est la taille sur disque des fonds de carte récupérés par `cartiflette` ou sans passer par ce _package_. Le code ci-dessus ☝️ permet de construire les statistiques suivantes:
-
-* Les données `cartiflette` représenteraient __`{python} poids_archive_cartiflette`__ si elles étaient stockées sur disque. 
-* Sans passer par `cartiflette`, on a besoin de __`{python} poids_archive_decompressee`__ pour stocker les fonds de carte décompressés auxquels il faut ajouter `{python} poids_archive_compressee` pour stocker l'archive compressée. 
-
-Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round((zipped_size + size_dir)/poids_archive_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
-
-{{< include "/use-case/scripts/_04_arborescence.qmd" >}}
+* Les données `cartiflette` représenteraient __`{python} poids_cartiflette`__ si elles étaient stockées sur disque.
+* Sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__.
 
 ## Nombre de lignes de code
 
@@ -713,7 +600,7 @@ En ce qui concerne le temps de développement de ce code, on est sur quelques se
 
 {{< include "/use-case/scripts/_06_timing.qmd" >}}
 
-Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`. Sans `cartiflette`, soit un rapport de 1 à `{python} round(time_no_cartiflette_exact/time_cartiflette_exact)` pour cette tâche.
+Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`, soit un rapport de 1 à `{python} max(1, round(time_no_cartiflette_exact / time_cartiflette_exact))` pour cette tâche.
 
 
 ::: {.content-visible when-format="html"}
@@ -726,13 +613,9 @@ Retrieve number of lines
 //| echo: false
 labels = [
     'lst-example-download-adminexpress',
-    'lst-example-unzip-adminexpress',
-    'lst-example-split-adminexpress-1',
-    'lst-example-split-adminexpress-2',
-    'lst-example-split-adminexpress-3',
-    'lst-example-split-adminexpress-4',
-    'lst-example-split-adminexpress-5',
-    'lst-example-merge-adminexpres'
+    'lst-example-split-adminexpress',
+    'lst-example-move-adminexpress',
+    'lst-example-merge-adminexpress'
 ]
 labels_cartiflette = [
     'lst-cartiflette-example'

@@ -1,9 +1,13 @@
+# Rendu du site : client cartiflette publié et dépendances des cas d'usage
+cartiflette>=0.2.1
+geopandas
+pandas
+openpyxl
+matplotlib
+folium
+mapclassify
+requests
+jupyter
 nbformat
 nbclient
 ipykernel
-jupyter
-tqdm
-cartiflette @ git+https://github.com/inseefrlab/cartiflette
-py7zr
-folium
-directory_tree

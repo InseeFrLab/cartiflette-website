@@ -1,0 +1,35 @@
+# Identité visuelle commune avec la documentation technique
+# (InseeFrLab/cartiflette, doc/_quarto.yml) : palette « gratin » tirée du logo
+meta:
+  name: cartiflette
+  link: https://github.com/InseeFrLab/cartiflette
+logo:
+  images:
+    logo:
+      path: images/logo.png
+      alt: "Logo cartiflette : la France en gratin"
+  small: logo
+color:
+  palette:
+    gratin: "#B4540A"
+    gratin-fonce: "#8A3F06"
+    fromage: "#F2C14E"
+    creme: "#FFF8EC"
+  primary: gratin
+typography:
+  fonts:
+    - family: Inter
+      source: google
+      weight: [400, 600, 700]
+    - family: Fraunces
+      source: google
+      weight: [600, 700]
+    - family: JetBrains Mono
+      source: google
+  base: Inter
+  headings:
+    family: Fraunces
+    weight: 700
+  monospace: JetBrains Mono
+  link:
+    decoration: none

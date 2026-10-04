@@ -1,15 +1,18 @@
 ---
-title: "Galerie d'exemples Python"
-format: 
+title: "Galerie d'exemples"
+format:
   html:
     page-layout: article
 ---
 
-::: {.callout-important}
-Cette section est un _work in progress_!
-:::
+Des tutoriels pas à pas, en `Python`, sur des cas d'usage classiques. Chacun
+compare le code avec `cartiflette` et le code nécessaire sans lui, à partir des
+couches publiées par l'IGN.
 
-Les exemples dans d'autres langages arriveront prochainement
+[Associer des arrondissements à des données communales](usecase1.qmd)
+: Une carte des vélibs de Paris et de la petite couronne, qui mêle communes et
+  arrondissements municipaux.
 
-* [Récupération de données consolidées ville/arrondissement](/use-case/usecase1.qmd)
-* [Une carte de France rapprochant les DROM de la France hexagonale et proposant un zoom sur l'Ile de France](/use-case/usecase2.qmd)
+[Une carte de France avec les DROM rapprochés](usecase2.qmd)
+: La carte « plus de vaches que d'habitants » de La Minute Cartographique, avec
+  les DROM placés sous la métropole et un zoom sur l'Île-de-France.

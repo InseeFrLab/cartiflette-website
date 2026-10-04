@@ -4,28 +4,40 @@ project:
     - index.qmd
     - about.qmd
 
+lang: fr
+
 website:
-  title: "Documentation projet cartiflette 🧀"
+  title: "cartiflette"
+  description: "Les fonds de carte officiels français, en une ligne de code"
+  site-url: https://inseefrlab.github.io/cartiflette-website/
+  favicon: images/logo.png
+  page-navigation: true
   navbar:
+    logo: images/logo.png
+    title: "cartiflette"
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: Accueil
+      - href: about.qmd
+        text: À propos
     tools:
       - icon: github
-        menu:
-          - text: Le projet sur Github
-            url:  https://github.com/inseefrlab/cartiflette
+        href: https://github.com/inseefrlab/cartiflette
+        aria-label: Le projet sur GitHub
+  page-footer:
+    left: "Contours IGN (ADMIN EXPRESS COG CARTO) · métadonnées Insee"
+    right:
+      - text: "Code source"
+        href: https://github.com/InseeFrLab/cartiflette-website
 
 format:
   html:
     theme:
-      light: [minty, styles.scss]
-      dark: [minty, styles-dark.scss, styles.scss]
-    css: [styles.scss, styles-dark.scss, _extensions/quarto-ext/fontawesome/assets/css/all.css]
+      light: [cosmo, brand, styles.scss]
+      dark: [darkly, brand, styles.scss]
+    css: _extensions/quarto-ext/fontawesome/assets/css/all.css
     toc: true
+    code-copy: true
   ipynb: default
-
-
 
 output: false

@@ -1,148 +1,80 @@
-<!----------------
-Fonctions qui étaient importées depuis @linogaliana/cartiflette-doc-utils
-et qu'on rappatrie ici pour plus de praticité
------------------>
+<!--
+Extraits de code affichés à côté des cartes. Python utilise le client
+cartiflette ; R et JavaScript appellent directement l'API GeoJSON.
+-->
 
 ```{ojs}
-// Function to display the code bloc to use Cartiflette for whole France
-function print_program_france(langage, selectedlevel, format, year, rapproche_drom, simplification) {
-    const filter_by = rapproche_drom ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE";
+// Langage choisi, partagé par les deux explorateurs
+mutable langage = "Python"
+langages = ["Python", "R", "JavaScript"]
+```
 
-    switch (langage) {
-        case "Python":
-            return md`
-            from cartiflette import carti_download
-            shp_communes = carti_download(
-                values = ["France"],
-                crs = 4326,
-                borders = "${selectedlevel}",
-                vectorfile_format="${format}",
-                simplification=${simplification},
-                filter_by="${filter_by}",
-                source="EXPRESS-COG-CARTO-TERRITOIRE",
-                year=${year})
-            `;
-        case "Javascript":
-            return md`
-            import {carti_download} from "@linogaliana/cartiflette-js"
-            carti_download({
-                value: "France",
-                crs: 4326,
-                borders: "${selectedlevel}",
-                vectorfile_format: "${format}",
-                simplification: ${simplification},
-                filter_by: "${filter_by}",
-                source: "EXPRESS-COG-CARTO-TERRITOIRE",
-                year: ${year}
-            });
-            `;
-        case "R":
-            return md`
-            library(cartiflette)
-            shp_communes <- carti_download(
-                values = c("France"),
-                crs = 4326,
-                borders = "${selectedlevel}",
-                vectorfile_format = "${format}",
-                simplification = ${simplification},
-                filter_by = "${filter_by}",
-                source = "EXPRESS-COG-CARTO-TERRITOIRE",
-                year = ${year}
-            )
-            `;
-        default:
-            throw new Error("Unsupported language specified");
-    }
+```{ojs}
+function pyValues(values) {
+  return values.length == 1
+    ? `"${values[0]}"`
+    : `[${values.map(v => `"${v}"`).join(", ")}]`
+}
+
+// Découpe une URL d'API en morceaux lisibles (un paramètre par ligne)
+function urlParts(url) {
+  const [base, query] = url.split("?")
+  const parts = query.split("&")
+  return [`${base}?${parts[0]}`, ...parts.slice(1).map(p => `&${p}`)]
+}
+
+function programmes(q, variable) {
+  const url = apiUrl(q)
+  const parts = urlParts(url)
+  return {
+    Python: `from cartiflette import carti_download
+
+${variable} = carti_download(
+    values=${pyValues(q.values)},
+    borders="${q.borders}",
+    filter_by="${q.filter_by}",
+    year=${q.year},
+    simplification=${q.simplification},
+)`,
+    R: `library(sf)
+
+url <- paste0(
+${parts.map(p => `  "${p}"`).join(",\n")}
+)
+${variable} <- st_read(url)`,
+    JavaScript: `const url = [
+${parts.map(p => `  "${p}"`).join(",\n")}
+].join("")
+
+const ${variable} = await fetch(url).then((r) => r.json())`
+  }
 }
 ```
 
-
 ```{ojs}
-function print_program_departement_single(langage, value, selectedlevel, format, year) {
-    switch (langage) {
-        case "Python":
-            return md`
-            from cartiflette import carti_download
-            shp_communes = carti_download(
-                crs = 4326,
-                values = ["${value.join('", "')}"],
-                borders="${selectedlevel}",
-                vectorfile_format="${format}",
-                filter_by="DEPARTEMENT",
-                source="EXPRESS-COG-CARTO-TERRITOIRE",
-                year=${year})
-            `;
-        case "Javascript":
-            return md`
-            import {carti_download} from "@linogaliana/cartiflette-js"
-            carti_download({
-                values = ["${value.join('", "')}"],
-                borders: "${selectedlevel}",
-                vectorfileFormat: "${format}",
-                year: ${year},
-                crs: 4326,
-                filter_by: "DEPARTEMENT",
-                source: "EXPRESS-COG-CARTO-TERRITOIRE"
-            });
-            `;
-        case "R":
-            return md`
-            library(cartiflette)
-            shp_communes <- carti_download(
-                crs = 4326,
-                values = c("${value.join('", "')}"),
-                borders = "${selectedlevel}",
-                vectorfile_format = "${format}",
-                filter_by = "DEPARTEMENT",
-                source = "EXPRESS-COG-CARTO-TERRITOIRE",
-                year = ${year}
-            )
-            `;
-        default:
-            throw new Error("Unsupported language specified");
-    }
+// Panneau à onglets : un extrait par langage, bouton pour copier
+function panneauCode(codes, note) {
+  const code = codes[langage]
+  const tabs = langages.map(l => {
+    const b = html`<button type="button" class=${l == langage ? "active" : ""}>${l}</button>`
+    b.onclick = () => { mutable langage = l }
+    return b
+  })
+  const copy = html`<button type="button" class="copy"><i class="fa-regular fa-copy"></i> Copier</button>`
+  copy.onclick = async () => {
+    await navigator.clipboard.writeText(code)
+    copy.textContent = "Copié"
+  }
+  return html`<div class="snippet">
+    <div class="snippet-tabs">${tabs}${copy}</div>
+    <pre><code>${code}</code></pre>
+  </div>
+  <p class="snippet-note">${note[langage]}</p>`
 }
-```
 
-
-<!---------------------------------------------
-Fonctions pour manipuler le tableau de métadonnées
----------------------------------------------->
-
-
-```{ojs}
-function annotateFields(x, annotationsSources) {
-    // Extract the keys from the input object
-    const fields = Object.keys(x[0]);
-
-    // Create a new object with annotated values for each field
-    const annotatedObject = {};
-    fields.forEach(field => {
-        annotatedObject[field] = annotateColumn(field, annotationsSources);
-    });
-
-    // Return an array where the first element is the annotated object and the second is the original object
-    return [annotatedObject, ...x];
-}
-```
-
-
-
-```{ojs}
-function annotateColumn(columnName, annotationsSources) {
-
-  const sourceData = annotationsSources.filter(d => d.variable == columnName)[0];
-  const sourceSelected = sourceData['source'];
-  const url = sourceData['url'];
-  const annotation = sourceData['note'];
-
-  // Generate the HTML with a colored footnote, and add an anchor tag to link to the source documentation
-  return html`
-    <span style="font-weight: bold;"><span style="background-color: #ffcc00; color: black; padding: 2px 5px; border-radius: 3px; cursor: pointer;">
-    <a href="${url}" target="_blank" style="color: black; text-decoration: none;" title="${sourceSelected} - ${annotation}">
-      ${annotation}
-    </a>
-  </span></span>
-  `;
-}
+notes = ({
+  Python: html`<code>pip install cartiflette</code> (version 0.2.1 ou plus). Le client lit le GeoParquet et ne télécharge que les polygones demandés.`,
+  R: html`Sans package dédié : l'API renvoie du GeoJSON, que <code>sf</code> lit directement.`,
+  JavaScript: html`Sans package dédié : l'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
+})
 ```

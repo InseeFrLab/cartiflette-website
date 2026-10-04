@@ -7,13 +7,6 @@ author: "Lino Galiana"
 ---
 
 
-::: {.important}
-Cette page est un _work in progress_! Des exemples dans d'autres langages que `Python` {{< fa brands python >}} viendront ultérieurement. 
-
-Cette page fait partie d'une série de tutoriels illustrant les fonctionnalités de `cartiflette`. Pour retrouver la liste de ceux-ci, c'est [ici](/use-case/index.qmd).
-:::
-
-
 Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte mélangeant les niveaux administratifs différents que sont [communes]{.yellow} et [arrondissements]{.yellow}__.  
 
 Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la petite couronne parisienne (Paris intra-muros et départements limitrophes). 
@@ -50,7 +43,7 @@ window.onload = function() {
 - Beaucoup [moins de ligne de code]{.yellow} à écrire :
     + Réduit le temps nécessaire avant d'obtenir une carte exploratoire, ce qui permet de se concentrer sur la construction de celle-ci plutôt que les étapes antérieures
     + Réduit la difficulté à mettre à jour le code ;
-- [Moins de bande passante]{.yellow} et d'espace disque utilisé car seule la donnée nécessaire est téléchargée ;
+- [Moins de bande passante]{.yellow} et d'espace disque utilisé car seule la donnée nécessaire est téléchargée : les quelques communes demandées, pas la France entière ;
 - [Moindre besoin d'expertise en SIG]{.yellow} car la librairie fournit un `GeoDataFrame` prêt à l'emploi ce qui ne nécessite pas une connaissance pointue dans le domaine (système de projection, format _shapefile_, etc.) ;
 - [Moins de risque d'erreur]{.yellow} que lorsqu'on fait soi-même la combinaison de sources à des niveaux administratifs différents (accoler le masque des arrondissements à celui des communes limitrophes nécessite beaucoup de précautions) ;
 - [Bénéficier de métadonnées supplémentaires]{.yellow} sur les communes que les fonds de carte `AdminExpress`
@@ -152,7 +145,7 @@ start_time_cartiflette = time.time()
 
 Les contours administratifs officiels sont produits par l'[IGN](https://www.ign.fr/) et utilisent le [code officiel géographique (COG)](https://www.insee.fr/fr/metadonnees/source/serie/s2084) (liste officielle des entités administratives) produit par l'Insee. 
 
-La source la plus simple pour répondre à notre besoin est [`AdminExpress EXPRESS-COG-CARTO-TERRITOIRE`](https://geoservices.ign.fr/adminexpress). En l'occurrence, seuls quelques espaces nous intéressent: ce sont les villes et arrondissements de la petite couronne parisienne (départements 75, 92, 93 et 94). 
+La source la plus simple pour répondre à notre besoin est [ADMIN EXPRESS COG CARTO](https://geoservices.ign.fr/adminexpress), ici dans son édition 2026. En l'occurrence, seuls quelques espaces nous intéressent: ce sont les villes et arrondissements de la petite couronne parisienne (départements 75, 92, 93 et 94). 
 
 Avec la fonction `carti_download`, l'import de ces données est assez transparent:
 
@@ -165,19 +158,19 @@ from cartiflette import carti_download
 
 # 1. Fonds communaux
 contours_villes_arrt = carti_download(
-    values = ["75", "92", "93", "94"],
-    crs = 4326, #<1>
+    values=["75", "92", "93", "94"],
     borders="COMMUNE_ARRONDISSEMENT",
-    filter_by="DEPARTEMENT", #<2>
-    source="EXPRESS-COG-CARTO-TERRITOIRE",
-    year=2022)
+    filter_by="DEPARTEMENT", #<1>
+    year=2026,
+)
 
-# 2. Départements 
-departements = contours_villes_arrt.dissolve("INSEE_DEP") #<3>
+# 2. Départements
+departements = contours_villes_arrt.dissolve("INSEE_DEP") #<2>
 ```
-1. 4326 est le code du système de représentation WGS84 (le même que celui des données Vélib). De futures développement de `cartiflette` permettront de récupérer des données avec d'autres projections, notamment les systèmes Lambert.
-2. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Néanmoins, il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Ile de France, en spécifiant les arguments `filter_by="DEPARTEMENT"` et `values="11"`.
-3. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte. 
+1. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Île-de-France avec `filter_by="REGION"` et `values="11"`. `cartiflette` ne télécharge que les parties utiles du fichier publié (au format GeoParquet), pas la France entière.
+2. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte.
+
+Les contours sont en WGS84 (EPSG:4326), comme les données Vélib.
 
 :::
 
@@ -286,15 +279,23 @@ comptes_velib_by_city_arrt.plot(
     alpha=0.3
 )
 
-# Plot the points with customized colors and sizes
-df_points.plot(
-    ax=ax,
-    column="markercolor",
-    markersize="markersize",
-    alpha=0.7,
-    legend=True,
-    legend_kwds={"loc": "upper center", "ncol": 2, "bbox_to_anchor": (0.5, 0.05)},
-    cmap="viridis",
+# Plot the points, one class at a time, with customized colors and sizes
+palette = plt.get_cmap("viridis", len(labels))
+for i, label in enumerate(labels):
+    classe = df_points.loc[df_points["markercolor"] == label]
+    if len(classe) > 0:
+        classe.plot(
+            ax=ax,
+            markersize=classe["markersize"],
+            color=palette(i),
+            alpha=0.7,
+            label=label,
+        )
+ax.legend(
+    title="Nombre de vélib par km²",
+    loc="upper center",
+    ncol=2,
+    bbox_to_anchor=(0.5, 0.05),
 )
 
 # Plot the department boundaries
@@ -302,16 +303,13 @@ departements.boundary.plot(ax=ax, edgecolor="black", alpha=0.3)
 
 # Remove axes and set the title
 ax.axis("off")
-ax.set_title("Densité de population dans la petite couronne")
-
-# Customize the legend title
-ax.get_legend().set_title("Nombre de vélib par km²")
+ax.set_title("Densité de vélibs dans la petite couronne")
 
 # Add source text
 plt.figtext(
     0.3,
     0.15,
-    "Source: IGN - AdminExpress",
+    "Source : IGN, ADMIN EXPRESS COG CARTO 2026 ; cartiflette",
     wrap=True,
     horizontalalignment="center",
     fontsize=8,
@@ -331,16 +329,18 @@ plt.show()
 start_time_no_cartiflette = time.time()
 ```
 
-L'approche est nettement plus fastidieuse sans `cartiflette`. Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par quatre étapes principales:
+L'approche est nettement plus fastidieuse sans `cartiflette`. L'IGN publie chaque couche d'ADMIN EXPRESS pour la France entière : il faut télécharger les couches complètes, puis faire soi-même les filtres et l'assemblage. Cela passe par trois étapes principales :
 
-* 1️⃣ Télécharger les données et les enregistrer sur le disque, en local.
-* 2️⃣ Dézipper la version téléchargée (le format est une archive 7z) et enregistrer l'arborescence obtenue sur le disque.
-* 3️⃣ Importer les bons _shapefile_ dans `Python`.
-* 4️⃣ Créer le fonds de carte consolidé en se restreignant aux départements d'intérêt pouis en retirant la commune de Paris et en y apposant, à la place, les arrondissements.
+* 1️⃣ Télécharger les couches des communes et des arrondissements municipaux, pour toute la France.
+* 2️⃣ Les importer dans `Python`.
+* 3️⃣ Créer le fonds de carte consolidé : se restreindre aux départements d'intérêt, retirer la commune de Paris et apposer, à la place, ses arrondissements.
 
-La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN. L'archive étant assez volumineuse, le code proposé propose une barre de progrès pour s'assurer que le téléchargement progresse.
+La première étape consiste donc à télécharger les fichiers depuis le site de mise à disposition de l'IGN. Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
 
-Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
+```{python}
+#| echo: false
+couches_ign = ["commune", "arrondissement_municipal"]
+```
 
 ::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
 
@@ -348,75 +348,55 @@ Le code étant assez long, il n'est pas apparent par défaut mais il suffit de c
 
 :::
 
+La deuxième étape consiste à importer les fonds de carte désirés. Le piège à cette étape est qu'il existe deux fonds de carte d'arrondissements : les arrondissements départementaux (subdivisions des départements) et les arrondissements municipaux (subdivisions des trois plus grandes villes françaises). Ce sont ces derniers qui nous intéressent, dans la couche `arrondissement_municipal` (à ne pas confondre avec `arrondissement`).
 
-La deuxième étape consiste à dézipper la version téléchargée en local
-
-
-::: {#lst-example-unzip-adminexpress lst-cap="2️⃣ Dézipper la version téléchargée"}
-
-{{< include "/use-case/scripts/_02_unzip_admin.qmd" >}}
-
-:::
-
-La troisième étape consiste à importer les fonds de carte désirés. Le piège à cette étape est qu'il existe deux fonds de carte d'arrondissements: les arrondissements départementaux(subdivisions départementales) et les arrondissements municipaux (subdivisions des trois plus grandes villes françaises). Ce sont ces derniers qui nous intéressent. Ils sont livrés sous le nom de fichier `ARRONDISSEMENT_MUNICIPAL` (à ne pas confondre avec `ARRONDISSEMENT` qui correspond aux arrondissements départementaux). 
-
-Les données sont livrées au format _shapefile_, un format propriétaire bien connu des spécialistes des SIG. Moins pratique que le GeoJSON pour les utilisateurs de `Python`, il est tout de même possible de le lire directement avec `GeoPandas`
-
-::: {#lst-example-open-adminexpress lst-cap="3️⃣ Importer le bon shapefile dans Python"}
+::: {#lst-example-open-adminexpress lst-cap="2️⃣ Importer les couches dans Python"}
 
 ```{python}
 #| code-fold: true
-#| code-summary: "3️⃣ Importer le bon _shapefile_ dans Python"
+#| code-summary: "2️⃣ Importer les couches dans Python"
 #| code-line-numbers: true
+import geopandas as gpd
 
-path_extraction = "./extracted_files/ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15/ADMIN-EXPRESS-COG-CARTO/1_DONNEES_LIVRAISON_2022-04-15/ADECOGC_3-1_SHP_WGS84G_FRA/"
-
-# Limites communales
-city_shapefile = gpd.read_file(f"{path_extraction}/COMMUNE.shp")
-
-# Arrondissements
-arrondissement_shapefile = gpd.read_file(f"{path_extraction}/ARRONDISSEMENT_MUNICIPAL.shp")
-
-# Départements
-departements_shapefile = gpd.read_file(f"{path_extraction}/DEPARTEMENT.shp")
+communes_ign = gpd.read_parquet(fichiers_ign["commune"])
+arrondissements_ign = gpd.read_parquet(fichiers_ign["arrondissement_municipal"])
 ```
 
 :::
 
-La 4e et dernière étape, la plus propice à faire des erreurs, est celle qui consiste à restreindre les données à notre aire d'intérêt et à superposer les masques du fonds des arrondissements municipaux avec celui des communes. 
+La 3e et dernière étape, la plus propice à faire des erreurs, est celle qui consiste à restreindre les données à notre aire d'intérêt et à superposer les masques du fonds des arrondissements municipaux avec celui des communes. Les noms de colonnes de l'IGN ont changé avec l'édition 2025 (`code_insee` au lieu de `INSEE_COM`…) : un code écrit pour une édition antérieure ne fonctionne plus tel quel, alors que `cartiflette` garde les mêmes noms d'une année sur l'autre.
 
-::: {#lst-example-merge-adminexpress lst-cap="4️⃣ Consolider pour obtenir le fonds de carte désiré"}
+::: {#lst-example-merge-adminexpress lst-cap="3️⃣ Consolider pour obtenir le fonds de carte désiré"}
 
 ```{python}
 #| code-fold: true
-#| code-summary: "4️⃣ Consolider pour obtenir le fonds de carte désiré"
+#| code-summary: "3️⃣ Consolider pour obtenir le fonds de carte désiré"
 #| code-line-numbers: true
-
 import pandas as pd
 
 # 1. Filtrer les données à l'emprise désirée
-city_shapefile = city_shapefile.loc[
-    city_shapefile['INSEE_DEP'].isin(["75", "92", "93", "94"])
-]
-arrondissement_shapefile = arrondissement_shapefile.loc[
-    arrondissement_shapefile['INSEE_COM'].str[:2] == "75"
-]
+communes_ign = communes_ign.loc[
+    communes_ign["code_insee_du_departement"].isin(["75", "92", "93", "94"])
+    & (communes_ign["code_insee"] != "75056") #<1>
+].copy()
+arrondissements_ign = arrondissements_ign.loc[
+    arrondissements_ign["code_insee"].str.startswith("751") #<2>
+].copy()
 
 # 2. Préparer la superposition des fonds de carte
-city_shapefile = (
-    city_shapefile
-    .loc[city_shapefile["INSEE_DEP"] != "75"]
-)
-city_shapefile['INSEE_COG'] = city_shapefile['INSEE_COM'] #<1>
-arrondissement_shapefile['INSEE_COG'] = arrondissement_shapefile['INSEE_COM'] #<1>
-arrondissement_shapefile['INSEE_COM'] = "75056" #<2>
+communes_ign["INSEE_COG"] = communes_ign["code_insee"] #<3>
+arrondissements_ign["INSEE_COG"] = arrondissements_ign["code_insee"] #<3>
+arrondissements_ign["code_insee"] = "75056" #<4>
+arrondissements_ign["code_insee_du_departement"] = "75"
 
 geodataframe_cartiflette_like = pd.concat(
-    [city_shapefile, arrondissement_shapefile]
+    [communes_ign, arrondissements_ign]
 )
-``` 
-1. On crée les variables `INSEE_COG` et `INSEE_COM` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
-2. Code commune de la ville de Paris
+```
+1. On retire Paris, que ses arrondissements remplacent.
+2. Les arrondissements de Paris (751xx) ; la couche contient aussi ceux de Lyon et Marseille.
+3. On crée la variable `INSEE_COG` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
+4. Code commune de la ville de Paris
 
 :::
 
@@ -427,7 +407,7 @@ end_time_no_cartiflette = time.time()
 
 # Bilan 
 
-Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-unzip-adminexpress, @lst-example-open-adminexpress, @lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
+Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartiflette-example contre @lst-example-download-adminexpress, @lst-example-open-adminexpress et @lst-example-merge-adminexpress pour obtenir un résultat équivalent ne suffit pas, si le fait que le _GeoDataFrame_ obtenu avec `cartiflette` comporte plus de métadonnées que celui créé sans ce _package_ n'est pas non plus suffisant, la suite déroule quelques arguments supplémentaires de l'intérêt d'utiliser `cartiflette`. 
 
 
 ## Volume de données téléchargées
@@ -437,31 +417,22 @@ Si le fait qu'il suffise que le code de `cartiflette` se réduise à @lst-cartif
 ```{python}
 #| output: false
 #| code-fold: true
-#| code-summary: "Evaluation de la taille des mêmes données issues de cartiflette"
-
+#| code-summary: "Taille des mêmes données issues de cartiflette"
 writedir = "cartiflette-data/usecase1"
 os.makedirs(writedir, exist_ok=True)
-contours_villes_arrt.to_file(
-    f"{writedir}/contours.shp"
-) #<1>
+contours_villes_arrt.to_parquet(f"{writedir}/contours.parquet") #<1>
 
-poids_archive_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.shp")
-poids_archive_cartiflette = convert_size(
-    poids_archive_cartiflette_bytes
-)
+poids_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.parquet")
+poids_cartiflette = convert_size(poids_cartiflette_bytes)
 ```
-1. On crée un _shapefile_ avec le `GeoDataFrame` obtenu depuis `cartiflette` afin d'avoir une comparaison honnête avec le fonds de carte issu du site de l'IGN. 
+1. On enregistre le `GeoDataFrame` obtenu avec `cartiflette` au même format (GeoParquet) que les couches de l'IGN, pour une comparaison honnête.
 
-La première base de comparaison possible est la taille sur disque des fonds de carte récupérés par `cartiflette` ou sans passer par ce _package_. Le code ci-dessus ☝️ permet de construire les statistiques suivantes:
+La première base de comparaison possible est la quantité de données nécessaires :
 
-* Les données `cartiflette` représenteraient __`{python} poids_archive_cartiflette`__ si elles étaient stockées sur disque. 
-* Sans passer par `cartiflette`, on a besoin de __`{python} poids_archive_decompressee`__ pour stocker les fonds de carte décompressés auxquels il faut ajouter `{python} poids_archive_compressee` pour stocker l'archive compressée. 
+* les données `cartiflette` représenteraient __`{python} poids_cartiflette`__ si elles étaient stockées sur disque ;
+* sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__ : les couches de la France entière.
 
-Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round((zipped_size + size_dir)/poids_archive_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
-
-
-{{< include "/use-case/scripts/_04_arborescence.qmd" >}}
-
+Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round(poids_ign_bytes / poids_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
 
 ## Nombre de lignes de code
 
@@ -480,7 +451,7 @@ En ce qui concerne le temps de développement de ce code, on est sur quelques se
 
 ::: {.content-visible when-format="ipynb"}
 
-La récupération des données avec cartiflette ne demande que 13 lignes de code contre 78 sans cartiflette
+La récupération des données avec cartiflette ne demande qu'une dizaine de lignes de code, contre plusieurs dizaines sans cartiflette
 
 :::
 
@@ -488,7 +459,7 @@ La récupération des données avec cartiflette ne demande que 13 lignes de code
 
 {{< include "/use-case/scripts/_06_timing.qmd" >}}
 
-Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`. Sans `cartiflette`, soit un rapport de 1 à `{python} round(time_no_cartiflette_exact/time_cartiflette_exact)` pour cette tâche.
+Le code `cartiflette` permet de récupérer les éléments contextuels nécessaires en `{python} time_cartiflette`. Sans `cartiflette`, il faut `{python} time_no_cartiflette`, soit un rapport de 1 à `{python} max(1, round(time_no_cartiflette_exact / time_cartiflette_exact))` pour cette tâche.
 
 ::: {.content-visible when-format="html"}
 
@@ -500,9 +471,8 @@ Retrieve number of lines
 //| echo: false
 labels = [
     'lst-example-download-adminexpress',
-    'lst-example-unzip-adminexpress',
     'lst-example-open-adminexpress',
-    'lst-example-merge-adminexpres'
+    'lst-example-merge-adminexpress'
 ]
 labels_cartiflette = [
     'lst-cartiflette-example'

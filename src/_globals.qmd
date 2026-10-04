@@ -1,77 +1,191 @@
+<!--
+Constantes et fonctions de la page d'accueil.
+
+Les cartes sont lues sur l'API GeoJSON de cartiflette, qui sert tous les
+millésimes à partir des GeoParquet publiés (et redirige vers les anciens
+GeoJSON pour 2022). Les téléchargements GeoParquet pointent vers les fichiers
+publiés sur S3.
+-->
+
 ```{ojs}
-// Function to merge multiple GeoJSON FeatureCollections
-function mergeGeoJSONs(geojsonList) {
-    // Initialize an empty FeatureCollection
-    const mergedGeoJSON = {
-        type: "FeatureCollection",
-        features: []
-    };
+API = "https://cartiflette-api.lab.sspcloud.fr"
+STORAGE = "https://minio.lab.sspcloud.fr/projet-cartiflette/production"
+// Premier millésime publié en GeoParquet
+PARQUET_FIRST_YEAR = 2023
+annees = ["2026", "2025", "2024", "2023", "2022"]
+```
 
-    // Loop through all GeoJSON objects in the list
-    geojsonList.forEach(geojson => {
-        if (geojson.type === "Feature") {
-            // If it's a Feature, add directly to the features array
-            mergedGeoJSON.features.push(geojson);
-        } else if (geojson.type === "FeatureCollection") {
-            // If it's a FeatureCollection, add all its features to the features array
-            mergedGeoJSON.features = mergedGeoJSON.features.concat(geojson.features);
-        }
-    });
+```{ojs}
+// Niveaux proposés pour la France entière : libellé, nom de variable dans les
+// extraits de code
+niveaux = new Map([
+  ["Départements", {code: "DEPARTEMENT", variable: "departements"}],
+  ["Régions", {code: "REGION", variable: "regions"}],
+  ["Bassins de vie", {code: "BASSIN_VIE", variable: "bassins_vie"}],
+  ["Zones d'emploi", {code: "ZONE_EMPLOI", variable: "zones_emploi"}],
+  ["Unités urbaines", {code: "UNITE_URBAINE", variable: "unites_urbaines"}],
+  ["Aires d'attraction des villes", {code: "AIRE_ATTRACTION_VILLES", variable: "aires_attraction"}]
+])
+```
 
-    return mergedGeoJSON;
+```{ojs}
+// Requête cartiflette : { borders, filter_by, values, year, simplification }
+function apiUrl(q) {
+  const params = new URLSearchParams({
+    year: q.year,
+    borders: q.borders,
+    filter_by: q.filter_by,
+    simplification: q.simplification
+  })
+  for (const v of q.values) params.append("values", v)
+  return `${API}/v1/geojson?${params}`
+}
+
+// GeoParquet publié : un fichier par niveau et disposition, toute la France
+function parquetUrl(q) {
+  const layout = q.filter_by == "FRANCE_ENTIERE_DROM_RAPPROCHES"
+    ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE"
+  return `${STORAGE}/provider=IGN/dataset_family=ADMINEXPRESS` +
+    `/source=EXPRESS-COG-CARTO-TERRITOIRE/year=${q.year}` +
+    `/administrative_level=${q.borders}/crs=4326/layout=${layout}` +
+    `/vectorfile_format=parquet/simplification=${q.simplification}/raw.parquet`
 }
 ```
 
-
 ```{ojs}
-availableHeight = window.innerHeight
-screenHeight = 0.9*(availableHeight - document.getElementById("quarto-header").offsetHeight)
-availableWidth = window.innerWidth
-mapWidth = (width > 400) ? 0.4*width : 0.95*width 
-mapHeight = (width > 400) ? 0.85*screenHeight : 0.5*screenHeight
-smallScreen = 500
+// Origine des colonnes, affichée sous le tableau des données attributaires
+SOURCES = ({
+  ign: {label: "IGN, ADMIN EXPRESS COG CARTO", url: "https://geoservices.ign.fr/adminexpress"},
+  tagc: {label: "Insee, appartenance géographique des communes", url: "https://www.insee.fr/fr/information/7671844"},
+  cartiflette: {label: "cartiflette", url: "https://github.com/InseeFrLab/cartiflette"}
+})
+COLONNES = ({
+  ID: ["ign", "Identifiant IGN"],
+  NOM: ["ign", "Nom officiel"],
+  STATUT: ["ign", "Statut de la commune"],
+  POPULATION: ["ign", "Population municipale (somme pour les niveaux agrégés)"],
+  INSEE_COM: ["ign", "Code commune"],
+  INSEE_COG: ["cartiflette", "Code commune, ou d'arrondissement municipal à Paris, Lyon et Marseille"],
+  AREA: ["cartiflette", "Territoire : métropole ou DROM"],
+  PAYS: ["cartiflette", "Pays"],
+  SOURCE: ["cartiflette", "Source des contours"],
+  CTCD: ["tagc", "Collectivité territoriale ayant les compétences départementales"],
+  EPCI: ["tagc", "Intercommunalité (EPCI)"],
+  EPT: ["tagc", "Établissement public territorial (Grand Paris)"],
+  ARR: ["tagc", "Arrondissement départemental"],
+  CANOV: ["tagc", "Canton-ville"],
+  ZE2020: ["tagc", "Zone d'emploi 2020"],
+  UU2020: ["tagc", "Unité urbaine 2020"],
+  AAV2020: ["tagc", "Aire d'attraction des villes 2020"],
+  BV2022: ["tagc", "Bassin de vie 2022"],
+  INSEE_DEP: ["tagc", "Code département"],
+  INSEE_REG: ["tagc", "Code région"],
+  LIBELLE_DEPARTEMENT: ["tagc", "Nom du département"],
+  LIBELLE_REGION: ["tagc", "Nom de la région"]
+})
+
+function sourcesColonnes(columns) {
+  const items = columns.filter(c => c in COLONNES).map(c => {
+    const [source, description] = COLONNES[c]
+    return html`<li><code>${c}</code> : ${description}
+      (<a href=${SOURCES[source].url} target="_blank">${SOURCES[source].label}</a>)</li>`
+  })
+  return html`<details class="viz-meta"><summary>Origine des colonnes</summary>
+    <ul>${items}</ul></details>`
+}
+
+// Carte ou tableau des données attributaires
+function visualisation(geojson, mode) {
+  if (geojson.features.length == 0) {
+    return html`<p class="viz-meta">Aucun polygone pour cette sélection.</p>`
+  }
+  const rows = geojson.features.map(f => f.properties)
+  const columns = Object.keys(rows[0])
+  const resume = html`<p class="viz-meta">${rows.length} polygones, ${columns.length} colonnes</p>`
+  if (mode == "Carte") {
+    return html`<div>${carte(geojson)}${resume}</div>`
+  }
+  return html`<div class="attributes-table">${Inputs.table(rows, {layout: "auto"})}</div>
+    ${resume}${sourcesColonnes(columns)}`
+}
 ```
 
-
 ```{ojs}
-// Projection Lambert 93 (EPSG: 2154)
+// Carte d'une FeatureCollection, en Lambert 93, avec info-bulles et zoom
 l93 = "+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
-```
-
-```{ojs}
 topohelper = import("https://cdn.jsdelivr.net/npm/topohelper@0.4.3/+esm")
-```
 
-<!----------------
-CARTIFLETTE RELATED STUFFS
------------------>
+// Largeur de la colonne de la carte, d'après la fenêtre (mêmes seuils que
+// .explorer dans styles.scss) : la carte est un canvas de taille fixe
+largeurCarte = Generators.observe(notify => {
+  const compute = () => {
+    const explorer = window.innerWidth - 120
+    notify(Math.floor(window.innerWidth > 991 ? (explorer - 40) * 2.2 / 4.8 : explorer))
+  }
+  compute()
+  window.addEventListener("resize", compute)
+  return () => window.removeEventListener("resize", compute)
+})
 
-```{ojs}
-import {download_vectorfile} from "@linogaliana/cartiflette-js"
-```
-
-```{ojs}
-import {
-  button, url_file_available,
-  get_france, get_departement, liste_departements,
-  get_multiple_departement, create_url_departement, create_url_france,
-  to_single_geojson} from "@linogaliana/cartiflette-js"
-```
-
-{{< include "src/utils/_doc.qmd"   >}}
-
-```{ojs}
-function download_button(url) {
-  return `
-    <form method="get" action="${url}" target="_blank" rel="noopener noreferrer">
-      <button class="btn btn-download" type="submit">
-        <i class="fa-solid fa-download"></i> Download !
-      </button>
-    </form>
-  `;
+function carte(geojson) {
+  const w = largeurCarte
+  return topohelper
+    .fromGeojson(geojson, {deep: true})
+    .project({proj: l93})
+    .view({tooltip: true, zoom: true, size: [w, Math.round(w * 0.95)]})
 }
 ```
 
 ```{ojs}
-import {multiAutoSelect} from "@linogaliana/multi-auto-select"
+// Boutons de téléchargement : GeoJSON par l'API, GeoParquet publié
+function telechargements(q, parquetNote) {
+  const geojson = html`<a class="primary" href=${apiUrl(q)} target="_blank" rel="noopener">
+    <i class="fa-solid fa-download"></i> GeoJSON</a>`
+  const parquet = Number(q.year) >= PARQUET_FIRST_YEAR
+    ? html`<a class="secondary" href=${parquetUrl(q)} rel="noopener">
+        <i class="fa-solid fa-download"></i> GeoParquet</a>
+        <small>${parquetNote}</small>`
+    : html`<a class="disabled">GeoParquet</a>
+        <small>Pas de GeoParquet publié pour ${q.year}</small>`
+  return html`<div class="downloads">${geojson}${parquet}</div>`
+}
+```
+
+```{ojs}
+// Sélection multiple avec autocomplétion, sans dépendance externe : un champ
+// relié à une <datalist> ajoute des étiquettes, que l'on retire avec ×.
+// Suit le protocole des entrées Observable (propriété value, événement input).
+function selecteurMultiple(options, {value = [], placeholder = ""} = {}) {
+  const id = `liste-${Math.random().toString(36).slice(2)}`
+  const input = html`<input type="text" list=${id} placeholder=${placeholder}
+    class="form-control form-control-sm">`
+  const datalist = html`<datalist id=${id}>${options.map(o => html`<option value=${o}>`)}</datalist>`
+  const chips = html`<div class="chips"></div>`
+  const form = html`<form class="multi-select">${input}${datalist}${chips}</form>`
+  let selection = [...value]
+
+  function render() {
+    chips.replaceChildren(...selection.map(v => {
+      const remove = html`<button type="button" aria-label="Retirer ${v}">×</button>`
+      remove.onclick = () => { selection = selection.filter(s => s != v); update() }
+      return html`<span class="chip">${v}${remove}</span>`
+    }))
+  }
+  function update() {
+    form.value = [...selection]
+    render()
+    form.dispatchEvent(new Event("input", {bubbles: true}))
+  }
+  input.addEventListener("change", () => {
+    if (options.includes(input.value) && !selection.includes(input.value)) {
+      selection.push(input.value)
+      update()
+    }
+    input.value = ""
+  })
+  form.addEventListener("submit", e => e.preventDefault())
+  form.value = [...selection]
+  render()
+  return form
+}
 ```

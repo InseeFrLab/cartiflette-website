@@ -1,365 +1,147 @@
 ---
 echo: false
+toc: false
+format-links: false
+code-copy: false
 ---
 
+{{< include "./src/_globals.qmd" >}}
+{{< include "./src/_programs.qmd" >}}
+{{< include "./src/_departements.qmd" >}}
+
+::: {.hero}
+
+![](images/logo.png){fig-alt="Logo cartiflette : la France en gratin"}
+
+::: {}
+
+# cartiflette
+
+[Les fonds de carte officiels français, en une ligne de code.]{.tagline}
+
+Contours de l'IGN (ADMIN EXPRESS COG CARTO) enrichis des métadonnées de l'Insee :
+communes, arrondissements municipaux, départements, régions, bassins de vie, zones
+d'emploi, unités urbaines, aires d'attraction des villes, avec ou sans les DROM
+rapprochés de la métropole.
+
+::: {.hero-facts}
+- Millésimes 2022 à 2026
+- Python, R, JavaScript
+- GeoJSON et GeoParquet
+:::
+
+[[\$]{.prompt} pip install cartiflette]{.install}
+
+:::
+
+:::
+
+## Un fond de carte France entière
+
+Choisissez un niveau et un millésime : la carte, les données attributaires, le code
+et les liens de téléchargement suivent.
 
 ::: {.column-screen-inset}
 
+```{ojs}
+//| output: true
+html`<div class="explorer">
+  <div class="explorer-controls">
+    ${viewof affichage_france}
+    ${viewof niveau_france}
+    ${viewof annee_france}
+    ${viewof drom_rapproches}
+    ${viewof simplification_france}
+    ${telechargements(requete_france, "Fichier complet du niveau, à filtrer en SQL ou avec le client Python")}
+  </div>
+  <div class="explorer-viz">${visualisation(donnees_france, affichage_france)}</div>
+  <div class="explorer-code">${panneauCode(programmes(requete_france, niveau_france.variable), notes)}</div>
+</div>`
+```
 
-{{< include "./src/_data.qmd" >}}
-{{< include "./src/_globals.qmd" >}}
-{{< include "./src/_inputs.qmd" >}}
-{{< include "./src/_programs.qmd" >}}
+:::
 
+## Les communes d'une sélection de départements
 
+Les arrondissements municipaux de Paris, Lyon et Marseille peuvent remplacer leur
+commune.
 
-## Récupérer un fond de carte France entière
-
+::: {.column-screen-inset}
 
 ```{ojs}
 //| output: true
-html`<div>${grid}</div>`
+html`<div class="explorer">
+  <div class="explorer-controls">
+    ${viewof affichage_departements}
+    ${viewof choix_departements}
+    ${viewof annee_departements}
+    ${viewof arrondissements}
+    ${viewof simplification_departements}
+    ${telechargements(requete_departements, "Fichier France entière, à filtrer par INSEE_DEP")}
+  </div>
+  <div class="explorer-viz">${
+    requete_departements.values.length == 0
+      ? html`<p class="viz-meta">Choisissez au moins un département.</p>`
+      : visualisation(donnees_departements, affichage_departements)
+  }</div>
+  <div class="explorer-code">${panneauCode(programmes(requete_departements, "communes"), notes)}</div>
+</div>`
 ```
 
-## Récupérer un fond de carte sur une emprise limitée
+:::
+
+<!-- Réglages : France entière -->
 
 ```{ojs}
-//| output: true
-html`<div>${grid_departements}</div>`
-```
-
-
-<!----------------------
-Conteneurs
------------------------->
-
-```{ojs}
-// spanner pour les exemples de code
-// là si on a une carte,
-// pas là si on affiche les métadonnées (pour laisser plus de places)
-right_spanner_map_france =  (choice_print_map_france == "Carte") ? spanner_code_france : ""
-```
-
-
-```{ojs}
-spanner_code_france = html`
-<div name="code-bloc" class="code-bloc">
-    <div name="choice-code" style="grid-area: choice-code; position: relative;">
-        ${viewof langage_requete}
-    </div>
-    <div name="code" style="grid-area: code; position: relative;" class="code">
-        <span class="code-bloc-title">
-            Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-        </span>
-        <span class="code-content">
-            ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
-        </span>
-    </div>
-</div>
-`
-```
-
-```{ojs}
-grid_structure = (choice_print_map_france == "Carte") ?
-    `'selectors map choice-code'
-                '. map code'
-                '. map .'
-                '. map .'
-                'download map .'`
-    :
-    `'selectors map info'
-                '. map info'
-                '. map info'
-                'download map info'
-                'code code info'`
-grid_repartition =  (choice_print_map_france == "Carte") ?
-    '23% 45% 32%' :
-    '23% 65% 12%'
-```
-
-```{ojs}
-// Source: https://observablehq.com/@mbostock/dashboard
-grid = {
-
-    let grid ;
-
-    if (availableWidth>smallScreen){
-        grid = html`
-        <div class="cartiflette-example" style="
-            margin: 0;
-            border: none;
-            display: grid;
-            width: ${availableWidth};
-            grid-template-areas: ${grid_structure};
-            grid-template-columns: ${grid_repartition};
-            ">
-            
-            <div name="selectors" style="grid-area: selectors; position: relative;">
-                ${viewof choice_print_map_france}
-                ${viewof year}
-                ${viewof selectedlevel}
-                ${viewof format}
-                ${viewof simplification_percent}
-                ${viewof drom_rapproches}
-            </div>
-            
-            <div name="map" style="grid-area: map; position: relative;">
-                ${object_print_map_france}
-            </div>
-
-            ${right_spanner_map_france}
-
-            <div name="download-button" style="grid-area: download; position: relative;">
-                ${button_france}
-            </div>
-
-        </div>
-        `
-        return grid
-    }
-
-    grid = html`
-    <div class="cartiflette-example" style="
-        margin: 0;
-        border: none;
-        display: grid;
-        width: ${availableWidth};
-        grid-template-areas: 
-            'selectors'
-            'map'
-            'download'
-            'choice-code'
-            'code';
-        grid-template-rows: auto auto auto auto auto;
-        grid-gap: 10px;
-        ">
-
-        <div name="selectors" style="grid-area: selectors; position: relative;">
-            ${viewof choice_print_map_france}
-            ${viewof year}
-            ${viewof selectedlevel}
-            ${viewof format}
-            ${viewof simplification_percent}
-            ${viewof drom_rapproches}
-        </div>
-        
-        <div name="map" style="grid-area: map; position: relative;">
-            ${object_print_map_france}
-        </div>
-
-        <div name="download-button" style="grid-area: download; position: relative;">
-            ${button_france}
-        </div>
-
-        <div name="code-bloc" class="code-bloc">
-            <div name="choice-code" style="grid-area: choice-code; position: relative;">
-                ${viewof langage_requete}
-            </div>
-
-            <div name="code" style="grid-area: code; position: relative;" class="code">
-                <span class="code-bloc-title">
-                    Comment faire en <code>${langage}</code> ${logo[langage.toLowerCase()]}
-                </span>
-                <span class="code-content">
-                    ${print_program_france(langage, selectedlevel, format, year, drom_rapproches, simplification_percent)}
-                </span>
-            </div>
-        </div>
-
-    </div>
-    `
-    return grid
-}
-```
-
-
-```{ojs}
-grid_departements =  {
-    let grid ;
-
-    if (availableWidth>smallScreen){
-        grid = html`
-        <div style="
-            margin: 0;
-            border: none;
-            display: grid;
-            width: ${availableWidth};
-            grid-template-areas: 
-                'selectors_departements map_departements choice-code_departements'
-                '. map_departements code_departements'
-                '. map_departements .'
-                '. map_departements .'
-                'download_departements map_departements .';
-            grid-template-columns: 23% 45% 32%;
-            ">
-            
-            <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
-                ${viewof choice_print_map_departement}
-                ${viewof selected_departements}
-                ${year_emprise}
-                ${format_emprise}
-                ${simplification_percent_emprise}
-                ${viewof arrondissement}
-            </div>
-            
-            <div name="map_departements" style="grid-area: map_departements; position: relative;">
-                ${object_print_map_departement}
-            </div>
-
-            <div name="code-bloc-departement" class="code-bloc">
-                <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
-                    ${language_emprise_departements}
-                </div>
-
-                <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
-                    <span class="code-bloc-title">
-                        Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                    </span>
-                    <span class="code-content">
-                        ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                    </span>
-                </div>
-            </div>
-
-            <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
-                ${button_departements}
-            </div>
-
-        </div>
-        `
-        return grid
-    }
-
-    grid = html`
-    <div style="
-        margin: 0;
-        border: none;
-        display: grid;
-        width: ${availableWidth};
-        grid-template-areas: 
-            'selectors_departements'
-            'map_departements'
-            'download_departements'
-            'choice-code_departements'
-            'code_departements';
-        grid-template-rows: auto auto auto auto auto;
-        grid-gap: 10px;
-        ">
-
-        <div name="selectors_departements" style="grid-area: selectors_departements; position: relative;">
-                ${viewof choice_print_map_departement}
-                ${viewof selected_departements}
-                ${year_emprise}
-                ${format_emprise}
-                ${simplification_percent_emprise}
-                ${viewof arrondissement}
-        </div>
-        
-        <div name="map_departements" style="grid-area: map_departements; position: relative;">
-            ${object_print_map_departement}
-        </div>
-
-        <div name="download-button_departements" style="grid-area: download_departements; position: relative;">
-            ${button_departements}
-        </div>
-
-        <div name="code-bloc-departement" class="code-bloc">
-            <div name="choice-code_departements" style="grid-area: choice-code_departements; position: relative;">
-                ${language_emprise_departements}
-            </div>
-
-            <div name="code_departements" style="grid-area: code_departements; position: relative;" class="code">
-                <span class="code-bloc-title">
-                    Comment faire en <code>${langage_departements}</code> ${logo[langage_departements.toLowerCase()]}
-                </span>
-                <span class="code-content">
-                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                </span>
-                <span class="code-content">
-                    ${print_program_departement_single(langage_departements, selected_departements, selectedlevel, format, year)}
-                </span>
-            </div>
-        </div>
-
-    </div>
-    `
-
-    return grid
-}
-```
-
-
-
-<!-----------------
-Objets affichés
------------------->
-
-<!----
-Carte France
------>
-
-```{ojs}
-map_france = topohelper
-  .from(
-    await data_france
-  )
-  .project({ proj: l93 })
-  .view({
-    tooltip: true,
-    zoom: true,
-    size: [
-        availableWidth > smallScreen ? availableWidth*0.4 : availableWidth*0.95, availableHeight * 0.6
-    ]})
-```
-
-
-```{ojs}
-// On affiche la carte ou les métadonnées selon la valeur du bouton radio
-object_print_map_france = (choice_print_map_france == "Carte") ?
-    map_france :
-    viewof table_attributes_map_france
-```
-
-
-<!----
-Tableau métadonnées France
------>
-
-
-```{ojs}
-// Injecter un formattage html pour le tableau de métadonnées 
-mapping = Object.keys(attributes_map_france[0]).reduce((acc, key) => {
-    acc[key] = (d) => html`<div>${d}</div>`;
-    return acc;
-}, {})
-```
-
-```{ojs}
-viewof table_attributes_map_france = Inputs.table(
-    annotateFields(attributes_map_france, annotationsSources),
-    {
-        format: mapping
-    }
+viewof affichage_france = Inputs.radio(["Carte", "Données attributaires"], {value: "Carte"})
+viewof niveau_france = Inputs.select(niveaux, {label: "Niveau", key: "Départements"})
+viewof annee_france = Inputs.select(annees, {label: "Millésime"})
+viewof drom_rapproches = Inputs.toggle({label: "DROM rapprochés et zoom sur l'Île-de-France", value: true})
+viewof simplification_france = Inputs.radio(
+  new Map([["Simplifiés (50 %)", 50], ["Complets", 0]]),
+  {label: "Contours", value: 50}
 )
 ```
 
+```{ojs}
+requete_france = ({
+  borders: niveau_france.code,
+  filter_by: drom_rapproches ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE",
+  values: ["France"],
+  year: annee_france,
+  simplification: simplification_france
+})
+donnees_france = d3.json(apiUrl(requete_france))
+```
 
-<!----
-Tableau métadonnées départements
------>
-
-
+<!-- Réglages : départements -->
 
 ```{ojs}
-viewof choice_print_map_departement  = Inputs.radio(['Carte', 'Métadonnées associées'], {value: "Carte"})
+viewof affichage_departements = Inputs.radio(["Carte", "Données attributaires"], {value: "Carte"})
+viewof choix_departements = selecteurMultiple(
+  departements.map(d => `${d.code} · ${d.nom}`),
+  {
+    placeholder: "Ajouter un département (code ou nom)",
+    value: ["75 · Paris", "92 · Hauts-de-Seine", "93 · Seine-Saint-Denis", "94 · Val-de-Marne"]
+  }
+)
+viewof annee_departements = Inputs.select(annees, {label: "Millésime"})
+viewof arrondissements = Inputs.toggle({label: "Arrondissements municipaux (Paris, Lyon, Marseille)", value: true})
+viewof simplification_departements = Inputs.radio(
+  new Map([["Simplifiés (50 %)", 50], ["Complets", 0]]),
+  {label: "Contours", value: 50}
+)
 ```
 
 ```{ojs}
-object_print_map_departement = (choice_print_map_departement == "Carte") ?
-    map_multiple_departement :
-    viewof table_attributes_map_department
+requete_departements = ({
+  borders: arrondissements ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
+  filter_by: "DEPARTEMENT",
+  values: choix_departements.map(d => d.split(" · ")[0]),
+  year: annee_departements,
+  simplification: simplification_departements
+})
+donnees_departements = requete_departements.values.length == 0
+  ? {type: "FeatureCollection", features: []}
+  : d3.json(apiUrl(requete_departements))
 ```
-
-
-
-:::
