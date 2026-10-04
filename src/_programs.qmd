@@ -74,7 +74,16 @@ function panneauCode(codes, note) {
 
 notes = ({
   Python: html`<code>pip install cartiflette</code> (version 0.2.1 ou plus). Le client lit le GeoParquet et ne télécharge que les polygones demandés.`,
-  R: html`Sans package dédié : l'API renvoie du GeoJSON, que <code>sf</code> lit directement.`,
-  JavaScript: html`Sans package dédié : l'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
+  R: html`${avertissement("R")}L'API renvoie du GeoJSON, que <code>sf</code> lit directement.`,
+  JavaScript: html`${avertissement("JavaScript")}L'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
 })
+
+// Les packages R et JavaScript ne suivent pas encore les évolutions du client
+// Python (GeoParquet, millésimes depuis 2023) : on passe par l'API en attendant
+function avertissement(langage) {
+  return html`<span class="snippet-warning"><i class="fa-solid fa-person-digging"></i>
+    Le package <code>cartiflette</code> pour ${langage} n'est pas encore à jour des
+    dernières évolutions ; il va évoluer. En attendant, ce code interroge
+    directement l'API.</span>`
+}
 ```

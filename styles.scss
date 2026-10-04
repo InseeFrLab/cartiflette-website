@@ -43,20 +43,20 @@ $border-radius: 0.6rem;
   }
 }
 
-.hero-facts ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+// Sources soulignées dans le texte d'accroche
+.souligne {
+  a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba($fromage, 0.85);
+    text-decoration-thickness: 0.32em;
+    text-underline-offset: -0.08em;
+    text-decoration-skip-ink: none;
 
-  li {
-    border: 1px solid rgba($gratin, 0.35);
-    background: rgba($gratin, 0.07);
-    border-radius: 999px;
-    padding: 0.2rem 0.8rem;
-    font-size: 0.9rem;
+    &:hover {
+      text-decoration-color: $gratin;
+    }
   }
 }
 
@@ -88,9 +88,6 @@ $border-radius: 0.6rem;
     }
   }
 
-  .hero-facts ul {
-    justify-content: center;
-  }
 }
 
 // ------------------------------------------------------------------
@@ -196,9 +193,102 @@ $border-radius: 0.6rem;
   margin-top: 0.4rem;
 }
 
+// Tableau des données attributaires
 .attributes-table {
-  max-height: 520px;
+  max-height: 560px;
   overflow: auto;
+  border: 1px solid var(--bs-border-color);
+  border-radius: $border-radius;
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.85rem;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--bs-tertiary-bg);
+    border-bottom: 2px solid var(--bs-border-color);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .nom-colonne {
+    display: block;
+    font-family: var(--bs-font-monospace);
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  td {
+    padding: 0.3rem 0.75rem;
+    border-bottom: 1px solid var(--bs-border-color-translucent);
+    white-space: nowrap;
+  }
+
+  td.nombre {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  tbody tr:hover td {
+    background: rgba($gratin, 0.06);
+  }
+}
+
+// Étiquette de source en tête de colonne
+.source {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid currentColor;
+
+  &:hover {
+    text-decoration: none;
+    filter: brightness(0.9);
+  }
+}
+
+.source-ign {
+  color: #2f6690;
+  background: rgba(#2f6690, 0.1);
+}
+
+.source-tagc {
+  color: #8c2f4e;
+  background: rgba(#8c2f4e, 0.1);
+}
+
+.source-cartiflette {
+  color: $gratin;
+  background: rgba($gratin, 0.1);
+}
+
+body.quarto-dark {
+  .source-ign {
+    color: #8ec1e6;
+  }
+
+  .source-tagc {
+    color: #e69ab3;
+  }
+
+  .source-cartiflette {
+    color: $fromage;
+  }
 }
 
 // Téléchargements
@@ -316,6 +406,46 @@ $border-radius: 0.6rem;
 .multi-select {
   margin-bottom: 0.9rem;
 
+  .champ {
+    position: relative;
+  }
+
+  .suggestions {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.25rem 0;
+    list-style: none;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 20px rgba(43, 29, 20, 0.15);
+
+    li {
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+
+      &.active {
+        background: rgba($gratin, 0.12);
+      }
+    }
+
+    .code {
+      min-width: 2.2rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: $gratin;
+    }
+  }
+
   .chips {
     display: flex;
     flex-wrap: wrap;
@@ -349,8 +479,48 @@ code, pre {
   font-variant-ligatures: none;
 }
 
-// La carte est un canvas aux traits sombres : fond clair dans les deux thèmes
+// La carte (topohelper) est un canvas transparent aux traits gris foncé :
+// même fond que le cadre ; en thème sombre, traits inversés (clairs), sauf
+// le calque de l'info-bulle qui garde sa couleur de surbrillance
+body.quarto-dark .explorer-viz #geoviewer canvas:not(#tooltip) {
+  filter: invert(0.88);
+}
+
+// Panneaux de topohelper (info-bulle, coordonnées, bouton de zoom) : styles
+// en ligne, d'où !important
 .explorer-viz #geoviewer {
-  background: $creme;
-  border-radius: $border-radius;
+  #propertyPanel:empty,
+  #coords:empty {
+    display: none;
+  }
+
+  #propertyPanel,
+  #coords {
+    border-radius: 0.4rem;
+  }
+}
+
+body.quarto-dark .explorer-viz #geoviewer {
+  #propertyPanel,
+  #coords,
+  #buttonReset {
+    background: rgba(33, 37, 41, 0.9) !important;
+    color: #eceeef;
+  }
+}
+
+// Avertissement sous le code R et JavaScript
+.snippet-warning {
+  display: block;
+  margin-bottom: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  border-left: 3px solid $fromage;
+  border-radius: 0.3rem;
+  background: rgba($fromage, 0.15);
+  color: var(--bs-body-color);
+
+  i {
+    color: $gratin;
+    margin-right: 0.2rem;
+  }
 }

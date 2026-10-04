@@ -9,6 +9,8 @@ code-copy: false
 {{< include "./src/_programs.qmd" >}}
 {{< include "./src/_departements.qmd" >}}
 
+::: {.column-screen-inset}
+
 ::: {.hero}
 
 ![](images/logo.png){fig-alt="Logo cartiflette : la France en gratin"}
@@ -19,16 +21,17 @@ code-copy: false
 
 [Les fonds de carte officiels français, en une ligne de code.]{.tagline}
 
-Contours de l'IGN (ADMIN EXPRESS COG CARTO) enrichis des métadonnées de l'Insee :
-communes, arrondissements municipaux, départements, régions, bassins de vie, zones
-d'emploi, unités urbaines, aires d'attraction des villes, avec ou sans les DROM
-rapprochés de la métropole.
+Une carte par commune, par département ou par bassin de vie ne devrait pas
+commencer par des archives de plusieurs centaines de mégaoctets à télécharger,
+découper et réconcilier. `cartiflette` assemble les
+[[contours de l'IGN](https://geoservices.ign.fr/adminexpress)]{.souligne} et les
+[[métadonnées de l'Insee](https://www.insee.fr/fr/information/7671844)]{.souligne}
+en fonds de carte prêts à l'emploi : communes, arrondissements de Paris, Lyon et
+Marseille, départements, régions et zonages d'étude, avec les DROM à leur place ou
+rapprochés de la métropole, pour chaque millésime depuis 2022.
 
-::: {.hero-facts}
-- Millésimes 2022 à 2026
-- Python, R, JavaScript
-- GeoJSON et GeoParquet
-:::
+Vous choisissez un territoire, vous obtenez ses contours et leurs attributs, en
+Python, en R, en JavaScript ou par un simple lien.
 
 [[\$]{.prompt} pip install cartiflette]{.install}
 
@@ -40,8 +43,6 @@ rapprochés de la métropole.
 
 Choisissez un niveau et un millésime : la carte, les données attributaires, le code
 et les liens de téléchargement suivent.
-
-::: {.column-screen-inset}
 
 ```{ojs}
 //| output: true
@@ -59,14 +60,10 @@ html`<div class="explorer">
 </div>`
 ```
 
-:::
-
 ## Les communes d'une sélection de départements
 
 Les arrondissements municipaux de Paris, Lyon et Marseille peuvent remplacer leur
 commune.
-
-::: {.column-screen-inset}
 
 ```{ojs}
 //| output: true
@@ -118,13 +115,10 @@ donnees_france = d3.json(apiUrl(requete_france))
 
 ```{ojs}
 viewof affichage_departements = Inputs.radio(["Carte", "Données attributaires"], {value: "Carte"})
-viewof choix_departements = selecteurMultiple(
-  departements.map(d => `${d.code} · ${d.nom}`),
-  {
-    placeholder: "Ajouter un département (code ou nom)",
-    value: ["75 · Paris", "92 · Hauts-de-Seine", "93 · Seine-Saint-Denis", "94 · Val-de-Marne"]
-  }
-)
+viewof choix_departements = selecteurDepartements(departements, {
+  placeholder: "Ajouter un département : code ou nom",
+  value: ["75", "92", "93", "94"]
+})
 viewof annee_departements = Inputs.select(annees, {label: "Millésime"})
 viewof arrondissements = Inputs.toggle({label: "Arrondissements municipaux (Paris, Lyon, Marseille)", value: true})
 viewof simplification_departements = Inputs.radio(
@@ -137,7 +131,7 @@ viewof simplification_departements = Inputs.radio(
 requete_departements = ({
   borders: arrondissements ? "COMMUNE_ARRONDISSEMENT" : "COMMUNE",
   filter_by: "DEPARTEMENT",
-  values: choix_departements.map(d => d.split(" · ")[0]),
+  values: choix_departements,
   year: annee_departements,
   simplification: simplification_departements
 })

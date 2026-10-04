@@ -53,11 +53,11 @@ function parquetUrl(q) {
 ```
 
 ```{ojs}
-// Origine des colonnes, affichée sous le tableau des données attributaires
+// Origine des colonnes, affichée en tête du tableau des données attributaires
 SOURCES = ({
-  ign: {label: "IGN, ADMIN EXPRESS COG CARTO", url: "https://geoservices.ign.fr/adminexpress"},
-  tagc: {label: "Insee, appartenance géographique des communes", url: "https://www.insee.fr/fr/information/7671844"},
-  cartiflette: {label: "cartiflette", url: "https://github.com/InseeFrLab/cartiflette"}
+  ign: {court: "IGN", label: "IGN, ADMIN EXPRESS COG CARTO", url: "https://geoservices.ign.fr/adminexpress"},
+  tagc: {court: "Insee", label: "Insee, appartenance géographique des communes", url: "https://www.insee.fr/fr/information/7671844"},
+  cartiflette: {court: "cartiflette", label: "construite par cartiflette", url: "https://github.com/InseeFrLab/cartiflette"}
 })
 COLONNES = ({
   ID: ["ign", "Identifiant IGN"],
@@ -84,14 +84,25 @@ COLONNES = ({
   LIBELLE_REGION: ["tagc", "Nom de la région"]
 })
 
-function sourcesColonnes(columns) {
-  const items = columns.filter(c => c in COLONNES).map(c => {
-    const [source, description] = COLONNES[c]
-    return html`<li><code>${c}</code> : ${description}
-      (<a href=${SOURCES[source].url} target="_blank">${SOURCES[source].label}</a>)</li>`
+// Tableau des données attributaires : chaque en-tête porte le nom de la
+// colonne et une étiquette de sa source (lien, description au survol)
+function tableAttributs(rows) {
+  const columns = Object.keys(rows[0])
+  const entete = columns.map(c => {
+    const [source, description] = COLONNES[c] ?? []
+    const etiquette = source
+      ? html`<a class="source source-${source}" href=${SOURCES[source].url} target="_blank"
+          title=${`${description} (${SOURCES[source].label})`}>${SOURCES[source].court}</a>`
+      : ""
+    return html`<th><span class="nom-colonne">${c}</span>${etiquette}</th>`
   })
-  return html`<details class="viz-meta"><summary>Origine des colonnes</summary>
-    <ul>${items}</ul></details>`
+  const cellule = v => typeof v == "number"
+    ? html`<td class="nombre">${v.toLocaleString("fr-FR")}</td>`
+    : html`<td>${v ?? ""}</td>`
+  const lignes = rows.map(r => html`<tr>${columns.map(c => cellule(r[c]))}</tr>`)
+  return html`<div class="attributes-table"><table>
+    <thead><tr>${entete}</tr></thead><tbody>${lignes}</tbody>
+  </table></div>`
 }
 
 // Carte ou tableau des données attributaires
@@ -105,8 +116,7 @@ function visualisation(geojson, mode) {
   if (mode == "Carte") {
     return html`<div>${carte(geojson)}${resume}</div>`
   }
-  return html`<div class="attributes-table">${Inputs.table(rows, {layout: "auto"})}</div>
-    ${resume}${sourcesColonnes(columns)}`
+  return html`<div>${tableAttributs(rows)}${resume}</div>`
 }
 ```
 
@@ -152,40 +162,102 @@ function telechargements(q, parquetNote) {
 ```
 
 ```{ojs}
-// Sélection multiple avec autocomplétion, sans dépendance externe : un champ
-// relié à une <datalist> ajoute des étiquettes, que l'on retire avec ×.
-// Suit le protocole des entrées Observable (propriété value, événement input).
-function selecteurMultiple(options, {value = [], placeholder = ""} = {}) {
-  const id = `liste-${Math.random().toString(36).slice(2)}`
-  const input = html`<input type="text" list=${id} placeholder=${placeholder}
-    class="form-control form-control-sm">`
-  const datalist = html`<datalist id=${id}>${options.map(o => html`<option value=${o}>`)}</datalist>`
+// Sélection multiple de départements, sans dépendance externe : un champ de
+// recherche (code ou nom, sans tenir compte des accents) ouvre une liste de
+// suggestions, cliquables ou navigables au clavier ; les départements choisis
+// s'affichent en étiquettes, retirées avec ×. Suit le protocole des entrées
+// Observable : propriété value (liste de codes) et événement input.
+function selecteurDepartements(departements, {value = [], placeholder = ""} = {}) {
+  const sansAccent = t => t.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase()
+  const nom = new Map(departements.map(d => [d.code, d.nom]))
+  const input = html`<input type="text" placeholder=${placeholder} autocomplete="off"
+    class="form-control form-control-sm" role="combobox" aria-expanded="false">`
+  const liste = html`<ul class="suggestions" role="listbox" hidden></ul>`
   const chips = html`<div class="chips"></div>`
-  const form = html`<form class="multi-select">${input}${datalist}${chips}</form>`
+  const form = html`<form class="multi-select"><div class="champ">${input}${liste}</div>${chips}</form>`
   let selection = [...value]
+  let suggestions = []
+  let active = 0
 
-  function render() {
-    chips.replaceChildren(...selection.map(v => {
-      const remove = html`<button type="button" aria-label="Retirer ${v}">×</button>`
-      remove.onclick = () => { selection = selection.filter(s => s != v); update() }
-      return html`<span class="chip">${v}${remove}</span>`
+  // Suggestions : code commençant par la saisie, puis nom commençant par
+  // la saisie, puis nom la contenant
+  function filtrer() {
+    const t = sansAccent(input.value.trim())
+    const rang = d => !t ? 0
+      : d.code.toLowerCase().startsWith(t) ? 0
+      : sansAccent(d.nom).startsWith(t) ? 1
+      : sansAccent(d.nom).includes(t) ? 2
+      : -1
+    return departements
+      .filter(d => !selection.includes(d.code) && rang(d) >= 0)
+      .sort((a, b) => rang(a) - rang(b))
+  }
+  function ouvrir() {
+    suggestions = filtrer()
+    active = 0
+    liste.replaceChildren(...suggestions.map((d, i) => {
+      const li = html`<li role="option" class=${i == active ? "active" : ""}>
+        <span class="code">${d.code}</span><span class="nom">${d.nom}</span></li>`
+      // mousedown (avant la perte du focus du champ) plutôt que click
+      li.addEventListener("mousedown", e => { e.preventDefault(); ajouter(d.code) })
+      li.addEventListener("mousemove", () => surligner(i))
+      return li
+    }))
+    liste.hidden = suggestions.length == 0
+    input.setAttribute("aria-expanded", String(!liste.hidden))
+  }
+  function fermer() {
+    liste.hidden = true
+    input.setAttribute("aria-expanded", "false")
+  }
+  function surligner(i) {
+    active = i
+    Array.from(liste.children).forEach((li, j) => li.classList.toggle("active", j == i))
+    liste.children[i]?.scrollIntoView({block: "nearest"})
+  }
+  function ajouter(code) {
+    if (code && !selection.includes(code)) {
+      selection.push(code)
+      update()
+    }
+    input.value = ""
+    fermer()
+  }
+  function renderChips() {
+    chips.replaceChildren(...selection.map(code => {
+      const remove = html`<button type="button" aria-label="Retirer ${nom.get(code)}">×</button>`
+      remove.onclick = () => { selection = selection.filter(s => s != code); update() }
+      return html`<span class="chip"><b>${code}</b> ${nom.get(code)}${remove}</span>`
     }))
   }
   function update() {
     form.value = [...selection]
-    render()
+    renderChips()
     form.dispatchEvent(new Event("input", {bubbles: true}))
   }
-  input.addEventListener("change", () => {
-    if (options.includes(input.value) && !selection.includes(input.value)) {
-      selection.push(input.value)
-      update()
+
+  // Les frappes ne remontent pas jusqu'à Observable (sinon l'explorateur est
+  // redessiné et le champ perd le focus) : seule la sélection met à jour
+  input.addEventListener("input", e => { e.stopPropagation(); ouvrir() })
+  input.addEventListener("change", e => e.stopPropagation())
+  input.addEventListener("focus", ouvrir)
+  input.addEventListener("blur", fermer)
+  input.addEventListener("keydown", e => {
+    if (e.key == "ArrowDown" || e.key == "ArrowUp") {
+      e.preventDefault()
+      if (liste.hidden) ouvrir()
+      const n = suggestions.length
+      if (n) surligner((active + (e.key == "ArrowDown" ? 1 : n - 1)) % n)
+    } else if (e.key == "Enter") {
+      e.preventDefault()
+      ajouter(suggestions[active]?.code)
+    } else if (e.key == "Escape") {
+      fermer()
     }
-    input.value = ""
   })
   form.addEventListener("submit", e => e.preventDefault())
   form.value = [...selection]
-  render()
+  renderChips()
   return form
 }
 ```
