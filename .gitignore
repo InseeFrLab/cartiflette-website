@@ -4,3 +4,11 @@ _site/
 
 /.luarc.json
 site_libs
+**/*.quarto_ipynb
+
+# Données téléchargées ou produites au rendu des cas d'usage
+use-case/adminexpress-2026/
+use-case/cartiflette-data/
+use-case/cheptel.json
+*.7z
+extracted_files/

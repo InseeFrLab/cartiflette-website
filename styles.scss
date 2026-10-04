@@ -1,69 +1,356 @@
 /*-- scss:defaults --*/
-$primary: #ffce67;
-$background_color: #fff;
-$text_color: #000;
-$background_button: #ffce67;
-$text_button: #000;
-$navlink_text: #000;
-$navlink_hover: #fff;
-$navlink_active: #fff;
-$navlink_active_hover: #000;
-$placeholder: #000;
-$geoviewer: #fff;
-$geoviewer_text: #000;
+// Couleurs de _brand.yml (palette « gratin »), reprises pour les règles
+$gratin: #B4540A;
+$gratin-fonce: #8A3F06;
+$fromage: #F2C14E;
+$creme: #FFF8EC;
+
+$border-radius: 0.6rem;
 
 /*-- scss:rules --*/
-body {
-    background-color: $background_color !important;
-    color: $text_color !important;
+
+// Mise en avant dans le texte : [texte]{.yellow} dans les cas d'usage
+.yellow {
+  background: linear-gradient(transparent 60%, rgba($fromage, 0.55) 60%);
+  font-weight: 600;
 }
 
-.nav-link, .navbar-title {
-    color: $navlink_text !important;
-}
-.nav-link:hover, .navbar-title:hover {
-    color: $navlink_hover !important;
-}
-.active {
-    color: $navlink_active !important;
-}
-.active:hover {
-    color: $navlink_active_hover !important;
-}
+// ------------------------------------------------------------------
+// En-tête de la page d'accueil
+// ------------------------------------------------------------------
+.hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin: 1.5rem 0 2.5rem;
 
-.btn-quarto:not(#buttonReset) {
-    background-color: $background_button !important;
-    color: $text_button !important;
+  img {
+    width: 150px;
+    height: auto;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 3vw, 2.6rem);
+    margin: 0 0 0.6rem;
     border: none;
-    margin-bottom: 0.15rem;
-    font-size: x-small;
+  }
+
+  .tagline {
+    font-size: 1.15rem;
+    color: var(--bs-secondary-color);
+    margin-bottom: 1rem;
+  }
 }
 
-.code-bloc-title {
-    background-color: $primary !important;
-    color: $text_color !important;
-    padding: 0.5rem;
-    display: flex;
+.hero-facts ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li {
+    border: 1px solid rgba($gratin, 0.35);
+    background: rgba($gratin, 0.07);
+    border-radius: 999px;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+.install {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  font-family: var(--bs-font-monospace);
+  background: #2B1D14;
+  color: $creme;
+  border-radius: $border-radius;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.95rem;
+
+  .prompt {
+    color: $fromage;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+
+    img {
+      width: 110px;
+      margin: 0 auto;
+    }
+  }
+
+  .hero-facts ul {
     justify-content: center;
-    gap: 0.3rem;
-    font-weight: bold;
+  }
+}
+
+// ------------------------------------------------------------------
+// Explorateurs interactifs : réglages | carte | code
+// ------------------------------------------------------------------
+.explorer {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(0, 2.2fr) minmax(0, 1.6fr);
+  grid-template-areas: "controls viz code";
+  gap: 1.25rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin: 1rem 0 2.5rem;
+  background: var(--bs-body-bg);
+  box-shadow: 0 6px 24px rgba(43, 29, 20, 0.07);
+}
+
+.explorer-controls {
+  grid-area: controls;
+  min-width: 0;
+
+  // Observable Inputs : libellé au-dessus du contrôle, en pleine largeur.
+  // Sélecteurs renforcés (form[class]) : les styles d'Inputs, sur une classe
+  // générée, sont chargés après cette feuille.
+  form[class] {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 1rem;
+  }
+
+  form[class] > label {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-bottom: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--bs-secondary-color);
+  }
+
+  form[class] > select,
+  form[class] > div {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  // Options des boutons radio, une par ligne
+  form[class] > div > label {
+    display: block;
+    font-size: 0.92rem;
+    margin: 0.1rem 0;
+  }
+
+  // Case à cocher avant son libellé
+  form[class$="-toggle"] {
+    flex-wrap: nowrap;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    > label {
+      flex: 1 1 auto;
+      width: auto;
+      margin: 0;
+    }
+
+    > input {
+      margin-top: 0.15rem;
+    }
+  }
+}
+
+.explorer-viz {
+  grid-area: viz;
+  min-width: 0;
+
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.explorer-code {
+  grid-area: code;
+  min-width: 0;
+}
+
+@media (max-width: 991px) {
+  .explorer {
+    grid-template-columns: 1fr;
+    grid-template-areas: "controls" "viz" "code";
+  }
+}
+
+.viz-meta {
+  font-size: 0.85rem;
+  color: var(--bs-secondary-color);
+  margin-top: 0.4rem;
+}
+
+.attributes-table {
+  max-height: 520px;
+  overflow: auto;
+}
+
+// Téléchargements
+.downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+
+  a {
+    display: flex;
     align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    border-radius: $border-radius;
+    padding: 0.5rem 0.8rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .primary {
+    background: $gratin;
+    color: #fff;
+
+    &:hover {
+      background: $gratin-fonce;
+      color: #fff;
+    }
+  }
+
+  .secondary {
+    border: 1px solid $gratin;
+    color: $gratin;
+
+    &:hover {
+      background: rgba($gratin, 0.08);
+    }
+  }
+
+  .disabled {
+    border: 1px dashed var(--bs-border-color);
+    color: var(--bs-secondary-color);
+    pointer-events: none;
+  }
+
+  small {
+    color: var(--bs-secondary-color);
+    font-size: 0.78rem;
+    text-align: center;
+  }
 }
 
-:is(h1, h2, h3, h4, h5, h6) {
-    color: $text_color !important;
+// Extraits de code
+.snippet {
+  border-radius: $border-radius;
+  overflow: hidden;
+  border: 1px solid #3a2a1f;
 }
 
-select, input {
-    background-color: $background_color !important;
-    border-radius: 8px;
-}
-input::placeholder {
-    color: $placeholder !important;
+.snippet-tabs {
+  display: flex;
+  align-items: center;
+  background: #3a2a1f;
+  padding: 0.3rem 0.4rem 0;
+
+  button {
+    border: none;
+    background: transparent;
+    color: rgba($creme, 0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.45rem 0.45rem 0 0;
+    cursor: pointer;
+
+    &.active {
+      background: #2B1D14;
+      color: $fromage;
+    }
+  }
+
+  .copy {
+    margin-left: auto;
+    margin-bottom: 0.3rem;
+    border: 1px solid rgba($creme, 0.3);
+    border-radius: 0.45rem;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.6rem;
+  }
 }
 
-#geoviewer {
-    background-color: $geoviewer !important;
-    color: $geoviewer_text !important;
-    border-radius: 15px;
+.snippet pre {
+  // Pas de ligatures : « <- » doit rester tel quel dans le code R
+  font-variant-ligatures: none;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: #2B1D14;
+  color: $creme;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  border: none;
+  border-radius: 0;
+}
+
+.snippet-note {
+  font-size: 0.82rem;
+  color: var(--bs-secondary-color);
+  margin-top: 0.6rem;
+}
+
+// Sélecteur de départements
+.multi-select {
+  margin-bottom: 0.9rem;
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba($gratin, 0.1);
+    border: 1px solid rgba($gratin, 0.35);
+    border-radius: 999px;
+    padding: 0.1rem 0.3rem 0.1rem 0.6rem;
+    font-size: 0.8rem;
+
+    button {
+      border: none;
+      background: transparent;
+      color: $gratin;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+  }
+}
+
+// Pas de ligatures dans le code (JetBrains Mono transforme « <- » en flèche)
+code, pre {
+  font-variant-ligatures: none;
+}
+
+// La carte est un canvas aux traits sombres : fond clair dans les deux thèmes
+.explorer-viz #geoviewer {
+  background: $creme;
+  border-radius: $border-radius;
 }

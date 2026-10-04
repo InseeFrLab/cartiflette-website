@@ -3,21 +3,13 @@
 import datetime
 
 def human_readable_time(duration):
-    # Convert the duration to seconds if it's not already
+    """Durée lisible, au dixième de seconde sous la minute."""
     if isinstance(duration, datetime.timedelta):
-        total_seconds = int(duration.total_seconds())
-    else:
-        total_seconds = int(duration)
-    
-    hours, remainder = divmod(total_seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-
-    if hours > 0:
-        return f"{hours} heures, {minutes} minutes et {seconds} secondes"
-    elif minutes > 0:
-        return f"{minutes}minutes et {seconds} secondes"
-    else:
-        return f"{seconds} secondes"
+        duration = duration.total_seconds()
+    minutes, seconds = divmod(duration, 60)
+    if minutes >= 1:
+        return f"{int(minutes)} min {int(seconds)} s"
+    return f"{seconds:.1f} s"
 
 time_cartiflette_exact = end_time_cartiflette - start_time_cartiflette
 time_no_cartiflette_exact = end_time_no_cartiflette - start_time_no_cartiflette

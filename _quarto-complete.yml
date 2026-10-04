@@ -9,10 +9,11 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: Accueil
       - href: use-case/index.qmd
         text: Galerie d'exemples
+      - href: about.qmd
+        text: À propos
 
 filters:
   - src/lua/callout.lua
