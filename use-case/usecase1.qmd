@@ -7,10 +7,10 @@ author: "Lino Galiana"
 ---
 
 
-Ce tutoriel vise à illustrer un cas d'usage classique de `cartiflette` : __récupérer de manière flexible un fonds de carte mélangeant les niveaux administratifs différents que sont [communes]{.yellow} et [arrondissements]{.yellow}__.  
+Ce tutoriel vise à illustrer deux cas d'usage classiques de `cartiflette` : __récupérer un fonds de carte mélangeant les niveaux administratifs différents que sont [communes]{.yellow} et [arrondissements]{.yellow}__, et __le restreindre à un [zonage d'étude de l'Insee]{.yellow}__ (zone d'emploi, unité urbaine, aire d'attraction des villes, bassin de vie), que les fonds de carte de l'IGN ne fournissent pas.
 
-Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la petite couronne parisienne (Paris intra-muros et départements limitrophes). 
-L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la petite couronne. Il illustre, pas à pas, la manière dont `cartiflette` simplifie la création de la @fig-map :
+Ce besoin classique est illustré à travers la construction d'une carte de la disponibilité de vélibs dans la zone d'emploi de Paris : Paris intra-muros, la petite couronne et quelques communes limitrophes, comme Argenteuil, qui ont aussi des stations.
+L'objectif de ce tutoriel est de faire une carte du nombre de vélibs au km² dans chaque arrondissement de Paris intra-muros et chaque commune de la zone d'emploi. Il illustre, pas à pas, la manière dont `cartiflette` simplifie la création de la @fig-map :
 
 ```{ojs}
 //| echo: false
@@ -44,6 +44,7 @@ window.onload = function() {
     + Réduit le temps nécessaire avant d'obtenir une carte exploratoire, ce qui permet de se concentrer sur la construction de celle-ci plutôt que les étapes antérieures
     + Réduit la difficulté à mettre à jour le code ;
 - [Moins de bande passante]{.yellow} et d'espace disque utilisé car seule la donnée nécessaire est téléchargée : les quelques communes demandées, pas la France entière ;
+- [Des zonages d'étude prêts à l'emploi]{.yellow} : les zones d'emploi, unités urbaines, aires d'attraction des villes et bassins de vie de l'Insee servent directement de filtre, sans avoir à télécharger ni à croiser la table d'appartenance géographique des communes ;
 - [Moindre besoin d'expertise en SIG]{.yellow} car la librairie fournit un `GeoDataFrame` prêt à l'emploi ce qui ne nécessite pas une connaissance pointue dans le domaine (système de projection, format _shapefile_, etc.) ;
 - [Moins de risque d'erreur]{.yellow} que lorsqu'on fait soi-même la combinaison de sources à des niveaux administratifs différents (accoler le masque des arrondissements à celui des communes limitrophes nécessite beaucoup de précautions) ;
 - [Bénéficier de métadonnées supplémentaires]{.yellow} sur les communes que les fonds de carte `AdminExpress`
@@ -145,7 +146,7 @@ start_time_cartiflette = time.time()
 
 Les contours administratifs officiels sont produits par l'[IGN](https://www.ign.fr/) et utilisent le [code officiel géographique (COG)](https://www.insee.fr/fr/metadonnees/source/serie/s2084) (liste officielle des entités administratives) produit par l'Insee. 
 
-La source la plus simple pour répondre à notre besoin est [ADMIN EXPRESS COG CARTO](https://geoservices.ign.fr/adminexpress), ici dans son édition 2026. En l'occurrence, seuls quelques espaces nous intéressent: ce sont les villes et arrondissements de la petite couronne parisienne (départements 75, 92, 93 et 94). 
+La source la plus simple pour répondre à notre besoin est [ADMIN EXPRESS COG CARTO](https://geoservices.ign.fr/adminexpress), ici dans son édition 2026. En l'occurrence, seuls quelques espaces nous intéressent : les villes et arrondissements desservis par Vélib. Se limiter aux départements de la petite couronne (75, 92, 93 et 94) laisserait de côté les stations d'Argenteuil, dans le Val-d'Oise. La [zone d'emploi](https://www.insee.fr/fr/metadonnees/definition/c1361) de Paris, un zonage d'étude de l'Insee, correspond mieux à l'emprise du réseau. Ce zonage n'existe pas dans ADMIN EXPRESS : `cartiflette` l'ajoute à chaque commune à partir de la [table d'appartenance géographique des communes](https://www.insee.fr/fr/information/7671844) de l'Insee. 
 
 Avec la fonction `carti_download`, l'import de ces données est assez transparent:
 
@@ -158,16 +159,16 @@ from cartiflette import carti_download
 
 # 1. Fonds communaux
 contours_villes_arrt = carti_download(
-    values=["75", "92", "93", "94"],
+    values="1109", #<1>
     borders="COMMUNE_ARRONDISSEMENT",
-    filter_by="DEPARTEMENT", #<1>
+    filter_by="ZONE_EMPLOI", #<1>
     year=2026,
 )
 
 # 2. Départements
 departements = contours_villes_arrt.dissolve("INSEE_DEP") #<2>
 ```
-1. Ici on récupère seulement des départements, l'emprise la plus petite qui puisse satisfaire notre besoin. Il serait possible d'obtenir les données à une autre échelle géographique, par exemple la région Île-de-France avec `filter_by="REGION"` et `values="11"`. `cartiflette` ne télécharge que les parties utiles du fichier publié (au format GeoParquet), pas la France entière.
+1. On récupère seulement la zone d'emploi de Paris (code `1109`), l'emprise la plus petite qui couvre tout le réseau Vélib. Les autres zonages de l'Insee s'utilisent de la même manière : `filter_by="UNITE_URBAINE"`, `"AIRE_ATTRACTION_VILLES"` ou `"BASSIN_VIE"`, tout comme les niveaux administratifs (`filter_by="DEPARTEMENT"` et `values=["75", "92", "93", "94"]` pour la petite couronne). `cartiflette` ne télécharge que les parties utiles du fichier publié (au format GeoParquet), pas la France entière.
 2. La construction du fonds de carte `departements` se fait simplement avec la méthode `dissolve`. Il nous sera utile pour contextualiser la carte.
 
 Les contours sont en WGS84 (EPSG:4326), comme les données Vélib.
@@ -303,13 +304,13 @@ departements.boundary.plot(ax=ax, edgecolor="black", alpha=0.3)
 
 # Remove axes and set the title
 ax.axis("off")
-ax.set_title("Densité de vélibs dans la petite couronne")
+ax.set_title("Densité de vélibs dans la zone d'emploi de Paris")
 
 # Add source text
 plt.figtext(
     0.3,
     0.15,
-    "Source : IGN, ADMIN EXPRESS COG CARTO 2026 ; cartiflette",
+    "Source : IGN, ADMIN EXPRESS COG CARTO 2026 ; Insee, zonages d'étude ; cartiflette",
     wrap=True,
     horizontalalignment="center",
     fontsize=8,
@@ -329,13 +330,13 @@ plt.show()
 start_time_no_cartiflette = time.time()
 ```
 
-L'approche est nettement plus fastidieuse sans `cartiflette`. L'IGN publie chaque couche d'ADMIN EXPRESS pour la France entière : il faut télécharger les couches complètes, puis faire soi-même les filtres et l'assemblage. Cela passe par trois étapes principales :
+L'approche est nettement plus fastidieuse sans `cartiflette`. L'IGN publie chaque couche d'ADMIN EXPRESS pour la France entière, sans les zonages d'étude de l'Insee : il faut télécharger les couches complètes et la table d'appartenance géographique des communes, puis faire soi-même les filtres et l'assemblage. Cela passe par trois étapes principales :
 
-* 1️⃣ Télécharger les couches des communes et des arrondissements municipaux, pour toute la France.
+* 1️⃣ Télécharger les couches des communes et des arrondissements municipaux, pour toute la France, ainsi que la table d'appartenance géographique des communes de l'Insee.
 * 2️⃣ Les importer dans `Python`.
-* 3️⃣ Créer le fonds de carte consolidé : se restreindre aux départements d'intérêt, retirer la commune de Paris et apposer, à la place, ses arrondissements.
+* 3️⃣ Créer le fonds de carte consolidé : se restreindre aux communes de la zone d'emploi, retirer la commune de Paris et apposer, à la place, ses arrondissements.
 
-La première étape consiste donc à télécharger les fichiers depuis le site de mise à disposition de l'IGN. Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
+La première étape consiste donc à télécharger les fichiers depuis les sites de mise à disposition de l'IGN et de l'Insee. Le code étant assez long, il n'est pas apparent par défaut mais il suffit de cliquer ci-dessous:
 
 ```{python}
 #| echo: false
@@ -345,6 +346,24 @@ couches_ign = ["commune", "arrondissement_municipal"]
 ::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
 
 {{< include "/use-case/scripts/_01_telecharger_admin.qmd" >}}
+
+```{python}
+#| code-fold: true
+#| code-summary: "1️⃣ bis Code pour télécharger la table d'appartenance géographique de l'Insee"
+#| code-line-numbers: true
+#| output: false
+url_insee = (
+    "https://www.insee.fr/fr/statistiques/fichier/7671844/"
+    "table-appartenance-geo-communes-2026.zip"
+)
+fichiers_ign["tagc"] = "insee-tagc-2026.zip" #<1>
+if not os.path.exists(fichiers_ign["tagc"]):
+    with requests.get(url_insee) as r:
+        r.raise_for_status()
+        with open(fichiers_ign["tagc"], "wb") as f:
+            f.write(r.content)
+```
+1. On range ce fichier avec ceux de l'IGN pour le compter dans le volume téléchargé.
 
 :::
 
@@ -356,11 +375,27 @@ La deuxième étape consiste à importer les fonds de carte désirés. Le piège
 #| code-fold: true
 #| code-summary: "2️⃣ Importer les couches dans Python"
 #| code-line-numbers: true
+import zipfile
+
 import geopandas as gpd
+import pandas as pd
 
 communes_ign = gpd.read_parquet(fichiers_ign["commune"])
 arrondissements_ign = gpd.read_parquet(fichiers_ign["arrondissement_municipal"])
+
+# Table d'appartenance : un tableur dans une archive
+with zipfile.ZipFile(fichiers_ign["tagc"]) as z:
+    with z.open("table-appartenance-geo-communes-2026.xlsx") as f:
+        tagc = pd.read_excel(
+            f,
+            sheet_name="COM",
+            skiprows=5, #<1>
+            dtype=str,
+            engine="calamine", #<2>
+        )
 ```
+1. Les cinq premières lignes du tableur décrivent le fichier.
+2. Le moteur par défaut de `Pandas` (`openpyxl`) ne parvient pas à lire ce fichier.
 
 :::
 
@@ -375,28 +410,30 @@ La 3e et dernière étape, la plus propice à faire des erreurs, est celle qui c
 import pandas as pd
 
 # 1. Filtrer les données à l'emprise désirée
+communes_zone_emploi = tagc.loc[tagc["ZE2020"] == "1109", "CODGEO"] #<1>
 communes_ign = communes_ign.loc[
-    communes_ign["code_insee_du_departement"].isin(["75", "92", "93", "94"])
-    & (communes_ign["code_insee"] != "75056") #<1>
+    communes_ign["code_insee"].isin(communes_zone_emploi)
+    & (communes_ign["code_insee"] != "75056") #<2>
 ].copy()
 arrondissements_ign = arrondissements_ign.loc[
-    arrondissements_ign["code_insee"].str.startswith("751") #<2>
+    arrondissements_ign["code_insee"].str.startswith("751") #<3>
 ].copy()
 
 # 2. Préparer la superposition des fonds de carte
-communes_ign["INSEE_COG"] = communes_ign["code_insee"] #<3>
-arrondissements_ign["INSEE_COG"] = arrondissements_ign["code_insee"] #<3>
-arrondissements_ign["code_insee"] = "75056" #<4>
+communes_ign["INSEE_COG"] = communes_ign["code_insee"] #<4>
+arrondissements_ign["INSEE_COG"] = arrondissements_ign["code_insee"] #<4>
+arrondissements_ign["code_insee"] = "75056" #<5>
 arrondissements_ign["code_insee_du_departement"] = "75"
 
 geodataframe_cartiflette_like = pd.concat(
     [communes_ign, arrondissements_ign]
 )
 ```
-1. On retire Paris, que ses arrondissements remplacent.
-2. Les arrondissements de Paris (751xx) ; la couche contient aussi ceux de Lyon et Marseille.
-3. On crée la variable `INSEE_COG` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
-4. Code commune de la ville de Paris
+1. Les communes de la zone d'emploi de Paris, d'après la table de l'Insee. Le nom de la colonne porte le millésime du zonage (`ZE2020`) : il change quand l'Insee révise le zonage.
+2. On retire Paris, que ses arrondissements remplacent.
+3. Les arrondissements de Paris (751xx) ; la couche contient aussi ceux de Lyon et Marseille.
+4. On crée la variable `INSEE_COG` pour avoir des identifiants de localisation équivalents à ceux de `cartiflette`
+5. Code commune de la ville de Paris
 
 :::
 
@@ -430,7 +467,7 @@ poids_cartiflette = convert_size(poids_cartiflette_bytes)
 La première base de comparaison possible est la quantité de données nécessaires :
 
 * les données `cartiflette` représenteraient __`{python} poids_cartiflette`__ si elles étaient stockées sur disque ;
-* sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__ : les couches de la France entière.
+* sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__ : les couches de la France entière et la table d'appartenance de l'Insee.
 
 Autrement dit, les données récupérées sans `cartiflette` représentent __`{python} round(poids_ign_bytes / poids_cartiflette_bytes)` fois__ le volume de celles exclusivement nécessaires pour cette carte.
 

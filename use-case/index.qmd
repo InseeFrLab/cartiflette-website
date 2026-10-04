@@ -10,9 +10,10 @@ compare le code avec `cartiflette` et le code nécessaire sans lui, à partir de
 couches publiées par l'IGN.
 
 [Associer des arrondissements à des données communales](usecase1.qmd)
-: Une carte des vélibs de Paris et de la petite couronne, qui mêle communes et
-  arrondissements municipaux.
+: Une carte des vélibs de la zone d'emploi de Paris, qui mêle communes et
+  arrondissements municipaux et se restreint à un zonage d'étude de l'Insee.
 
 [Une carte de France avec les DROM rapprochés](usecase2.qmd)
 : La carte « plus de vaches que d'habitants » de La Minute Cartographique, avec
-  les DROM placés sous la métropole et un zoom sur l'Île-de-France.
+  les DROM placés sous la métropole et un zoom sur l'Île-de-France, sur le
+  millésime 2022.

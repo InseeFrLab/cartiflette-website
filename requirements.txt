@@ -3,10 +3,12 @@ cartiflette>=0.2.1
 geopandas
 pandas
 openpyxl
+python-calamine
 matplotlib
 folium
 mapclassify
 requests
+py7zr
 jupyter
 nbformat
 nbclient

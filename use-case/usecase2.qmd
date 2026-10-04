@@ -124,6 +124,8 @@ Notre objectif est de faire une carte aux caractéristiques suivantes:
 
 Construire soi-même ce fonds de carte est fastidieux, comme l'illustre la partie [Comment faire sans cartiflette](#sans-cartiflette). Avec `cartiflette`, ce fonds de carte est préconstruit à partir des découpages officiels de l'IGN. Il suffit de remplacer le niveau `FRANCE_ENTIERE` par `FRANCE_ENTIERE_DROM_RAPPROCHES` dans l'appel à `carti_download`.
 
+Les données de cheptel portent sur 2022 : on prend donc les contours de la même année. Le millésime 2022 a été publié avant que `cartiflette` ne diffuse ses fonds de carte au format GeoParquet, sous la forme d'un fichier GeoJSON par valeur. Le code est pourtant le même que pour un millésime récent : `carti_download` choisit lui-même le format disponible.
+
 ::: {#lst-cartiflette-example lst-cap="Example d'utilisation de cartiflette"}
 
 ```{python}
@@ -134,9 +136,10 @@ departements = carti_download(
     values="France",
     borders="DEPARTEMENT",
     filter_by="FRANCE_ENTIERE_DROM_RAPPROCHES",
-    year=2026,
+    year=2022, #<1>
 )
 ```
+1. Millésime publié en GeoJSON, avant la diffusion en GeoParquet : `carti_download` lit les fichiers GeoJSON. À partir de 2025, il lit un fichier GeoParquet dont il ne télécharge que les parties utiles.
 
 :::
 
@@ -456,21 +459,54 @@ L'approche est nettement plus fastidieuse sans `cartiflette` et nécessite une e
 
 Pour obtenir les mêmes données, prêtes à l'emploi, cela passe par quatre étapes principales :
 
-* 1️⃣ Télécharger la couche des départements de l'IGN, pour toute la France.
+* 1️⃣ Télécharger l'archive de l'IGN, pour toute la France, et en extraire la couche des départements.
 * 2️⃣ L'importer dans `Python`, dans une projection adaptée aux transformations géométriques.
 * 3️⃣ Pour chaque DROM et pour les départements de la petite couronne, modifier la géométrie par une mise à l'échelle et une translation.
 * 4️⃣ Consolider le fond de carte à partir des différents éléments obtenus.
 
-La première étape consiste donc à télécharger le fichier depuis le site de mise à disposition de l'IGN :
-
-```{python}
-#| echo: false
-couches_ign = ["departement"]
-```
+La première étape consiste donc à télécharger les données depuis le site de mise à disposition de l'IGN. En 2022, ADMIN EXPRESS COG CARTO n'est diffusé que sous la forme d'une archive `.7z` regroupant toutes les couches au format _shapefile_ : il faut la télécharger en entier pour n'en garder que les départements.
 
 ::: {#lst-example-download-adminexpress lst-cap="1️⃣ Code pour télécharger les données"}
 
-{{< include "/use-case/scripts/_01_telecharger_admin.qmd" >}}
+```{python}
+#| code-fold: true
+#| code-summary: "1️⃣ Code pour télécharger l'archive de l'IGN"
+#| code-line-numbers: true
+#| output: false
+import os
+import requests
+import py7zr
+
+edition = "ADMIN-EXPRESS-COG-CARTO_3-1__SHP_WGS84G_FRA_2022-04-15"
+url_ign = (
+    "https://data.geopf.fr/chunk/telechargement/download/"
+    f"ADMIN-EXPRESS-COG-CARTO/{edition}/{edition}.7z"
+)
+dossier_ign = "adminexpress-2022"
+archive_ign = f"{dossier_ign}/{edition}.7z"
+os.makedirs(dossier_ign, exist_ok=True)
+
+# Toutes les couches, pour toute la France, téléchargées une seule fois
+if not os.path.exists(archive_ign):
+    with requests.get(url_ign, stream=True) as r:
+        r.raise_for_status()
+        with open(archive_ign, "wb") as f:
+            for bloc in r.iter_content(chunk_size=1 << 20):
+                f.write(bloc)
+
+# On n'extrait que le shapefile des départements (.shp, .dbf, .shx...)
+with py7zr.SevenZipFile(archive_ign, mode="r") as z:
+    membres = [
+        nom for nom in z.getnames()
+        if os.path.basename(nom).split(".")[0] == "DEPARTEMENT"
+    ]
+    z.extract(path=dossier_ign, targets=membres)
+shp_departements = os.path.join(
+    dossier_ign, next(nom for nom in membres if nom.endswith(".shp"))
+)
+
+fichiers_ign = {"archive": archive_ign}
+```
 
 :::
 
@@ -484,12 +520,12 @@ La deuxième étape consiste à importer les contours administratifs dans `Pytho
 #| code-line-numbers: true
 import geopandas as gpd
 
-france = gpd.read_parquet(fichiers_ign["departement"]).to_crs(3857)
+france = gpd.read_file(shp_departements).to_crs(3857)
 ```
 
 :::
 
-La troisième étape est celle faisant appel à une expertise dans le domaine géomatique. Il faut trouver, pour chaque DROM, une mise à l'échelle et une translation qui le placent sous la France hexagonale, et faire de même pour un zoom sur la petite couronne parisienne. Les paramètres ci-dessous sont ceux qu'utilise `cartiflette` : le résultat est identique à son fond de carte.
+La troisième étape est celle faisant appel à une expertise dans le domaine géomatique. Il faut trouver, pour chaque DROM, une mise à l'échelle et une translation qui le placent sous la France hexagonale, et faire de même pour un zoom sur la petite couronne parisienne. Les paramètres ci-dessous sont ceux qu'utilise `cartiflette` aujourd'hui : le résultat est très proche de son fond de carte.
 
 ::: {#lst-example-move-adminexpress lst-cap="3️⃣ Déplacer les DROM et zoomer sur la petite couronne"}
 
@@ -517,11 +553,11 @@ def deplacer(gdf, translation, echelle):
 
 
 drom_deplaces = [
-    deplacer(france.loc[france["code_insee"] == code], translation, echelle)
+    deplacer(france.loc[france["INSEE_DEP"] == code], translation, echelle)
     for code, (translation, echelle) in DEPLACEMENTS.items()
 ]
 zoom_idf = deplacer(
-    france.loc[france["code_insee"].isin(PETITE_COURONNE)],
+    france.loc[france["INSEE_DEP"].isin(PETITE_COURONNE)],
     (-650_000, 275_000),
     4,
 )
@@ -529,7 +565,7 @@ zoom_idf = deplacer(
 
 :::
 
-Enfin, la dernière étape consiste à consolider notre fonds de carte en réunissant les géométries[^emplacement-drom]. On obtient un fonds de carte équivalent à celui de `cartiflette`, qui pourrait être utilisé de la même manière que précédemment ☝️, à ceci près que les noms de colonnes sont ceux de l'IGN (`code_insee`…) et qu'il manque les métadonnées de l'Insee.
+Enfin, la dernière étape consiste à consolider notre fonds de carte en réunissant les géométries[^emplacement-drom]. On obtient un fonds de carte équivalent à celui de `cartiflette`, qui pourrait être utilisé de la même manière que précédemment ☝️, à ceci près qu'il manque les métadonnées de l'Insee. Les noms de colonnes de l'IGN ont en outre changé avec l'édition 2025 (`code_insee` au lieu de `INSEE_DEP`…) : ce code ne fonctionnerait pas tel quel sur un millésime récent, alors que celui utilisant `cartiflette` ne change que par l'année.
 
 [^emplacement-drom]: `cartiflette` construit ce fond de carte avec [`mapshaper`](https://github.com/mbloch/mapshaper), en s'inspirant d'un [tutoriel d'Eric Mauvière](https://www.icem7.fr/cartographie/un-fond-de-carte-france-par-commune-optimise-pour-le-web-et-lanalyse-statistique/).
 
@@ -540,7 +576,7 @@ Enfin, la dernière étape consiste à consolider notre fonds de carte en réuni
 #| code-fold: true
 import pandas as pd
 
-hexagone = france.loc[~france["code_insee"].isin(DEPLACEMENTS)]
+hexagone = france.loc[~france["INSEE_DEP"].isin(DEPLACEMENTS)]
 france_modif = pd.concat([hexagone, *drom_deplaces, zoom_idf]).to_crs(4326)
 
 france_modif.boundary.plot(edgecolor="black", linewidth=0.2)
@@ -572,12 +608,12 @@ departements.to_parquet(f"{writedir}/contours.parquet") #<1>
 poids_cartiflette_bytes = os.path.getsize(f"{writedir}/contours.parquet")
 poids_cartiflette = convert_size(poids_cartiflette_bytes)
 ```
-1. On enregistre le `GeoDataFrame` obtenu avec `cartiflette` au même format (GeoParquet) que la couche de l'IGN, pour une comparaison honnête.
+1. On enregistre le `GeoDataFrame` obtenu avec `cartiflette` au format GeoParquet, compact et lisible directement par `GeoPandas`.
 
-Ici, les deux approches portent sur la France entière, à la même résolution (`carti_download` ne simplifie pas les contours par défaut). Les volumes sont donc proches : l'intérêt de `cartiflette` tient surtout au code évité et aux métadonnées ajoutées.
+Les deux approches portent sur la France entière, à la même résolution (`carti_download` ne simplifie pas les contours par défaut). Mais l'IGN ne diffuse pour 2022 qu'une archive regroupant toutes les couches (communes, arrondissements, EPCI...) :
 
-* Les données `cartiflette` représenteraient __`{python} poids_cartiflette`__ si elles étaient stockées sur disque.
-* Sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__.
+* les données `cartiflette` représenteraient __`{python} poids_cartiflette`__ si elles étaient stockées sur disque ;
+* sans passer par `cartiflette`, il faut télécharger __`{python} poids_ign`__ pour n'en utiliser que la couche des départements.
 
 ## Nombre de lignes de code
 
