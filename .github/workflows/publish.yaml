@@ -34,3 +34,8 @@ jobs:
         with:
           render: false
           target: gh-pages
+
+      - name: Rebuild the site published by cartiflette
+        env:
+          GH_TOKEN: ${{ secrets.CARTIFLETTE_DISPATCH_TOKEN }}
+        run: gh api repos/InseeFrLab/cartiflette/dispatches -f event_type=cartiflette-website
