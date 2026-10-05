@@ -19,21 +19,11 @@ code-copy: false
 
 # cartiflette
 
-[Les fonds de carte officiels français, en une ligne de code.]{.tagline}
+[Les fonds de carte officiels français, prêts à joindre à vos données.]{.tagline}
 
-Une carte par commune, par département ou par bassin de vie ne devrait pas
-commencer par des archives de plusieurs centaines de mégaoctets à télécharger,
-découper et réconcilier. `cartiflette` assemble les
-[[contours de l'IGN](https://geoservices.ign.fr/adminexpress)]{.souligne} et les
-[[métadonnées de l'Insee](https://www.insee.fr/fr/information/7671844)]{.souligne}
-en fonds de carte prêts à l'emploi : communes, arrondissements de Paris, Lyon et
-Marseille, départements, régions et zonages d'étude, avec les DROM à leur place ou
-rapprochés de la métropole, pour chaque millésime depuis 2022.
+Vous voulez faire une carte mais n'avez que des codes Insee ? `cartiflette` fournit les contours qui vont avec : les [[fonds de carte de l'IGN](https://geoservices.ign.fr/adminexpress)]{.souligne} enrichis des [[métadonnées de l'Insee](https://www.insee.fr/fr/information/7671844)]{.souligne}, prêts à être associés à vos données, en moins de 10 lignes de code.
 
-Vous choisissez un territoire, vous obtenez ses contours et leurs attributs, en
-Python, en R, en JavaScript ou par un simple lien.
-
-[[\$]{.prompt} pip install cartiflette]{.install}
+[[\$]{.prompt}pip install cartiflette]{.install}
 
 :::
 
@@ -41,8 +31,9 @@ Python, en R, en JavaScript ou par un simple lien.
 
 ## Un fond de carte France entière
 
-Choisissez un niveau et un millésime : la carte, les données attributaires, le code
-et les liens de téléchargement suivent.
+[Découpages administratifs]{.souligne} ou [zonages d'étude]{.souligne} de l'Insee: les fonds de carte sont prêts à l'emploi pour répondre à de nombreux besoins cartographiques.
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase2.qmd){.exemple target="_blank" rel="noopener"}
 
 ```{ojs}
 //| output: true
@@ -62,8 +53,10 @@ html`<div class="explorer">
 
 ## Les communes d'une sélection de départements
 
-Les arrondissements municipaux de Paris, Lyon et Marseille peuvent remplacer leur
-commune.
+Si on n'a [besoin que de quelques départements ou régions]{.souligne}, ou si on désire représenter des [données mélangeant arrondissements et communes]{.souligne}, on va devoir faire des opérations compliquées. Avec `cartiflette`, ce type de fond est prêt à l'emploi !
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase1.qmd){.exemple target="_blank" rel="noopener"}
+
 
 ```{ojs}
 //| output: true
@@ -90,7 +83,7 @@ html`<div class="explorer">
 <!-- Réglages : France entière -->
 
 ```{ojs}
-viewof affichage_france = Inputs.radio(["Carte", "Données attributaires"], {value: "Carte"})
+viewof affichage_france = Inputs.radio(["Carte", "Métadonnées"], {value: "Carte"})
 viewof niveau_france = Inputs.select(niveaux, {label: "Niveau", key: "Départements"})
 viewof annee_france = Inputs.select(annees, {label: "Millésime"})
 viewof drom_rapproches = Inputs.toggle({label: "DROM rapprochés et zoom sur l'Île-de-France", value: true})
@@ -114,7 +107,7 @@ donnees_france = d3.json(apiUrl(requete_france))
 <!-- Réglages : départements -->
 
 ```{ojs}
-viewof affichage_departements = Inputs.radio(["Carte", "Données attributaires"], {value: "Carte"})
+viewof affichage_departements = Inputs.radio(["Carte", "Métadonnées"], {value: "Carte"})
 viewof choix_departements = selecteurDepartements(departements, {
   placeholder: "Ajouter un département : code ou nom",
   value: ["75", "92", "93", "94"]

@@ -43,21 +43,20 @@ $border-radius: 0.6rem;
   }
 }
 
-// Sources soulignées dans le texte d'accroche
-.souligne {
-  a {
-    color: inherit;
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-color: rgba($fromage, 0.85);
-    text-decoration-thickness: 0.32em;
-    text-underline-offset: -0.08em;
-    text-decoration-skip-ink: none;
+// Mots soulignés au surligneur dans les accroches, liens ou non
+.souligne,
+.souligne a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba($fromage, 0.85);
+  text-decoration-thickness: 0.32em;
+  text-underline-offset: -0.08em;
+  text-decoration-skip-ink: none;
+}
 
-    &:hover {
-      text-decoration-color: $gratin;
-    }
-  }
+.souligne a:hover {
+  text-decoration-color: $gratin;
 }
 
 .install {
@@ -522,5 +521,58 @@ body.quarto-dark .explorer-viz #geoviewer {
   i {
     color: $gratin;
     margin-right: 0.2rem;
+  }
+}
+
+// Arguments de l'accroche
+.hero ul {
+  padding-left: 1.1rem;
+  margin-bottom: 1rem;
+
+  li {
+    margin-bottom: 0.45rem;
+  }
+
+  li::marker {
+    color: $gratin;
+  }
+}
+
+// Renvoi vers le cas d'usage, sous l'accroche de chaque explorateur
+a.exemple {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid $gratin;
+  border-radius: 999px;
+  color: $gratin;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+
+  i {
+    transition: transform 0.15s;
+  }
+
+  &:hover {
+    background: $gratin;
+    color: #fff;
+
+    i {
+      transform: translateX(3px);
+    }
+  }
+}
+
+body.quarto-dark a.exemple {
+  border-color: $fromage;
+  color: $fromage;
+
+  &:hover {
+    background: $fromage;
+    color: #2B1D14;
   }
 }
