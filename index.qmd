@@ -33,6 +33,8 @@ Vous voulez faire une carte mais n'avez que des codes Insee ? `cartiflette` four
 
 [Découpages administratifs]{.souligne} ou [zonages d'étude]{.souligne} de l'Insee: les fonds de carte sont prêts à l'emploi pour répondre à de nombreux besoins cartographiques.
 
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase2.qmd){.exemple target="_blank" rel="noopener"}
+
 ```{ojs}
 //| output: true
 html`<div class="explorer">
@@ -51,7 +53,9 @@ html`<div class="explorer">
 
 ## Les communes d'une sélection de départements
 
-Si on n'a besoin que de quelques départements, ou si on désire représenter des données mélangeant arrondissements et communes, on va devoir faire des opérations compliquées. Avec `cartiflette`, ce type de fond est prêt à l'emploi !
+Si on n'a [besoin que de quelques départements ou régions]{.souligne}, ou si on désire représenter des [données mélangeant arrondissements et communes]{.souligne}, on va devoir faire des opérations compliquées. Avec `cartiflette`, ce type de fond est prêt à l'emploi !
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase1.qmd){.exemple target="_blank" rel="noopener"}
 
 
 ```{ojs}
