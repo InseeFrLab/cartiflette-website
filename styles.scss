@@ -524,3 +524,17 @@ body.quarto-dark .explorer-viz #geoviewer {
     margin-right: 0.2rem;
   }
 }
+
+// Arguments de l'accroche
+.hero ul {
+  padding-left: 1.1rem;
+  margin-bottom: 1rem;
+
+  li {
+    margin-bottom: 0.45rem;
+  }
+
+  li::marker {
+    color: $gratin;
+  }
+}
