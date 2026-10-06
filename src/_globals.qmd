@@ -9,7 +9,6 @@ publiés sur S3.
 
 ```{ojs}
 API = "https://cartiflette-api.lab.sspcloud.fr"
-STORAGE = "https://minio.lab.sspcloud.fr/projet-cartiflette/production"
 // Premier millésime publié en GeoParquet
 PARQUET_FIRST_YEAR = 2023
 annees = ["2026", "2025", "2024", "2023", "2022"]
@@ -29,26 +28,18 @@ niveaux = new Map([
 ```
 
 ```{ojs}
-// Requête cartiflette : { borders, filter_by, values, year, simplification }
-function apiUrl(q) {
+// Requête cartiflette : { borders, filter_by, values, year, simplification }.
+// route : "geojson" ou "geoparquet" ; extra : paramètres en plus (download)
+function apiUrl(q, route = "geojson", extra = {}) {
   const params = new URLSearchParams({
     year: q.year,
     borders: q.borders,
     filter_by: q.filter_by,
-    simplification: q.simplification
+    simplification: q.simplification,
+    ...extra
   })
   for (const v of q.values) params.append("values", v)
-  return `${API}/v1/geojson?${params}`
-}
-
-// GeoParquet publié : un fichier par niveau et disposition, toute la France
-function parquetUrl(q) {
-  const layout = q.filter_by == "FRANCE_ENTIERE_DROM_RAPPROCHES"
-    ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE"
-  return `${STORAGE}/provider=IGN/dataset_family=ADMINEXPRESS` +
-    `/source=EXPRESS-COG-CARTO-TERRITOIRE/year=${q.year}` +
-    `/administrative_level=${q.borders}/crs=4326/layout=${layout}` +
-    `/vectorfile_format=parquet/simplification=${q.simplification}/raw.parquet`
+  return `${API}/v1/${route}?${params}`
 }
 ```
 
@@ -147,14 +138,14 @@ function carte(geojson) {
 ```
 
 ```{ojs}
-// Boutons de téléchargement : GeoJSON par l'API, GeoParquet publié
-function telechargements(q, parquetNote) {
-  const geojson = html`<a class="primary" href=${apiUrl(q)} target="_blank" rel="noopener">
+// Boutons de téléchargement, par l'API : les polygones affichés, dans un
+// fichier nommé d'après le niveau et le millésime (DEP2026.geojson…)
+function telechargements(q) {
+  const geojson = html`<a class="primary" href=${apiUrl(q, "geojson", {download: 1})} rel="noopener">
     <i class="fa-solid fa-download"></i> GeoJSON</a>`
   const parquet = Number(q.year) >= PARQUET_FIRST_YEAR
-    ? html`<a class="secondary" href=${parquetUrl(q)} rel="noopener">
-        <i class="fa-solid fa-download"></i> GeoParquet</a>
-        <small>${parquetNote}</small>`
+    ? html`<a class="secondary" href=${apiUrl(q, "geoparquet")} rel="noopener">
+        <i class="fa-solid fa-download"></i> GeoParquet</a>`
     : html`<a class="disabled">GeoParquet</a>
         <small>Pas de GeoParquet publié pour ${q.year}</small>`
   return html`<div class="downloads">${geojson}${parquet}</div>`

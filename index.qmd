@@ -44,7 +44,7 @@ html`<div class="explorer">
     ${viewof annee_france}
     ${viewof drom_rapproches}
     ${viewof simplification_france}
-    ${telechargements(requete_france, "Fichier complet du niveau, à filtrer en SQL ou avec le client Python")}
+    ${telechargements(requete_france)}
   </div>
   <div class="explorer-viz">${visualisation(donnees_france, affichage_france)}</div>
   <div class="explorer-code">${panneauCode(programmes(requete_france, niveau_france.variable), notes)}</div>
@@ -67,7 +67,7 @@ html`<div class="explorer">
     ${viewof annee_departements}
     ${viewof arrondissements}
     ${viewof simplification_departements}
-    ${telechargements(requete_departements, "Fichier France entière, à filtrer par INSEE_DEP")}
+    ${telechargements(requete_departements)}
   </div>
   <div class="explorer-viz">${
     requete_departements.values.length == 0
