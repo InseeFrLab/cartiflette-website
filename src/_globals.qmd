@@ -12,6 +12,11 @@ API = "https://cartiflette-api.lab.sspcloud.fr"
 // Premier millésime publié en GeoParquet
 PARQUET_FIRST_YEAR = 2023
 annees = ["2026", "2025", "2024", "2023", "2022"]
+
+// 2022 n'est publié qu'en GeoJSON, sans version à 80 % : on y prend 50 %
+function simplificationDisponible(annee, simplification) {
+  return Number(annee) < PARQUET_FIRST_YEAR && simplification == 80 ? 50 : simplification
+}
 ```
 
 ```{ojs}
