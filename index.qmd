@@ -88,8 +88,8 @@ viewof niveau_france = Inputs.select(niveaux, {label: "Niveau", key: "Départeme
 viewof annee_france = Inputs.select(annees, {label: "Millésime"})
 viewof drom_rapproches = Inputs.toggle({label: "DROM rapprochés et zoom sur l'Île-de-France", value: true})
 viewof simplification_france = Inputs.radio(
-  new Map([["Simplifiés (50 %)", 50], ["Complets", 0]]),
-  {label: "Contours", value: 50}
+  new Map([["80 % des points retirés", 80], ["50 % des points retirés", 50], ["Contours complets", 0]]),
+  {label: "Simplification", value: 80}
 )
 ```
 
@@ -99,7 +99,7 @@ requete_france = ({
   filter_by: drom_rapproches ? "FRANCE_ENTIERE_DROM_RAPPROCHES" : "FRANCE_ENTIERE",
   values: ["France"],
   year: annee_france,
-  simplification: simplification_france
+  simplification: simplificationDisponible(annee_france, simplification_france)
 })
 donnees_france = d3.json(apiUrl(requete_france))
 ```
@@ -115,8 +115,8 @@ viewof choix_departements = selecteurDepartements(departements, {
 viewof annee_departements = Inputs.select(annees, {label: "Millésime"})
 viewof arrondissements = Inputs.toggle({label: "Arrondissements municipaux (Paris, Lyon, Marseille)", value: true})
 viewof simplification_departements = Inputs.radio(
-  new Map([["Simplifiés (50 %)", 50], ["Complets", 0]]),
-  {label: "Contours", value: 50}
+  new Map([["80 % des points retirés", 80], ["50 % des points retirés", 50], ["Contours complets", 0]]),
+  {label: "Simplification", value: 80}
 )
 ```
 
@@ -126,7 +126,7 @@ requete_departements = ({
   filter_by: "DEPARTEMENT",
   values: choix_departements,
   year: annee_departements,
-  simplification: simplification_departements
+  simplification: simplificationDisponible(annee_departements, simplification_departements)
 })
 donnees_departements = requete_departements.values.length == 0
   ? {type: "FeatureCollection", features: []}
