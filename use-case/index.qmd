@@ -18,7 +18,7 @@ couches publiées par l'IGN.
   les DROM placés sous la métropole et un zoom sur l'Île-de-France, sur le
   millésime 2022.
 
-[Ne garder que les communes de plus de 2 000 habitants](usecase3.qmd)
+[Ne garder que les communes de plus de 2 000 habitants ou dans une aire géométrique donnée](usecase3.qmd)
 : Les communes de plus de 2 000 habitants d'Occitanie, filtrées dès le
   téléchargement avec l'argument `where`, qui accepte aussi des filtres
   géographiques (emprise, distance).
