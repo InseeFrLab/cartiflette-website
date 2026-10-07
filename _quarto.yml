@@ -3,7 +3,6 @@ project:
   render:
     - index.qmd
     - about.qmd
-    - use-case/usecase3.qmd
 
 lang: fr
 
