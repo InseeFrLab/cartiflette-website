@@ -1,0 +1,38 @@
+[project]
+# Dependencies needed to render the site (examples and use cases), not a
+# package: `uv sync` installs them in .venv, used by Quarto (QUARTO_PYTHON)
+name = "cartiflette-website"
+version = "0.1.0"
+description = "Site de cartiflette : exemples et cas d'usage"
+readme = "README.md"
+authors = [
+    { name = "linogaliana", email = "lino.galiana@insee.fr" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    # Published client; the cartiflette repository renders the site with its
+    # own client instead (docs.yml)
+    "cartiflette>=0.4.0",
+    "geopandas",
+    "pandas",
+    "openpyxl",
+    "python-calamine",
+    "matplotlib",
+    "folium",
+    "mapclassify",
+    "requests",
+    "py7zr",
+    "jupyter",
+    "nbformat",
+    "nbclient",
+    "ipykernel",
+    "topojson>=2.1",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+# 0.4.0 (where) is not on PyPI yet: client of the cartiflette main branch,
+# pinned to the merge of #120. Remove once 0.4.0 is published, then `uv lock`.
+cartiflette = { git = "https://github.com/InseeFrLab/cartiflette", subdirectory = "python-package/cartiflette", rev = "b3b48b8bd8bbe733e18498416978c8d5ea08dbf4" }
