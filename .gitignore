@@ -12,3 +12,6 @@ use-case/cartiflette-data/
 use-case/cheptel.json
 *.7z
 extracted_files/
+
+# Environnement uv
+.venv/

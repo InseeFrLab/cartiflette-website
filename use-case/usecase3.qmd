@@ -6,29 +6,9 @@ code-annotations: hover
 author: "Lino Galiana"
 ---
 
-Ce tutoriel illustre un besoin fréquent : __ne garder qu'une partie des contours d'un territoire selon leurs [attributs]{.yellow}__, ici les communes de plus de 2 000 habitants de la région Occitanie. Le seuil de 2 000 habitants est celui que l'Insee utilisait pour distinguer les communes urbaines des communes rurales.
+Ce tutoriel illustre un besoin fréquent : __ne garder qu'une partie des géométries, soit selon leurs [attributs]{.yellow}, soit par des [filtres géographiques]{.yellow}__.
 
-Avec `cartiflette`, ce filtre se fait au moment du téléchargement, grâce à l'argument `where`, une condition écrite en SQL. Seules les communes retenues sont récupérées, avec tous leurs attributs, prêtes à être cartographiées :
-
-```{ojs}
-//| echo: false
-html`<div class="destination-content">
-  <!-- Content will be inserted here automatically -->
-</div>`
-```
-
-```{ojs}
-//| echo: false
-//| output: false
-window.onload = function() {
-    const finalMapElement = document.querySelector('.final-map .cell-output.cell-output-display');
-    if (finalMapElement) {
-        document.querySelector('.destination-content').innerHTML = finalMapElement.innerHTML;
-    }
-};
-```
-
-::: {.tip}
+::: {.callout-tip}
 ## Pourquoi filtrer avec `cartiflette` ?
 
 - [Moins de données téléchargées]{.yellow} : `cartiflette` ne rapatrie que les parties du fichier publié utiles à la requête, et le filtre est appliqué pendant la lecture ;
@@ -37,12 +17,25 @@ window.onload = function() {
 
 :::
 
+Avec `cartiflette`, ce filtre se fait au moment du téléchargement, grâce à l'argument `where`, une condition écrite en SQL. Seules les communes retenues sont récupérées, avec tous leurs attributs, prêtes à être cartographiées :
+
+Commençons d'abord par ne garder que les communes de plus de 2 000 habitants de la région Occitanie. Cela nous donnera, *in fine*, cette carte:
+
+```{ojs}
+//| echo: false
+html`<div class="titre-carte-cheptel"><h3>Les communes de plus de 2 000 habitants en Occitanie</h3></div>
+<div>${carteGrandesCommunes()}</div>
+<div class="message-below-map"><i>Passer la souris sur une commune pour afficher son nom et sa population</i></div>`
+```
+
+Nous verrons ensuite comment récupérer des données par le biais de requêtes géographiques.
+
+
 # Récupérer toute la région, la démarche habituelle
 
 La démarche habituelle consiste à demander les communes (`borders="COMMUNE"`) d'une région (`filter_by="REGION"`), identifiée par son code Insee : `76` pour l'Occitanie.
 
 ```{python}
-import geopandas as gpd
 from cartiflette import carti_download
 
 occitanie = carti_download(
@@ -60,9 +53,21 @@ On obtient les __`{python} f"{len(occitanie):,}".replace(",", " ")` communes__ d
 occitanie[["INSEE_COM", "NOM", "POPULATION", "LIBELLE_DEPARTEMENT"]].head(3)
 ```
 
-```{python}
-occitanie.plot(edgecolor="white", linewidth=0.1)
+```{ojs}
+//| echo: false
+carteOccitanie()
 ```
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
+
+```{python}
+ax = occitanie.plot(color="#c6d7e8", edgecolor="white", linewidth=0.1)
+occitanie.dissolve("INSEE_DEP").boundary.plot(ax=ax, color="black", linewidth=0.4)
+ax.set_axis_off()
+```
+
+:::
 
 Il serait possible de ne garder les communes de plus de 2 000 habitants qu'ensuite, avec `Pandas` (`occitanie.loc[occitanie["POPULATION"] > 2000]`). Mais il aurait fallu télécharger toutes les communes, et la plupart d'entre elles sont aussitôt écartées.
 
@@ -96,15 +101,18 @@ grandes_communes[["INSEE_COM", "NOM", "POPULATION"]].sort_values(
 
 # Faire la carte
 
-Les communes de toute la région, récupérées à la première étape, servent de fond de carte ; les départements s'en déduisent avec la méthode `dissolve`.
+Les communes de toute la région, récupérées à la première étape, servent de fond de carte, et les limites des départements s'en déduisent. Les communes de plus de 2 000 habitants sont colorées selon leur population, sur une échelle logarithmique : Toulouse compte 250 fois plus d'habitants que les plus petites d'entre elles.
 
-::: {.final-map}
+```{ojs}
+//| echo: false
+carteGrandesCommunes()
+```
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
 
 ```{python}
-#| code-fold: true
-#| code-summary: "Dérouler 👇️ pour voir le code permettant de faire la carte"
 #| fig-cap: "Les communes de plus de 2 000 habitants en Occitanie"
-#| label: fig-map
 import matplotlib.pyplot as plt
 
 departements = occitanie.dissolve("INSEE_DEP")
@@ -135,12 +143,134 @@ ax.set_title("Communes de plus de 2 000 habitants en Occitanie")
 plt.figtext(
     0.5,
     0.02,
-    "Source : IGN, ADMIN EXPRESS COG CARTO 2026 ; cartiflette",
+    "Source : IGN, ADMIN EXPRESS COG CARTO 2026",
     horizontalalignment="center",
     fontsize=8,
     style="italic",
 )
 plt.show()
+```
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Comment faire avec `Javascript` ?
+
+Les cartes de cette page sont faites avec [`Observable Plot`](https://observablehq.com/plot/), par le biais de `Quarto`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/main/use-case/usecase3.qmd).
+
+Les données passent de `Python` à `Javascript` avec la fonction [`ojs_define`](https://quarto.org/docs/interactive/ojs/data-sources.html#python). Elle ne sait pas transmettre un `GeoDataFrame`, mais elle transmet un dictionnaire : celui d'un GeoJSON, ou d'un [TopoJSON](https://github.com/topojson/topojson) pour la région entière. Ce dernier format ne décrit qu'une fois chaque frontière entre deux communes : il pèse deux fois moins lourd, et il permet de tracer les limites des départements sans autre fichier.
+
+```{python}
+import json
+
+import shapely
+import topojson as tp
+
+colonnes = ["INSEE_COM", "NOM", "POPULATION", "INSEE_DEP", "LIBELLE_DEPARTEMENT", "geometry"]
+
+
+def pour_javascript(gdf):
+    """Polygones orientés comme l'attend Javascript (d3), seulement les colonnes utiles."""
+    gdf = gdf[colonnes].copy()
+    gdf["geometry"] = shapely.orient_polygons(gdf.geometry.values, exterior_cw=True) #<1>
+    return gdf
+
+
+ojs_define(
+    occitanie_topo=json.loads(
+        tp.Topology(pour_javascript(occitanie), prequantize=1e5, toposimplify=False).to_json()
+    ),
+    grandes_communes_geo=json.loads(pour_javascript(grandes_communes).to_json(drop_id=True)),
+)
+```
+1. Le contour extérieur des polygones est décrit dans le sens inverse des aiguilles d'une montre, comme le demande la norme GeoJSON. `d3`, sur lequel repose `Observable Plot`, attend le sens inverse : sans cette ligne, chaque commune serait remplie comme « tout le globe sauf la commune ».
+
+Côté `Javascript`, on reconstitue les communes et les limites des départements à partir du TopoJSON. La conversion en TopoJSON inverse le sens de quelques communes en plusieurs morceaux : `redresser` remet à l'endroit tout polygone qui couvrirait plus d'un hémisphère. La projection est une conique conforme proche du Lambert 93, la projection officielle de la France métropolitaine :
+
+```{ojs}
+function redresser(collection) {
+    const polygone = (anneaux) =>
+        d3.geoArea({type: "Polygon", coordinates: anneaux}) > 2 * Math.PI
+            ? anneaux.map((anneau) => anneau.slice().reverse())
+            : anneaux
+    for (const d of collection.features) {
+        const g = d.geometry
+        if (g.type === "Polygon") g.coordinates = polygone(g.coordinates)
+        if (g.type === "MultiPolygon") g.coordinates = g.coordinates.map(polygone)
+    }
+    return collection
+}
+
+communes = redresser(topojson.feature(occitanie_topo, occitanie_topo.objects.data))
+
+limites_departements = topojson.mesh(
+    occitanie_topo, occitanie_topo.objects.data,
+    (a, b) => a.properties.INSEE_DEP !== b.properties.INSEE_DEP
+)
+
+contour_region = topojson.mesh(
+    occitanie_topo, occitanie_topo.objects.data, (a, b) => a === b
+)
+
+projection = ({type: "conic-conformal", parallels: [44, 49], rotate: [-3, 0], domain: communes})
+
+infobulle = (d) => `${d.properties.NOM} (${d.properties.LIBELLE_DEPARTEMENT})
+${d.properties.POPULATION.toLocaleString("fr-FR")} habitants`
+```
+
+La carte de toute la région montre chaque commune, avec les limites des départements :
+
+```{ojs}
+function carteOccitanie() {
+    return Plot.plot({
+        projection,
+        width: 640,
+        marks: [
+            Plot.geo(communes, Plot.centroid({
+                fill: "#c6d7e8",
+                stroke: "white",
+                strokeWidth: 0.2,
+                title: infobulle,
+                tip: true
+            })),
+            Plot.geo(limites_departements, {stroke: "black", strokeWidth: 0.5}),
+            Plot.geo(contour_region, {stroke: "black", strokeWidth: 0.8})
+        ]
+    })
+}
+```
+
+La carte des communes de plus de 2 000 habitants les superpose au fond de carte de la région :
+
+```{ojs}
+function carteGrandesCommunes() {
+    return Plot.plot({
+        projection,
+        width: 640,
+        color: {
+            type: "log",
+            scheme: "ylorrd",
+            legend: true,
+            label: "Population",
+            ticks: [2000, 5000, 20000, 100000, 500000],
+            tickFormat: (d) => d.toLocaleString("fr-FR"),
+            marginLeft: 16,
+            width: 360
+        },
+        marks: [
+            Plot.geo(communes, {fill: "#eeeeee", stroke: "white", strokeWidth: 0.2}),
+            Plot.geo(grandes_communes_geo, Plot.centroid({
+                fill: (d) => d.properties.POPULATION,
+                stroke: "white",
+                strokeWidth: 0.2,
+                title: infobulle,
+                tip: true
+            })),
+            Plot.geo(limites_departements, {stroke: "black", strokeWidth: 0.5}),
+            Plot.geo(contour_region, {stroke: "black", strokeWidth: 0.8})
+        ]
+    })
+}
 ```
 
 :::
@@ -160,9 +290,16 @@ camargue = carti_download(
 ```
 1. `ST_MakeEnvelope(longitude min, latitude min, longitude max, latitude max)`. Les communes à cheval sur le bord du rectangle sont gardées entières.
 
+```{ojs}
+//| echo: false
+carteCamargue()
+```
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
+
 ```{python}
-#| code-fold: true
-#| code-summary: "Dérouler 👇️ pour voir le code de la carte"
+import geopandas as gpd
 from shapely.geometry import box
 
 ax = camargue.plot(
@@ -179,5 +316,48 @@ gpd.GeoSeries([box(4.1, 43.3, 4.9, 43.75)]).boundary.plot( #<1>
 ax.set_axis_off()
 ```
 1. Le rectangle du filtre, en pointillés.
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Comment faire avec `Javascript` ?
+
+Les communes de la Camargue sont transmises comme celles de l'Occitanie :
+
+```{python}
+ojs_define(camargue_geo=json.loads(pour_javascript(camargue).to_json(drop_id=True)))
+```
+
+Le rectangle du filtre est tracé comme une ligne (`LineString`) plutôt que comme un polygone, ce qui évite la question du sens de parcours :
+
+```{ojs}
+rectangle = ({
+    type: "LineString",
+    coordinates: [[4.1, 43.3], [4.9, 43.3], [4.9, 43.75], [4.1, 43.75], [4.1, 43.3]]
+})
+
+function carteCamargue() {
+    return Plot.plot({
+        projection: {
+            type: "conic-conformal", parallels: [44, 49], rotate: [-3, 0],
+            domain: {type: "GeometryCollection", geometries: [rectangle, ...camargue_geo.features.map((d) => d.geometry)]}
+        },
+        width: 640,
+        color: {legend: true, scheme: "set2"},
+        marks: [
+            Plot.geo(camargue_geo, Plot.centroid({
+                fill: (d) => d.properties.LIBELLE_DEPARTEMENT,
+                stroke: "white",
+                strokeWidth: 0.4,
+                title: infobulle,
+                tip: true
+            })),
+            Plot.geo(rectangle, {stroke: "black", strokeDasharray: "4,3", strokeWidth: 1.2})
+        ]
+    })
+}
+```
+
+:::
 
 D'autres exemples (distance à un point, commune contenant un point) sont dans la [documentation du client Python](https://inseefrlab.github.io/cartiflette/doc/client-python.html#filtrer-les-polygones-where).
