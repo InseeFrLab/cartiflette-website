@@ -1,5 +1,5 @@
 # Rendu du site : client cartiflette publié et dépendances des cas d'usage
-cartiflette>=0.2.1
+cartiflette>=0.4.0
 geopandas
 pandas
 openpyxl

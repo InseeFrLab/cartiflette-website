@@ -1,0 +1,183 @@
+---
+title: "Ne récupérer que les communes de plus de 2 000 habitants avec cartiflette"
+output: true
+number-sections: true
+code-annotations: hover
+author: "Lino Galiana"
+---
+
+Ce tutoriel illustre un besoin fréquent : __ne garder qu'une partie des contours d'un territoire selon leurs [attributs]{.yellow}__, ici les communes de plus de 2 000 habitants de la région Occitanie. Le seuil de 2 000 habitants est celui que l'Insee utilisait pour distinguer les communes urbaines des communes rurales.
+
+Avec `cartiflette`, ce filtre se fait au moment du téléchargement, grâce à l'argument `where`, une condition écrite en SQL. Seules les communes retenues sont récupérées, avec tous leurs attributs, prêtes à être cartographiées :
+
+```{ojs}
+//| echo: false
+html`<div class="destination-content">
+  <!-- Content will be inserted here automatically -->
+</div>`
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+window.onload = function() {
+    const finalMapElement = document.querySelector('.final-map .cell-output.cell-output-display');
+    if (finalMapElement) {
+        document.querySelector('.destination-content').innerHTML = finalMapElement.innerHTML;
+    }
+};
+```
+
+::: {.tip}
+## Pourquoi filtrer avec `cartiflette` ?
+
+- [Moins de données téléchargées]{.yellow} : `cartiflette` ne rapatrie que les parties du fichier publié utiles à la requête, et le filtre est appliqué pendant la lecture ;
+- [Une seule ligne de code]{.yellow} : la condition s'ajoute aux paramètres habituels de `carti_download` ;
+- [Le même filtre partout]{.yellow} : l'API de `cartiflette` accepte le même paramètre `where`, utilisable depuis `R`, `JavaScript` ou un navigateur.
+
+:::
+
+# Récupérer toute la région, la démarche habituelle
+
+La démarche habituelle consiste à demander les communes (`borders="COMMUNE"`) d'une région (`filter_by="REGION"`), identifiée par son code Insee : `76` pour l'Occitanie.
+
+```{python}
+import geopandas as gpd
+from cartiflette import carti_download
+
+occitanie = carti_download(
+    values="76",
+    borders="COMMUNE",
+    filter_by="REGION",
+    year=2026,
+)
+```
+
+On obtient les __`{python} f"{len(occitanie):,}".replace(",", " ")` communes__ de la région, avec leur population (`POPULATION`), leur département, leur bassin de vie, etc.
+
+```{python}
+#| echo: false
+occitanie[["INSEE_COM", "NOM", "POPULATION", "LIBELLE_DEPARTEMENT"]].head(3)
+```
+
+```{python}
+occitanie.plot(edgecolor="white", linewidth=0.1)
+```
+
+Il serait possible de ne garder les communes de plus de 2 000 habitants qu'ensuite, avec `Pandas` (`occitanie.loc[occitanie["POPULATION"] > 2000]`). Mais il aurait fallu télécharger toutes les communes, et la plupart d'entre elles sont aussitôt écartées.
+
+# Ne récupérer que les communes de plus de 2 000 habitants
+
+L'argument `where` applique ce filtre dès la lecture :
+
+::: {#lst-cartiflette-where lst-cap="Filtrer les communes avec where"}
+
+```{python}
+grandes_communes = carti_download(
+    values="76",
+    borders="COMMUNE",
+    filter_by="REGION",
+    year=2026,
+    where="POPULATION > 2000", #<1>
+)
+```
+1. Une condition SQL, comme dans une clause `WHERE`, sur n'importe quelle colonne : `"POPULATION > 2000 AND INSEE_DEP = '31'"`, `"NOM ILIKE 'saint%'"`, etc.
+
+:::
+
+Il ne reste que __`{python} len(grandes_communes)` communes__, qui regroupent __`{python} round(100 * grandes_communes["POPULATION"].sum() / occitanie["POPULATION"].sum())` %__ de la population de la région.
+
+```{python}
+#| echo: false
+grandes_communes[["INSEE_COM", "NOM", "POPULATION"]].sort_values(
+    "POPULATION", ascending=False
+).head(5)
+```
+
+# Faire la carte
+
+Les communes de toute la région, récupérées à la première étape, servent de fond de carte ; les départements s'en déduisent avec la méthode `dissolve`.
+
+::: {.final-map}
+
+```{python}
+#| code-fold: true
+#| code-summary: "Dérouler 👇️ pour voir le code permettant de faire la carte"
+#| fig-cap: "Les communes de plus de 2 000 habitants en Occitanie"
+#| label: fig-map
+import matplotlib.pyplot as plt
+
+departements = occitanie.dissolve("INSEE_DEP")
+
+fig, ax = plt.subplots(figsize=(8, 7))
+occitanie.plot(ax=ax, color="#eeeeee", edgecolor="white", linewidth=0.1)
+grandes_communes.plot(
+    ax=ax,
+    column="POPULATION",
+    scheme="NaturalBreaks",
+    k=5,
+    cmap="YlOrRd",
+    edgecolor="white",
+    linewidth=0.1,
+    legend=True,
+    legend_kwds={
+        "title": "Population",
+        "loc": "upper center",
+        "bbox_to_anchor": (0.5, 0.02),
+        "ncol": 3,
+        "fmt": "{:.0f}",
+        "frameon": False,
+    },
+)
+departements.boundary.plot(ax=ax, color="black", linewidth=0.4)
+ax.set_axis_off()
+ax.set_title("Communes de plus de 2 000 habitants en Occitanie")
+plt.figtext(
+    0.5,
+    0.02,
+    "Source : IGN, ADMIN EXPRESS COG CARTO 2026 ; cartiflette",
+    horizontalalignment="center",
+    fontsize=8,
+    style="italic",
+)
+plt.show()
+```
+
+:::
+
+# Aller plus loin : filtrer selon la géométrie
+
+`where` accepte aussi les fonctions spatiales de [DuckDB](https://duckdb.org/docs/stable/core_extensions/spatial/functions), sur la colonne `geometry` (coordonnées en longitude, latitude). Par exemple, les communes qui touchent un rectangle, ici la Camargue, à cheval sur l'Occitanie et la Provence-Alpes-Côte d'Azur :
+
+```{python}
+camargue = carti_download(
+    values="France",
+    borders="COMMUNE",
+    filter_by="FRANCE_ENTIERE",
+    year=2026,
+    where="ST_Intersects(geometry, ST_MakeEnvelope(4.1, 43.3, 4.9, 43.75))", #<1>
+)
+```
+1. `ST_MakeEnvelope(longitude min, latitude min, longitude max, latitude max)`. Les communes à cheval sur le bord du rectangle sont gardées entières.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Dérouler 👇️ pour voir le code de la carte"
+from shapely.geometry import box
+
+ax = camargue.plot(
+    column="LIBELLE_DEPARTEMENT",
+    categorical=True,
+    edgecolor="white",
+    linewidth=0.2,
+    legend=True,
+    legend_kwds={"loc": "upper left", "bbox_to_anchor": (1, 1), "frameon": False},
+)
+gpd.GeoSeries([box(4.1, 43.3, 4.9, 43.75)]).boundary.plot( #<1>
+    ax=ax, color="black", linestyle="--", linewidth=1
+)
+ax.set_axis_off()
+```
+1. Le rectangle du filtre, en pointillés.
+
+D'autres exemples (distance à un point, commune contenant un point) sont dans la [documentation du client Python](https://inseefrlab.github.io/cartiflette/doc/client-python.html#filtrer-les-polygones-where).
