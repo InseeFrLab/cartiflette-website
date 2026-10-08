@@ -20,8 +20,6 @@ website:
         text: Accueil
       - href: about.qmd
         text: À propos
-      - href: use-case/usecase3.qmd
-        text: use case 3
     tools:
       - icon: github
         href: https://github.com/inseefrlab/cartiflette
