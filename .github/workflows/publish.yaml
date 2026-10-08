@@ -1,14 +1,23 @@
 name: Publish website
 
-on: 
+# The site is published by the cartiflette repository (docs.yml), at
+# https://inseefrlab.github.io/cartiflette/, with the client of that
+# repository. This repository:
+# - on a pull request, renders the site to check it;
+# - on main, publishes only a redirect to that address on its own GitHub
+#   Pages (old links keep working, see redirect/index.html), then asks the
+#   cartiflette repository to republish the site.
+
+on:
   push:
     branches:
       - main
-      - master
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  publish:
+  check:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,15 +41,33 @@ jobs:
           # _brand.yml (identité visuelle) demande Quarto 1.6 ou plus
           version: 1.10.18
 
-      - name: Render FR version
+      - name: Render the site
         uses: quarto-dev/quarto-actions/render@v2
         env:
           QUARTO_PROFILE: complete
-      - name: Publish to GitHub Pages (and render)
-        uses: quarto-dev/quarto-actions/publish@v2
+
+  publish:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Every path of the former site falls back on 404.html: same redirect
+      - name: Prepare the redirect
+        run: cp redirect/index.html redirect/404.html
+
+      - name: Publish the redirect to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          render: false
-          target: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./redirect
+          # Only the redirect: the pages of the former site are removed
+          force_orphan: true
+          commit_message: "Redirection vers https://inseefrlab.github.io/cartiflette/"
 
       - name: Rebuild the site published by cartiflette
         env:

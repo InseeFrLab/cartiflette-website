@@ -27,7 +27,15 @@ uv pip install ../cartiflette/python-package/cartiflette
 
 ## Publication
 
-`.github/workflows/publish.yaml` rend le site (profil `complete`) à chaque push sur
-`main` et le publie sur GitHub Pages. Il demande ensuite au dépôt cartiflette de
-republier le site complet, qui y ajoute la documentation technique sous `doc/` et
-utilise le client de ce dépôt-là (`docs.yml`).
+Le site est publié par le dépôt [cartiflette](https://github.com/InseeFrLab/cartiflette)
+(`.github/workflows/docs.yml`), à l'adresse <https://inseefrlab.github.io/cartiflette/>,
+avec la documentation technique sous `doc/` et le client de ce dépôt-là.
+
+`.github/workflows/publish.yaml` :
+
+- sur une pull request, rend le site (profil `complete`) pour le vérifier ;
+- à chaque push sur `main`, demande au dépôt cartiflette de republier le site, et
+  ne publie sur les GitHub Pages de ce dépôt qu'une redirection
+  (`redirect/index.html`, servie aussi comme `404.html`) : les anciennes adresses
+  `https://inseefrlab.github.io/cartiflette-website/...` renvoient vers la même page
+  du nouveau site.

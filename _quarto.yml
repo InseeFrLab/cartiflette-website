@@ -9,7 +9,7 @@ lang: fr
 website:
   title: "cartiflette"
   description: "Les fonds de carte officiels français, en une ligne de code"
-  site-url: https://inseefrlab.github.io/cartiflette-website/
+  site-url: https://inseefrlab.github.io/cartiflette/
   favicon: images/logo.png
   page-navigation: true
   navbar:
