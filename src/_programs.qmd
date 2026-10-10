@@ -1,6 +1,6 @@
 <!--
-Extraits de code affichés à côté des cartes. Python utilise le client
-cartiflette ; R et JavaScript appellent directement l'API GeoJSON.
+Extraits de code affichés à côté des cartes. Python et R utilisent les
+packages cartiflette ; JavaScript appelle directement l'API GeoJSON.
 -->
 
 ```{ojs}
@@ -14,6 +14,12 @@ function pyValues(values) {
   return values.length == 1
     ? `"${values[0]}"`
     : `[${values.map(v => `"${v}"`).join(", ")}]`
+}
+
+function rValues(values) {
+  return values.length == 1
+    ? `"${values[0]}"`
+    : `c(${values.map(v => `"${v}"`).join(", ")})`
 }
 
 // Découpe une URL d'API en morceaux lisibles (un paramètre par ligne)
@@ -36,12 +42,15 @@ ${variable} = carti_download(
     year=${q.year},
     simplification=${q.simplification},
 )`,
-    R: `library(sf)
+    R: `library(cartiflette)
 
-url <- paste0(
-${parts.map(p => `  "${p}"`).join(",\n")}
-)
-${variable} <- st_read(url)`,
+${variable} <- carti_download(
+  values = ${rValues(q.values)},
+  borders = "${q.borders}",
+  filter_by = "${q.filter_by}",
+  year = ${q.year},
+  simplification = ${q.simplification}
+)`,
     JavaScript: `const url = [
 ${parts.map(p => `  "${p}"`).join(",\n")}
 ].join("")
@@ -74,12 +83,12 @@ function panneauCode(codes, note) {
 
 notes = ({
   Python: html`<code>pip install cartiflette</code> (version 0.2.1 ou plus). Le client lit le GeoParquet et ne télécharge que les polygones demandés.`,
-  R: html`${avertissement("R")}L'API renvoie du GeoJSON, que <code>sf</code> lit directement.`,
+  R: html`<code>remotes::install_github("inseefrlab/cartiflette-r")</code> (version 0.2.0 ou plus). Le package lit le GeoParquet avec DuckDB et renvoie un objet <code>sf</code>.`,
   JavaScript: html`${avertissement("JavaScript")}L'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
 })
 
-// Les packages R et JavaScript ne suivent pas encore les évolutions du client
-// Python (GeoParquet, millésimes depuis 2023) : on passe par l'API en attendant
+// Le package JavaScript ne suit pas encore les évolutions des clients Python
+// et R (GeoParquet, millésimes depuis 2023) : on passe par l'API en attendant
 function avertissement(langage) {
   return html`<span class="snippet-warning"><i class="fa-solid fa-person-digging"></i>
     Le package <code>cartiflette</code> pour ${langage} n'est pas encore à jour des
