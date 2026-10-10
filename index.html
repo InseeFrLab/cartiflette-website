@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>cartiflette a déménagé</title>
+  <!-- Le site est publié par le dépôt cartiflette (docs.yml). Ce dépôt ne
+       publie plus que cette page, servie aussi comme 404.html : toute
+       ancienne adresse renvoie vers la même page du nouveau site. -->
+  <link rel="canonical" href="https://inseefrlab.github.io/cartiflette/">
+  <meta http-equiv="refresh" content="0; url=https://inseefrlab.github.io/cartiflette/">
+  <script>
+    // /cartiflette-website/use-case/usecase1.html -> /cartiflette/use-case/usecase1.html
+    const page = location.pathname.replace(/^\/cartiflette-website\/?/, "");
+    location.replace(
+      "https://inseefrlab.github.io/cartiflette/" + page + location.search + location.hash
+    );
+  </script>
+</head>
+<body>
+  <p>
+    Le site de cartiflette est maintenant à l'adresse
+    <a href="https://inseefrlab.github.io/cartiflette/">https://inseefrlab.github.io/cartiflette/</a>.
+  </p>
+</body>
+</html>
