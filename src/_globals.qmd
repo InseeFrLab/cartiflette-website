@@ -33,8 +33,9 @@ niveaux = new Map([
 ```
 
 ```{ojs}
-// Requête cartiflette : { borders, filter_by, values, year, simplification }.
-// route : "geojson" ou "geoparquet" ; extra : paramètres en plus (download)
+// Requête cartiflette : { borders, filter_by, values, year, simplification,
+// where (facultatif) }. route : "geojson" ou "geoparquet" ; extra : paramètres
+// en plus (download)
 function apiUrl(q, route = "geojson", extra = {}) {
   const params = new URLSearchParams({
     year: q.year,
@@ -44,6 +45,7 @@ function apiUrl(q, route = "geojson", extra = {}) {
     ...extra
   })
   for (const v of q.values) params.append("values", v)
+  if (q.where) params.append("where", q.where)
   return `${API}/v1/${route}?${params}`
 }
 ```
@@ -61,6 +63,10 @@ COLONNES = ({
   STATUT: ["ign", "Statut de la commune"],
   POPULATION: ["ign", "Population municipale (somme pour les niveaux agrégés)"],
   INSEE_COM: ["ign", "Code commune"],
+  CODE_IRIS: ["ign", "Code IRIS"],
+  NOM_IRIS: ["ign", "Nom de l'IRIS"],
+  TYP_IRIS: ["ign", "Type d'IRIS : habitat (H), activité (A), divers (D), commune non découpée (Z)"],
+  NOM_COM: ["ign", "Nom de la commune"],
   INSEE_COG: ["cartiflette", "Code commune, ou d'arrondissement municipal à Paris, Lyon et Marseille"],
   AREA: ["cartiflette", "Territoire : métropole ou DROM"],
   PAYS: ["cartiflette", "Pays"],

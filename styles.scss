@@ -576,3 +576,32 @@ body.quarto-dark a.exemple {
     color: #2B1D14;
   }
 }
+
+// Observable Plot (version de Quarto) impose un fond blanc à ses graphiques et
+// légendes : fond transparent, info-bulles de la couleur de la page
+svg[class^="plot-"] {
+  background: transparent !important;
+  --plot-background: var(--bs-body-bg);
+
+  // fill="white" écrit en attribut, que le CSS remplace
+  g[aria-label="tip"] {
+    fill: var(--bs-body-bg);
+  }
+}
+
+// Couleurs des cartes qui suivent le thème : polygones sans donnée, accent
+// (contours surlignés)
+:root {
+  --carte-vide: #e0e0e0;
+  --carte-accent: #1f3b8a;
+}
+
+body.quarto-dark {
+  --carte-vide: #4a4a4a;
+  --carte-accent: #8ab4f8;
+
+  // Code dans les titres et les encadrés : même fond que dans le texte
+  :is(h1, h2, h3, h4, h5, h6, .callout-title-container) code {
+    background-color: rgba(67, 67, 67, 0.65);
+  }
+}

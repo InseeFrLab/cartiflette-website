@@ -22,3 +22,8 @@ couches publiées par l'IGN.
 : Les communes de plus de 2 000 habitants d'Occitanie, filtrées dès le
   téléchargement avec l'argument `where`, qui accepte aussi des filtres
   géographiques (emprise, distance).
+
+[Revenus par IRIS et quartiers prioritaires de la petite couronne](usecase4.qmd)
+: Les IRIS d'une intercommunalité ou d'un quartier prioritaire, récupérés avec
+  `where`, puis le revenu médian de l'Insee (Filosofi) cartographié avec les
+  quartiers prioritaires de la politique de la ville.
