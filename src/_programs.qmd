@@ -22,6 +22,31 @@ function rValues(values) {
     : `c(${values.map(v => `"${v}"`).join(", ")})`
 }
 
+// Découpe une condition where en morceaux, avant les fonctions ST_, pour tenir
+// dans le panneau
+function whereParts(where, largeur) {
+  const morceaux = [""]
+  for (const mot of where.split(/(?<=, )(?=ST_)/)) {
+    const i = morceaux.length - 1
+    if (morceaux[i] && (morceaux[i] + mot).length > largeur) morceaux.push(mot)
+    else morceaux[i] += mot
+  }
+  return morceaux
+}
+
+// Condition where en Python : sur une ligne si elle est courte, sinon en
+// chaînes juxtaposées
+function pyWhere(where, largeur = 45) {
+  if (where.length <= largeur) return `"${where}"`
+  return `(\n${whereParts(where, largeur).map(m => `        "${m}"`).join("\n")}\n    )`
+}
+
+// Condition where en R : sur une ligne si elle est courte, sinon avec paste0
+function rWhere(where, largeur = 45) {
+  if (where.length <= largeur) return `"${where}"`
+  return `paste0(\n${whereParts(where, largeur).map(m => `    "${m}"`).join(",\n")}\n  )`
+}
+
 // Découpe une URL d'API en morceaux lisibles (un paramètre par ligne)
 function urlParts(url) {
   const [base, query] = url.split("?")
@@ -40,7 +65,7 @@ ${variable} = carti_download(
     borders="${q.borders}",
     filter_by="${q.filter_by}",
     year=${q.year},
-    simplification=${q.simplification},
+    simplification=${q.simplification},${q.where ? `\n    where=${pyWhere(q.where)},` : ""}
 )`,
     R: `library(cartiflette)
 
@@ -49,7 +74,7 @@ ${variable} <- carti_download(
   borders = "${q.borders}",
   filter_by = "${q.filter_by}",
   year = ${q.year},
-  simplification = ${q.simplification}
+  simplification = ${q.simplification}${q.where ? `,\n  where = ${rWhere(q.where)}` : ""}
 )`,
     JavaScript: `const url = [
 ${parts.map(p => `  "${p}"`).join(",\n")}
@@ -85,6 +110,14 @@ notes = ({
   Python: html`<code>pip install cartiflette</code> (version 0.2.1 ou plus). Le client lit le GeoParquet et ne télécharge que les polygones demandés.`,
   R: html`<code>remotes::install_github("inseefrlab/cartiflette-r")</code> (version 0.2.0 ou plus). Le package lit le GeoParquet avec DuckDB et renvoie un objet <code>sf</code>.`,
   JavaScript: html`${avertissement("JavaScript")}L'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
+})
+
+// Note Python des explorateurs qui utilisent where ou les IRIS : client 0.4.0
+notesV4 = ({
+  ...notes,
+  Python: html`L'argument <code>where</code> et le niveau IRIS arrivent avec la
+    version 0.4.0 du client, pas encore publiée sur PyPI. En attendant :
+    <code>pip install "git+https://github.com/InseeFrLab/cartiflette#subdirectory=python-package/cartiflette"</code>.`
 })
 
 // Le package JavaScript ne suit pas encore les évolutions des clients Python

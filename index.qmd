@@ -78,6 +78,49 @@ html`<div class="explorer">
 </div>`
 ```
 
+## Ne garder que les polygones utiles
+
+Pas besoin de télécharger toute une région pour n'en garder que quelques communes : l'argument `where`, une condition SQL, filtre les polygones [selon leurs attributs]{.souligne} (population, intercommunalité…) ou [selon leur géométrie]{.souligne} (emprise, distance à un point), dès le téléchargement.
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase3.qmd){.exemple target="_blank" rel="noopener"}
+
+```{ojs}
+//| output: true
+html`<div class="explorer">
+  <div class="explorer-controls">
+    ${viewof affichage_where}
+    ${viewof filtre_where}
+    ${filtre_where == "attribut" ? viewof seuil_where : ""}
+    ${viewof annee_where}
+    <p class="viz-meta">${description_where}</p>
+    ${telechargements(requete_where)}
+  </div>
+  <div class="explorer-viz">${visualisation(donnees_where, affichage_where)}</div>
+  <div class="explorer-code">${panneauCode(programmes(requete_where, filtre_where == "attribut" ? "grandes_communes" : "camargue"), notesV4)}</div>
+</div>`
+```
+
+## Les IRIS, à l'intérieur des communes
+
+Pour descendre [sous la commune]{.souligne}, `cartiflette` fournit les [contours IRIS]{.souligne} de l'IGN, à partir de 2025 : des quartiers d'environ 2 000 habitants, le niveau auquel l'Insee diffuse revenus, logement ou emploi. Avec `where`, on ne garde que ceux d'une intercommunalité ou d'un rayon autour d'un point.
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase4.qmd){.exemple target="_blank" rel="noopener"}
+
+```{ojs}
+//| output: true
+html`<div class="explorer">
+  <div class="explorer-controls">
+    ${viewof affichage_iris}
+    ${viewof espace_iris}
+    ${viewof annee_iris}
+    <p class="viz-meta">${espace_iris.description}</p>
+    ${telechargements(requete_iris)}
+  </div>
+  <div class="explorer-viz">${visualisation(donnees_iris, affichage_iris)}</div>
+  <div class="explorer-code">${panneauCode(programmes(requete_iris, "iris"), notesV4)}</div>
+</div>`
+```
+
 :::
 
 <!-- Réglages : France entière -->
@@ -131,4 +174,82 @@ requete_departements = ({
 donnees_departements = requete_departements.values.length == 0
   ? {type: "FeatureCollection", features: []}
   : d3.json(apiUrl(requete_departements))
+```
+
+<!-- Réglages : where (exemples du tutoriel use-case/usecase3.qmd) -->
+
+```{ojs}
+viewof affichage_where = Inputs.radio(["Carte", "Métadonnées"], {value: "Carte"})
+viewof filtre_where = Inputs.radio(
+  new Map([["Selon un attribut", "attribut"], ["Selon la géométrie", "geometrie"]]),
+  {label: "Filtre", value: "attribut"}
+)
+viewof seuil_where = Inputs.select(
+  new Map([["2 000 habitants", 2000], ["10 000 habitants", 10000], ["50 000 habitants", 50000]]),
+  {label: "Population minimale"}
+)
+viewof annee_where = Inputs.select(annees.filter(a => Number(a) >= PARQUET_FIRST_YEAR), {label: "Millésime"})
+```
+
+```{ojs}
+// Attribut : les communes d'Occitanie au-dessus d'un seuil de population.
+// Géométrie : les communes qui touchent un rectangle autour de la Camargue, à
+// cheval sur l'Occitanie (76) et Provence-Alpes-Côte d'Azur (93)
+requete_where = filtre_where == "attribut"
+  ? ({
+      borders: "COMMUNE",
+      filter_by: "REGION",
+      values: ["76"],
+      year: annee_where,
+      simplification: 80,
+      where: `POPULATION > ${seuil_where}`
+    })
+  : ({
+      borders: "COMMUNE",
+      filter_by: "REGION",
+      values: ["76", "93"],
+      year: annee_where,
+      simplification: 80,
+      where: "ST_Intersects(geometry, ST_MakeEnvelope(4.1, 43.3, 4.9, 43.75))"
+    })
+description_where = filtre_where == "attribut"
+  ? `Les communes d'Occitanie de plus de ${seuil_where.toLocaleString("fr-FR")} habitants.`
+  : "Les communes d'Occitanie et de Provence-Alpes-Côte d'Azur qui touchent un rectangle autour de la Camargue : longitude de 4,1 à 4,9, latitude de 43,3 à 43,75."
+donnees_where = d3.json(apiUrl(requete_where))
+```
+
+<!-- Réglages : IRIS (exemples du tutoriel use-case/usecase4.qmd) -->
+
+```{ojs}
+viewof affichage_iris = Inputs.radio(["Carte", "Métadonnées"], {value: "Carte"})
+espaces_iris = [
+  {
+    label: "Toute la Seine-Saint-Denis",
+    description: "Tous les IRIS de la Seine-Saint-Denis."
+  },
+  {
+    label: "Selon un attribut",
+    where: "EPT = '200057867'",
+    description: "Les IRIS de Plaine Commune (Saint-Denis, Aubervilliers, La Courneuve…), d'après le code de leur établissement public territorial."
+  },
+  {
+    label: "Selon la géométrie",
+    where: "ST_Distance_Sphere(ST_Centroid(geometry), ST_Point(2.3599, 48.9356)) < 3000",
+    description: "Les IRIS dont le centre est à moins de 3 km de la basilique de Saint-Denis."
+  }
+]
+viewof espace_iris = Inputs.radio(espaces_iris, {label: "Espace", format: d => d.label, value: espaces_iris[1]})
+viewof annee_iris = Inputs.select(["2026", "2025"], {label: "Millésime"})
+```
+
+```{ojs}
+requete_iris = ({
+  borders: "IRIS",
+  filter_by: "DEPARTEMENT",
+  values: ["93"],
+  year: annee_iris,
+  simplification: 80,
+  where: espace_iris.where
+})
+donnees_iris = d3.json(apiUrl(requete_iris))
 ```
