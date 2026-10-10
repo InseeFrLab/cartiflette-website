@@ -1,0 +1,651 @@
+---
+title: "Revenus par IRIS et quartiers prioritaires de la petite couronne"
+output: true
+number-sections: true
+code-annotations: hover
+author: "Lino Galiana"
+---
+
+Ce tutoriel montre comment __récupérer les [IRIS]{.yellow} d'un espace donné__, défini par un [attribut]{.yellow} (une intercommunalité) ou par un [polygone]{.yellow} (un quartier, un cercle autour d'un point), puis comment __leur associer une donnée de l'Insee diffusée au même niveau__ : le revenu médian. Cela nous donnera, *in fine*, cette carte des revenus de Paris et de la petite couronne, avec les quartiers prioritaires de la politique de la ville :
+
+```{ojs}
+//| echo: false
+html`<div class="titre-carte-cheptel"><h3>Revenu médian par IRIS et quartiers prioritaires</h3></div>
+<div>${carteRevenus(null, true)}</div>
+<div class="message-below-map"><i>Passer la souris sur un IRIS pour afficher son nom, son revenu médian et son quartier prioritaire</i></div>`
+```
+
+::: {.callout-note}
+## Qu'est-ce qu'un IRIS ?
+
+Les IRIS (« Îlots regroupés pour l'information statistique ») découpent les communes d'au moins 10 000 habitants, et la plupart de celles de 5 000 à 10 000 habitants, en quartiers d'environ 2 000 habitants. Les autres communes forment un IRIS à elles seules. C'est le plus petit niveau auquel l'Insee diffuse la plupart de ses données. La colonne `TYP_IRIS` indique leur nature : `H` pour un IRIS d'habitat, `A` d'activité, `D` divers (grand parc, port…), `Z` pour une commune non découpée.
+
+Le niveau `borders="IRIS"` de `cartiflette` est disponible à partir du millésime 2025, avec les contours IRIS de l'IGN, cohérents avec les communes du même millésime.
+:::
+
+# Récupérer les IRIS d'un département
+
+Comme pour les autres niveaux, on demande les IRIS (`borders="IRIS"`) d'un département (`filter_by="DEPARTEMENT"`) :
+
+```{python}
+from cartiflette import carti_download
+
+seine_saint_denis = carti_download(
+    values="93",
+    borders="IRIS",
+    filter_by="DEPARTEMENT",
+    year=2025,
+)
+```
+
+On obtient les __`{python} f"{len(seine_saint_denis):,}".replace(",", " ")` IRIS__ de la Seine-Saint-Denis, avec leur code (`CODE_IRIS`), leur nom (`NOM_IRIS`), leur type, et les zonages de leur commune (intercommunalité, bassin de vie, zone d'emploi…) :
+
+```{python}
+#| echo: false
+seine_saint_denis[["CODE_IRIS", "NOM_IRIS", "TYP_IRIS", "NOM_COM", "EPT"]].head(3)
+```
+
+Les IRIS d'habitat sont les plus nombreux. Ceux d'activité recouvrent les zones industrielles, l'aéroport du Bourget ou le Stade de France ; les IRIS divers, les grands parcs comme celui de La Courneuve :
+
+```{ojs}
+//| echo: false
+carteTypes()
+```
+
+Pour ne garder qu'une partie de ces IRIS, deux approches : selon un attribut ou selon un polygone.
+
+# Restreindre l'espace
+
+## Par un attribut : une intercommunalité
+
+Les communes de la petite couronne sont regroupées en établissements publics territoriaux (EPT), dont le code figure dans la colonne `EPT`. L'argument `where` ne garde que les IRIS de Plaine Commune (`200057867`), qui regroupe Saint-Denis, Aubervilliers, La Courneuve et cinq autres communes :
+
+```{python}
+plaine_commune = carti_download(
+    values="93",
+    borders="IRIS",
+    filter_by="DEPARTEMENT",
+    year=2025,
+    where="EPT = '200057867'", #<1>
+)
+```
+1. Une condition SQL, comme dans une clause `WHERE`, sur n'importe quelle colonne : `"INSEE_COM IN ('93066', '93001')"`, `"TYP_IRIS = 'H'"`, etc.
+
+Il reste __`{python} len(plaine_commune)` IRIS__ dans __`{python} plaine_commune["INSEE_COM"].nunique()` communes__, à l'ouest du département :
+
+```{ojs}
+//| echo: false
+cartePlaineCommune()
+```
+
+## Par un polygone : un quartier prioritaire
+
+`where` accepte aussi les fonctions spatiales de [DuckDB](https://duckdb.org/docs/stable/core_extensions/spatial/functions) sur la colonne `geometry`, en longitude, latitude. Le polygone peut venir d'une autre source : ici le contour d'un quartier prioritaire de la politique de la ville (QPV), publié par l'Agence nationale de la cohésion des territoires (ANCT).
+
+::: {.callout-tip}
+## Et les zones urbaines sensibles ?
+
+Les zones urbaines sensibles (ZUS) ont été remplacées en 2015 par les quartiers prioritaires de la politique de la ville, délimités selon un seul critère : la concentration de ménages à bas revenus. Leur liste a été révisée au 1^er^ janvier 2024 ; c'est elle qui est utilisée ici.
+:::
+
+```{python}
+import io
+import zipfile
+
+import geopandas as gpd
+import requests
+
+url_qpv = (
+    "https://static.data.gouv.fr/resources/quartiers-prioritaires-de-la-politique-de-la-ville-qpv/"
+    "20260115-204323/qpv-2024-geojson.zip"
+)
+with zipfile.ZipFile(io.BytesIO(requests.get(url_qpv, timeout=60).content)) as z:
+    qpv = gpd.read_file(
+        z.open("GEOJSON/QP2024_France_Hexagonale_Outre_Mer_WGS84.geojson")
+    )
+
+qpv = qpv.loc[qpv["insee_dep"].isin(["75", "92", "93", "94"])]
+```
+
+La petite couronne et Paris comptent __`{python} len(qpv)` quartiers prioritaires__. Prenons celui du Haut Clichy et des Bosquets, à Clichy-sous-Bois et Montfermeil, et récupérons les IRIS dont le cœur se trouve dans ce quartier :
+
+```{python}
+bosquets = qpv.loc[qpv["code_qp"] == "QN09303M", "geometry"].iloc[0]
+dans_bosquets = (
+    "ST_Intersects(ST_PointOnSurface(geometry), " #<1>
+    f"ST_GeomFromText('{bosquets.wkt}'))"
+)
+
+iris_bosquets = carti_download(
+    values="93",
+    borders="IRIS",
+    filter_by="DEPARTEMENT",
+    year=2025,
+    where=dans_bosquets,
+)
+```
+1. `ST_GeomFromText` lit le polygone écrit en texte (WKT) par `shapely`. `ST_PointOnSurface` donne un point à l'intérieur de chaque IRIS : sans lui, `ST_Intersects(geometry, ...)` garderait aussi les IRIS voisins qui ne font que toucher le bord du quartier.
+
+Les __`{python} len(iris_bosquets)` IRIS__ retenus, en orange, couvrent l'essentiel du quartier, tracé en bleu. Les autres IRIS des deux communes sont en gris :
+
+```{ojs}
+//| echo: false
+carteBosquets()
+```
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
+
+```{python}
+communes_bosquets = seine_saint_denis.loc[
+    seine_saint_denis["INSEE_COM"].isin(iris_bosquets["INSEE_COM"])
+]
+ax = communes_bosquets.plot(color="#e0e0e0", edgecolor="white", linewidth=0.8)
+iris_bosquets.plot(ax=ax, color="#e8743b", edgecolor="white", linewidth=0.8)
+gpd.GeoSeries([bosquets]).boundary.plot(ax=ax, color="#1f3b8a", linewidth=1.5)
+for _, iris in iris_bosquets.iterrows():
+    point = iris.geometry.representative_point()
+    ax.annotate(iris["NOM_IRIS"], (point.x, point.y), fontsize=6, ha="center")
+ax.set_axis_off()
+```
+
+:::
+
+## Par un polygone : un cercle autour d'un point
+
+Un cercle se décrit plus simplement par une distance : les IRIS dont le centre est à moins de 3 km de la basilique de Saint-Denis.
+
+```{python}
+autour_basilique = carti_download(
+    values="93",
+    borders="IRIS",
+    filter_by="DEPARTEMENT",
+    year=2025,
+    where=(
+        "ST_Distance_Sphere(ST_Centroid(geometry), ST_Point(2.3599, 48.9356))" #<1>
+        " < 3000"
+    ),
+)
+```
+1. `ST_Point(longitude, latitude)` ; `ST_Distance_Sphere` renvoie une distance en mètres.
+
+Il y en a __`{python} len(autour_basilique)`__, dans __`{python} autour_basilique["INSEE_COM"].nunique()` communes__. Un IRIS est retenu quand son centre, marqué d'un point, est dans le cercle, même s'il en déborde :
+
+```{ojs}
+//| echo: false
+carteBasilique()
+```
+
+Le filtre ne s'applique qu'aux IRIS du département demandé : le cercle déborde sur Paris et les Hauts-de-Seine, dont les IRIS ne sont pas lus. Pour les avoir aussi, il suffit de demander plusieurs départements (`values=["75", "92", "93"]`). Une emprise rectangulaire s'écrit de la même façon avec `ST_MakeEnvelope` (voir [le tutoriel sur les filtres](usecase3.qmd)).
+
+Ces filtres réduisent aussi le volume téléchargé : `cartiflette` ne lit que les parties du fichier publié qui concernent le département demandé, puis applique la condition pendant la lecture.
+
+# Associer le revenu médian de l'Insee
+
+L'Insee diffuse les [revenus déclarés et disponibles par IRIS](https://www.insee.fr/fr/statistiques/8229323) issus du dispositif Filosofi. Le millésime 2021 est le dernier disponible à ce niveau. La colonne `DISP_MED21` donne le revenu disponible médian par unité de consommation : la moitié des personnes vivent dans un ménage dont le niveau de vie est inférieur. Il n'est pas diffusé (`ns`, `nd`) pour les IRIS trop peu peuplés.
+
+```{python}
+import pandas as pd
+
+url_filosofi = (
+    "https://www.insee.fr/fr/statistiques/fichier/8229323/"
+    "BASE_TD_FILO_IRIS_2021_DISP_CSV.zip"
+)
+with zipfile.ZipFile(io.BytesIO(requests.get(url_filosofi, timeout=60).content)) as z:
+    filosofi = pd.read_csv(
+        z.open("BASE_TD_FILO_IRIS_2021_DISP.csv"),
+        sep=";",
+        decimal=",",
+        dtype={"IRIS": str},
+        na_values=["ns", "nd"], #<1>
+        usecols=["IRIS", "DISP_MED21"],
+    )
+```
+1. Valeurs non diffusées, lues comme manquantes : la colonne est alors numérique.
+
+On récupère les IRIS de Paris et de la petite couronne en une fois, puis on fait la jointure sur le code IRIS :
+
+```{python}
+petite_couronne = carti_download(
+    values=["75", "92", "93", "94"],
+    borders="IRIS",
+    filter_by="DEPARTEMENT",
+    year=2025,
+)
+
+revenus = petite_couronne.merge(
+    filosofi, left_on="CODE_IRIS", right_on="IRIS", how="left"
+)
+```
+
+```{python}
+#| echo: false
+habitat = revenus["TYP_IRIS"] == "H"
+sans_filosofi = revenus.loc[habitat & revenus["IRIS"].isna()]
+communes_sans = ", ".join(sorted(sans_filosofi["NOM_COM"].unique()))
+```
+
+Sur les __`{python} f"{len(revenus):,}".replace(",", " ")` IRIS__, __`{python} f"{revenus['DISP_MED21'].notna().sum():,}".replace(",", " ")`__ ont un revenu médian. Les autres sont des IRIS d'activité ou peu peuplés, dont le revenu n'est pas diffusé, ou des IRIS dont le code a changé : Filosofi 2021 suit la géographie au 1^er^ janvier 2022, les contours sont ceux de 2025. Seuls __`{python} len(sans_filosofi)` IRIS d'habitat__ sont dans ce cas (`{python} communes_sans`) : Pierrefitte-sur-Seine a fusionné avec Saint-Denis en 2025, et ses IRIS ont reçu le code de la commune nouvelle.
+
+::: {.callout-warning}
+## Vérifier la géographie des données
+
+Les données de l'Insee sont diffusées dans la géographie d'une année donnée, souvent antérieure à celle des contours. Avant une jointure, il est prudent de regarder quels codes ne se retrouvent pas, et de choisir le millésime des contours le plus proche de celui des données.
+:::
+
+# Faire la carte
+
+Les revenus médians sont répartis en six classes de même effectif (quantiles), calculées sur l'ensemble de la petite couronne : les couleurs restent comparables d'un département à l'autre. Les IRIS en gris n'ont pas de revenu diffusé. Les contours des quartiers prioritaires sont tracés en bleu :
+
+```{ojs}
+//| echo: false
+viewof zone = Inputs.radio(
+    new Map([
+        ["Paris et petite couronne", null],
+        ["Paris", "75"],
+        ["Hauts-de-Seine", "92"],
+        ["Seine-Saint-Denis", "93"],
+        ["Val-de-Marne", "94"]
+    ]),
+    {label: "Zone", value: null}
+)
+viewof avecQpv = Inputs.toggle({label: "Quartiers prioritaires", value: true})
+```
+
+```{ojs}
+//| echo: false
+carteRevenus(zone, avecQpv)
+```
+
+Les revenus médians les plus élevés se trouvent dans l'ouest de Paris, l'ouest des Hauts-de-Seine et autour du bois de Vincennes. Les plus faibles se concentrent dans le nord de Paris et en Seine-Saint-Denis, là où les quartiers prioritaires sont les plus nombreux.
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
+
+```{python}
+import matplotlib.pyplot as plt
+
+departements = petite_couronne.dissolve("INSEE_DEP")
+
+fig, ax = plt.subplots(figsize=(9, 9))
+revenus.plot(ax=ax, color="#e0e0e0", edgecolor="white", linewidth=0.1) #<1>
+revenus.dropna(subset=["DISP_MED21"]).plot(
+    ax=ax,
+    column="DISP_MED21",
+    scheme="Quantiles",
+    k=6,
+    cmap="YlOrBr",
+    edgecolor="white",
+    linewidth=0.1,
+    legend=True,
+    legend_kwds={
+        "title": "Revenu disponible médian (€ par an et par UC)",
+        "loc": "upper center",
+        "bbox_to_anchor": (0.5, 0.02),
+        "ncol": 3,
+        "fmt": "{:.0f}",
+        "frameon": False,
+    },
+)
+qpv.boundary.plot(ax=ax, color="#1f3b8a", linewidth=0.9)
+departements.boundary.plot(ax=ax, color="black", linewidth=0.6)
+for texte in ax.get_legend().get_texts(): #<2>
+    bornes = texte.get_text().split(", ")
+    texte.set_text(" – ".join(f"{int(b):,}".replace(",", " ") for b in bornes))
+ax.set_axis_off()
+plt.figtext(
+    0.5,
+    0.02,
+    "Sources : IGN, Contours IRIS 2025 ; Insee, Filosofi 2021 ; ANCT, QPV 2024",
+    horizontalalignment="center",
+    fontsize=8,
+    style="italic",
+)
+plt.show()
+```
+1. En gris, les IRIS sans revenu diffusé.
+2. Bornes des classes à la française : « 12 550 – 18 300 » plutôt que « 12550, 18300 ».
+
+:::
+
+# Comparer les revenus dans et hors des quartiers prioritaires
+
+Un IRIS ne coïncide pas avec un quartier prioritaire : on le rattache à un quartier quand son point intérieur s'y trouve, comme dans le filtre de la section 2.
+
+```{python}
+points = revenus.copy()
+points["geometry"] = points.representative_point()
+dans_qpv = gpd.sjoin(points, qpv[["lib_qp", "geometry"]], predicate="within")
+quartier_des_iris = dans_qpv.set_index("CODE_IRIS")["lib_qp"]
+revenus["lib_qp"] = revenus["CODE_IRIS"].map(quartier_des_iris) #<1>
+
+comparaison = (
+    revenus.assign(QPV=revenus["lib_qp"].notna())
+    .groupby("QPV")["DISP_MED21"]
+    .agg(["count", "median"])
+)
+comparaison.rename(
+    index={True: "Dans un QPV", False: "Hors QPV"},
+    columns={"count": "IRIS", "median": "Médiane des revenus médians (€)"},
+)
+```
+1. Le nom du quartier prioritaire de chaque IRIS, vide hors des quartiers : c'est lui qu'affichent les infobulles de la carte.
+
+```{python}
+#| echo: false
+def euros(x):
+    return f"{x:,.0f} €".replace(",", " ")
+```
+
+La médiane des revenus médians des IRIS est de __`{python} euros(comparaison.loc[True, "median"])`__ dans les quartiers prioritaires, contre __`{python} euros(comparaison.loc[False, "median"])`__ ailleurs. L'écart se retrouve dans chaque département, y compris à Paris. Chaque trait est un IRIS, le trait épais la médiane :
+
+```{ojs}
+//| echo: false
+graphiqueRevenus()
+```
+
+C'est un ordre de grandeur : une médiane d'IRIS n'est pas le revenu médian de leurs habitants, et les IRIS ne suivent pas exactement les limites des quartiers. Pour des chiffres sur les quartiers eux-mêmes, l'Insee diffuse aussi des données à l'échelle des quartiers prioritaires.
+
+# Les cartes en `Javascript`
+
+::: {.callout-tip collapse="true"}
+## Comment faire avec `Javascript` ?
+
+Les cartes de cette page sont faites avec [`Observable Plot`](https://observablehq.com/plot/), par le biais de `Quarto`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/main/use-case/usecase4.qmd).
+
+Les données passent de `Python` à `Javascript` avec la fonction [`ojs_define`](https://quarto.org/docs/interactive/ojs/data-sources.html#python). Les IRIS sont transmis en [TopoJSON](https://github.com/topojson/topojson), qui ne décrit qu'une fois chaque frontière entre deux IRIS : le fichier est plus léger, et les limites des communes et des départements s'en déduisent. Pour la Seine-Saint-Denis, une colonne par filtre indique si l'IRIS a été retenu :
+
+```{python}
+import json
+
+import shapely
+import topojson as tp
+
+
+def orienter(gdf):
+    """Polygones orientés comme l'attend Javascript (d3)."""
+    gdf = gdf.copy()
+    gdf["geometry"] = shapely.orient_polygons(gdf.geometry.values, exterior_cw=True) #<1>
+    return gdf
+
+
+def pour_javascript(gdf, colonnes):
+    """TopoJSON des seules colonnes utiles, valeurs manquantes en null."""
+    gdf = orienter(gdf[[*colonnes, "geometry"]])
+    for colonne in colonnes:
+        gdf[colonne] = gdf[colonne].astype(object).where(gdf[colonne].notna(), None)
+    return json.loads(tp.Topology(gdf, prequantize=1e5, toposimplify=False).to_json())
+
+
+iris_93 = seine_saint_denis.assign(
+    plaine_commune=seine_saint_denis["CODE_IRIS"].isin(plaine_commune["CODE_IRIS"]),
+    bosquets=seine_saint_denis["CODE_IRIS"].isin(iris_bosquets["CODE_IRIS"]),
+    basilique=seine_saint_denis["CODE_IRIS"].isin(autour_basilique["CODE_IRIS"]),
+)
+qpv_simplifies = qpv.assign(geometry=qpv.simplify(0.00005)) #<2>
+
+ojs_define(
+    iris_93_topo=pour_javascript(
+        iris_93,
+        ["CODE_IRIS", "NOM_IRIS", "TYP_IRIS", "NOM_COM", "INSEE_COM",
+         "plaine_commune", "bosquets", "basilique"],
+    ),
+    revenus_topo=pour_javascript(
+        revenus,
+        ["CODE_IRIS", "NOM_IRIS", "NOM_COM", "INSEE_COM", "INSEE_DEP",
+         "LIBELLE_DEPARTEMENT", "DISP_MED21", "lib_qp"],
+    ),
+    qpv_geo=json.loads(
+        orienter(qpv_simplifies[["code_qp", "lib_qp", "insee_dep", "geometry"]])
+        .to_json(drop_id=True)
+    ),
+)
+```
+1. Le contour extérieur des polygones est décrit dans le sens inverse des aiguilles d'une montre, comme le demande la norme GeoJSON. `d3`, sur lequel repose `Observable Plot`, attend le sens inverse.
+2. Les contours des quartiers prioritaires, simplifiés à 5 m environ, pèsent deux fois moins lourd.
+
+Côté `Javascript`, on reconstitue les IRIS et les limites à partir des TopoJSON. `redresser` remet à l'endroit tout polygone qui couvrirait plus d'un hémisphère, ce qui arrive après la conversion en TopoJSON. La projection est une conique conforme proche du Lambert 93 :
+
+```{ojs}
+function redresser(collection) {
+    const polygone = (anneaux) =>
+        d3.geoArea({type: "Polygon", coordinates: anneaux}) > 2 * Math.PI
+            ? anneaux.map((anneau) => anneau.slice().reverse())
+            : anneaux
+    for (const d of collection.features) {
+        const g = d.geometry
+        if (g.type === "Polygon") g.coordinates = polygone(g.coordinates)
+        if (g.type === "MultiPolygon") g.coordinates = g.coordinates.map(polygone)
+    }
+    return collection
+}
+
+iris93 = redresser(topojson.feature(iris_93_topo, iris_93_topo.objects.data))
+irisRevenus = redresser(topojson.feature(revenus_topo, revenus_topo.objects.data))
+qpvs = redresser(qpv_geo)
+
+limitesCommunes93 = topojson.mesh(
+    iris_93_topo, iris_93_topo.objects.data,
+    (a, b) => a.properties.INSEE_COM !== b.properties.INSEE_COM
+)
+contour93 = topojson.mesh(iris_93_topo, iris_93_topo.objects.data, (a, b) => a === b)
+
+collection = (features) => ({type: "FeatureCollection", features})
+projection = (domaine) => ({type: "conic-conformal", parallels: [44, 49], rotate: [-3, 0], domain: domaine})
+
+euros = (x) => `${Math.round(x).toLocaleString("fr-FR")} €`
+infobulleIris = (d) => `${d.properties.NOM_IRIS} (${d.properties.NOM_COM})
+IRIS ${d.properties.CODE_IRIS}`
+```
+
+Les types d'IRIS de la Seine-Saint-Denis, avec les limites des communes en blanc :
+
+```{ojs}
+typesIris = new Map([
+    ["H", "Habitat"], ["A", "Activité"], ["D", "Divers"], ["Z", "Commune non découpée"]
+])
+
+function carteTypes() {
+    return Plot.plot({
+        projection: projection(iris93),
+        width: 640,
+        color: {
+            domain: [...typesIris.values()],
+            range: ["#f2d5a0", "#7a8fb8", "#8cbf88", "#c9c9c9"],
+            legend: true
+        },
+        marks: [
+            Plot.geo(iris93, Plot.centroid({
+                fill: (d) => typesIris.get(d.properties.TYP_IRIS),
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 0.3,
+                title: (d) => `${infobulleIris(d)}\n${typesIris.get(d.properties.TYP_IRIS)}`,
+                tip: true
+            })),
+            Plot.geo(limitesCommunes93, {stroke: "var(--bs-body-bg)", strokeWidth: 1.2}),
+            Plot.geo(contour93, {stroke: "var(--bs-body-color)", strokeWidth: 0.8})
+        ]
+    })
+}
+```
+
+Les IRIS de Plaine Commune, colorés selon leur commune, sur le fond de carte du département :
+
+```{ojs}
+function cartePlaineCommune() {
+    const retenus = iris93.features.filter((d) => d.properties.plaine_commune)
+    return Plot.plot({
+        projection: projection(iris93),
+        width: 640,
+        color: {scheme: "tableau10", legend: true},
+        marks: [
+            Plot.geo(iris93, {fill: "var(--carte-vide)", stroke: "var(--bs-body-bg)", strokeWidth: 0.3}),
+            Plot.geo(retenus, Plot.centroid({
+                fill: (d) => d.properties.NOM_COM,
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 0.3,
+                title: infobulleIris,
+                tip: true
+            })),
+            Plot.geo(limitesCommunes93, {stroke: "var(--bs-body-bg)", strokeWidth: 1.2}),
+            Plot.geo(contour93, {stroke: "var(--bs-body-color)", strokeWidth: 0.8})
+        ]
+    })
+}
+```
+
+Le quartier du Haut Clichy et des Bosquets, sur le fond des IRIS des deux communes, avec le nom des IRIS retenus :
+
+```{ojs}
+function carteBosquets() {
+    const contexte = iris93.features.filter((d) => ["93014", "93047"].includes(d.properties.INSEE_COM))
+    const retenus = contexte.filter((d) => d.properties.bosquets)
+    const quartier = qpvs.features.find((d) => d.properties.code_qp === "QN09303M")
+    return Plot.plot({
+        projection: projection(collection(contexte)),
+        width: 640,
+        marks: [
+            Plot.geo(contexte, {fill: "var(--carte-vide)", stroke: "var(--bs-body-bg)", strokeWidth: 1}),
+            Plot.geo(retenus, Plot.centroid({
+                fill: "#e8743b",
+                fillOpacity: 0.85,
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 1,
+                title: infobulleIris,
+                tip: true
+            })),
+            Plot.geo(quartier, {fill: "none", stroke: "var(--carte-accent)", strokeWidth: 2.5}),
+            Plot.text(retenus, Plot.centroid({
+                text: (d) => d.properties.NOM_IRIS,
+                fontSize: 10,
+                fill: "var(--bs-body-color)",
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 3
+            }))
+        ]
+    })
+}
+```
+
+Le cercle de 3 km autour de la basilique est tracé avec `d3.geoCircle`, dont le rayon s'exprime en degrés d'arc. Le fond de carte est celui des communes concernées :
+
+```{ojs}
+basilique = [2.3599, 48.9356]
+cercle = d3.geoCircle().center(basilique).radius((3000 / 6371008.8) * (180 / Math.PI))()
+
+function carteBasilique() {
+    const retenus = iris93.features.filter((d) => d.properties.basilique)
+    const communes = new Set(retenus.map((d) => d.properties.INSEE_COM))
+    const contexte = iris93.features.filter((d) => communes.has(d.properties.INSEE_COM))
+    return Plot.plot({
+        projection: projection({type: "GeometryCollection", geometries: [cercle, ...contexte.map((d) => d.geometry)]}),
+        width: 640,
+        marks: [
+            Plot.geo(contexte, {fill: "var(--carte-vide)", stroke: "var(--bs-body-bg)", strokeWidth: 0.5}),
+            Plot.geo(retenus, Plot.centroid({
+                fill: "#e8743b",
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 0.5,
+                title: infobulleIris,
+                tip: true
+            })),
+            Plot.dot(retenus, Plot.centroid({r: 1.5, fill: "var(--bs-body-color)"})),
+            Plot.geo(cercle, {fill: "none", stroke: "var(--carte-accent)", strokeDasharray: "5,3", strokeWidth: 1.5}),
+            Plot.dot([basilique], {x: (d) => d[0], y: (d) => d[1], r: 5, fill: "var(--carte-accent)", stroke: "var(--bs-body-bg)"}),
+            Plot.text([basilique], {
+                x: (d) => d[0], y: (d) => d[1], text: () => "Basilique", dy: -12,
+                fontWeight: "bold", fill: "var(--carte-accent)", stroke: "var(--bs-body-bg)", strokeWidth: 3
+            })
+        ]
+    })
+}
+```
+
+La carte des revenus. Les seuils des six classes sont calculés une fois pour toutes sur la petite couronne, pour que les couleurs ne changent pas quand on choisit un département. Le zoom sur un département ne garde que ses IRIS et ses quartiers, avec les limites de ses communes :
+
+```{ojs}
+avecRevenu = (d) => d.properties.DISP_MED21 !== null
+
+seuils = {
+    const valeurs = irisRevenus.features.filter(avecRevenu).map((d) => d.properties.DISP_MED21).sort(d3.ascending)
+    return d3.range(1, 6).map((i) => Math.round(d3.quantileSorted(valeurs, i / 6) / 10) * 10)
+}
+
+infobulleRevenu = (d) => `${d.properties.NOM_IRIS} (${d.properties.NOM_COM})
+Revenu médian : ${euros(d.properties.DISP_MED21)}${d.properties.lib_qp ? `\nQuartier prioritaire : ${d.properties.lib_qp}` : ""}`
+
+function carteRevenus(zone, avecQpv) {
+    const dans = (d) => zone === null || d.properties.INSEE_DEP === zone
+    const objet = revenus_topo.objects.data
+    const iris = irisRevenus.features.filter(dans)
+    const limites = zone === null
+        ? topojson.mesh(revenus_topo, objet, (a, b) => a.properties.INSEE_DEP !== b.properties.INSEE_DEP)
+        : topojson.mesh(revenus_topo, objet, (a, b) => dans(a) && dans(b) && a.properties.INSEE_COM !== b.properties.INSEE_COM)
+    const contour = topojson.mesh(revenus_topo, objet, (a, b) => dans(a) !== dans(b) || (a === b && dans(a)))
+    return Plot.plot({
+        projection: projection(collection(iris)),
+        width: 720,
+        color: {
+            type: "threshold",
+            domain: seuils,
+            scheme: "ylorbr",
+            legend: true,
+            label: "Revenu disponible médian (€ par an et par unité de consommation)",
+            tickFormat: (d) => d.toLocaleString("fr-FR"),
+            width: 480
+        },
+        marks: [
+            Plot.geo(iris, {fill: "var(--carte-vide)", stroke: "var(--bs-body-bg)", strokeWidth: 0.15}),
+            Plot.geo(iris.filter(avecRevenu), Plot.centroid({
+                fill: (d) => d.properties.DISP_MED21,
+                stroke: "var(--bs-body-bg)",
+                strokeWidth: 0.15,
+                title: infobulleRevenu,
+                tip: true
+            })),
+            avecQpv ? Plot.geo(qpvs.features.filter((d) => zone === null || d.properties.insee_dep === zone), {
+                fill: "none", stroke: "var(--carte-accent)", strokeWidth: zone === null ? 1 : 1.6
+            }) : null,
+            Plot.geo(limites, {stroke: "var(--bs-body-color)", strokeWidth: zone === null ? 0.8 : 0.4, strokeOpacity: 0.8}),
+            Plot.geo(contour, {stroke: "var(--bs-body-color)", strokeWidth: 0.8})
+        ]
+    })
+}
+```
+
+Le graphique compare, dans chaque département, les revenus des IRIS dans et hors des quartiers prioritaires :
+
+```{ojs}
+function graphiqueRevenus() {
+    const donnees = irisRevenus.features.filter(avecRevenu).map((d) => ({
+        revenu: d.properties.DISP_MED21,
+        departement: d.properties.LIBELLE_DEPARTEMENT,
+        quartier: d.properties.lib_qp ? "Dans un QPV" : "Hors QPV"
+    }))
+    const quartiers = ["Hors QPV", "Dans un QPV"]
+    return Plot.plot({
+        width: 720,
+        height: 380,
+        marginLeft: 90,
+        marginRight: 120,
+        x: {label: "Revenu disponible médian de l'IRIS (€ par UC)", tickFormat: (d) => d.toLocaleString("fr-FR"), grid: true},
+        y: {label: null, domain: quartiers},
+        fy: {label: null},
+        color: {domain: quartiers, range: ["#c98a2e", "var(--carte-accent)"]},
+        marks: [
+            Plot.tickX(donnees, {x: "revenu", y: "quartier", fy: "departement", stroke: "quartier", strokeOpacity: 0.3, strokeWidth: 1.2}),
+            Plot.tickX(donnees, Plot.groupY({x: "median"}, {
+                x: "revenu", y: "quartier", fy: "departement", stroke: "var(--bs-body-color)", strokeWidth: 3
+            }))
+        ]
+    })
+}
+```
+
+:::
+
+# Sources
+
+- Contours : IGN, [Contours IRIS](https://geoservices.ign.fr/contoursiris) 2025, via `cartiflette` ;
+- Revenus : Insee, [Revenus, pauvreté et niveau de vie en 2021 (IRIS)](https://www.insee.fr/fr/statistiques/8229323), dispositif Filosofi ;
+- Quartiers prioritaires : ANCT, [Quartiers prioritaires de la politique de la ville (QPV)](https://www.data.gouv.fr/datasets/quartiers-prioritaires-de-la-politique-de-la-ville-qpv), 2024.

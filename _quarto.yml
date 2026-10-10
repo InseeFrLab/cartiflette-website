@@ -3,6 +3,7 @@ project:
   render:
     - index.qmd
     - about.qmd
+    - use-case/usecase4.qmd
 
 lang: fr
 
@@ -20,6 +21,8 @@ website:
         text: Accueil
       - href: about.qmd
         text: À propos
+      - href: use-case/usecase4.qmd
+        text: test
     tools:
       - icon: github
         href: https://github.com/inseefrlab/cartiflette
