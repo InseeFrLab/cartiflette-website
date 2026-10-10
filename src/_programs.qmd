@@ -1,6 +1,6 @@
 <!--
-Extraits de code affichés à côté des cartes. Python utilise le client
-cartiflette ; R et JavaScript appellent directement l'API GeoJSON.
+Extraits de code affichés à côté des cartes. Python et R utilisent les
+packages cartiflette ; JavaScript appelle directement l'API GeoJSON.
 -->
 
 ```{ojs}
@@ -16,17 +16,35 @@ function pyValues(values) {
     : `[${values.map(v => `"${v}"`).join(", ")}]`
 }
 
-// Condition where en Python : sur une ligne si elle est courte, sinon en
-// chaînes juxtaposées, coupées avant les fonctions ST_, pour tenir dans le panneau
-function pyWhere(where, largeur = 45) {
-  if (where.length <= largeur) return `"${where}"`
+function rValues(values) {
+  return values.length == 1
+    ? `"${values[0]}"`
+    : `c(${values.map(v => `"${v}"`).join(", ")})`
+}
+
+// Découpe une condition where en morceaux, avant les fonctions ST_, pour tenir
+// dans le panneau
+function whereParts(where, largeur) {
   const morceaux = [""]
   for (const mot of where.split(/(?<=, )(?=ST_)/)) {
     const i = morceaux.length - 1
     if (morceaux[i] && (morceaux[i] + mot).length > largeur) morceaux.push(mot)
     else morceaux[i] += mot
   }
-  return `(\n${morceaux.map(m => `        "${m}"`).join("\n")}\n    )`
+  return morceaux
+}
+
+// Condition where en Python : sur une ligne si elle est courte, sinon en
+// chaînes juxtaposées
+function pyWhere(where, largeur = 45) {
+  if (where.length <= largeur) return `"${where}"`
+  return `(\n${whereParts(where, largeur).map(m => `        "${m}"`).join("\n")}\n    )`
+}
+
+// Condition where en R : sur une ligne si elle est courte, sinon avec paste0
+function rWhere(where, largeur = 45) {
+  if (where.length <= largeur) return `"${where}"`
+  return `paste0(\n${whereParts(where, largeur).map(m => `    "${m}"`).join(",\n")}\n  )`
 }
 
 // Découpe une URL d'API en morceaux lisibles (un paramètre par ligne)
@@ -49,12 +67,15 @@ ${variable} = carti_download(
     year=${q.year},
     simplification=${q.simplification},${q.where ? `\n    where=${pyWhere(q.where)},` : ""}
 )`,
-    R: `library(sf)
+    R: `library(cartiflette)
 
-url <- paste0(
-${parts.map(p => `  "${p}"`).join(",\n")}
-)
-${variable} <- st_read(url)`,
+${variable} <- carti_download(
+  values = ${rValues(q.values)},
+  borders = "${q.borders}",
+  filter_by = "${q.filter_by}",
+  year = ${q.year},
+  simplification = ${q.simplification}${q.where ? `,\n  where = ${rWhere(q.where)}` : ""}
+)`,
     JavaScript: `const url = [
 ${parts.map(p => `  "${p}"`).join(",\n")}
 ].join("")
@@ -87,7 +108,7 @@ function panneauCode(codes, note) {
 
 notes = ({
   Python: html`<code>pip install cartiflette</code> (version 0.2.1 ou plus). Le client lit le GeoParquet et ne télécharge que les polygones demandés.`,
-  R: html`${avertissement("R")}L'API renvoie du GeoJSON, que <code>sf</code> lit directement.`,
+  R: html`<code>remotes::install_github("inseefrlab/cartiflette-r")</code> (version 0.2.0 ou plus). Le package lit le GeoParquet avec DuckDB et renvoie un objet <code>sf</code>.`,
   JavaScript: html`${avertissement("JavaScript")}L'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
 })
 
@@ -99,8 +120,8 @@ notesV4 = ({
     <code>pip install "git+https://github.com/InseeFrLab/cartiflette#subdirectory=python-package/cartiflette"</code>.`
 })
 
-// Les packages R et JavaScript ne suivent pas encore les évolutions du client
-// Python (GeoParquet, millésimes depuis 2023) : on passe par l'API en attendant
+// Le package JavaScript ne suit pas encore les évolutions des clients Python
+// et R (GeoParquet, millésimes depuis 2023) : on passe par l'API en attendant
 function avertissement(langage) {
   return html`<span class="snippet-warning"><i class="fa-solid fa-person-digging"></i>
     Le package <code>cartiflette</code> pour ${langage} n'est pas encore à jour des
