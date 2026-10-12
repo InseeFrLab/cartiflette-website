@@ -121,6 +121,32 @@ html`<div class="explorer">
 </div>`
 ```
 
+## Des carreaux de 200 mètres, plus fins que les quartiers
+
+Les [données carroyées de l'Insee]{.souligne} découpent le territoire en carreaux de 200 mètres ou d'1 kilomètre, avec la population, les ménages, les logements et les revenus de leurs habitants (Filosofi). `cartiflette` les fournit avec leur géométrie, [rattachés chacun à une commune]{.souligne} : on les demande pour quelques arrondissements comme pour un département, sans télécharger tout le fichier national.
+
+[Voir un exemple de la vraie vie <i class="fa-solid fa-arrow-right"></i>](use-case/usecase5.qmd){.exemple target="_blank" rel="noopener"}
+
+```{ojs}
+//| output: true
+html`<div class="explorer">
+  <div class="explorer-controls">
+    ${viewof affichage_carreaux}
+    ${viewof grille_carreaux}
+    ${viewof indicateur_carreaux}
+    ${viewof annee_carreaux}
+    <p class="viz-meta">Les carreaux des 10e, 11e, 18e, 19e et 20e arrondissements de Paris, rattachés à l'arrondissement qui contient leur centre.</p>
+    ${telechargements(requete_carreaux)}
+  </div>
+  <div class="explorer-viz">${
+    affichage_carreaux == "Carte"
+      ? html`<div>${carteCarreaux(donnees_carreaux, indicateur_carreaux, arrondissements_carreaux)}<p class="viz-meta">${donnees_carreaux.features.length} carreaux</p></div>`
+      : visualisation(donnees_carreaux, affichage_carreaux)
+  }</div>
+  <div class="explorer-code">${panneauCode(programmes(requete_carreaux, "carreaux"), notesCarreaux)}</div>
+</div>`
+```
+
 :::
 
 <!-- Réglages : France entière -->
@@ -252,4 +278,38 @@ requete_iris = ({
   where: espace_iris.where
 })
 donnees_iris = d3.json(apiUrl(requete_iris))
+```
+
+<!-- Réglages : carreaux (exemple du tutoriel use-case/usecase5.qmd) -->
+
+```{ojs}
+viewof affichage_carreaux = Inputs.radio(["Carte", "Métadonnées"], {value: "Carte"})
+viewof grille_carreaux = Inputs.radio(
+  new Map([["200 mètres", "CARREAU_200M"], ["1 kilomètre", "CARREAU_1KM"]]),
+  {label: "Carreaux", value: "CARREAU_200M"}
+)
+viewof indicateur_carreaux = Inputs.select(indicateursCarreaux, {label: "Couleur"})
+// Carreaux Filosofi rattachés aux communes de 2023 à 2026
+viewof annee_carreaux = Inputs.select(["2026", "2025", "2024", "2023"], {label: "Millésime des communes"})
+```
+
+```{ojs}
+// Les carreaux ne sont publiés que sans simplification : 0, explicitement
+requete_carreaux = ({
+  borders: grille_carreaux,
+  filter_by: "COMMUNE_ARRONDISSEMENT",
+  values: ["75110", "75111", "75118", "75119", "75120"],
+  year: annee_carreaux,
+  simplification: 0
+})
+donnees_carreaux = d3.json(apiUrl(requete_carreaux))
+// Contours des cinq arrondissements, pour la carte
+arrondissements_carreaux = d3.json(apiUrl({
+  borders: "COMMUNE_ARRONDISSEMENT",
+  filter_by: "DEPARTEMENT",
+  values: ["75"],
+  year: annee_carreaux,
+  simplification: 50,
+  where: `INSEE_COG IN (${requete_carreaux.values.map((v) => `'${v}'`).join(", ")})`
+}))
 ```

@@ -112,12 +112,18 @@ notes = ({
   JavaScript: html`${avertissement("JavaScript")}L'API renvoie du GeoJSON (EPSG:4326), utilisable avec d3, Observable Plot, Leaflet ou MapLibre.`
 })
 
-// Note Python des explorateurs qui utilisent where ou les IRIS : client 0.4.0
+// Note Python des explorateurs qui utilisent where, les IRIS ou les carreaux :
+// client 0.4.0
 notesV4 = ({
   ...notes,
-  Python: html`L'argument <code>where</code> et le niveau IRIS arrivent avec la
-    version 0.4.0 du client, pas encore publiée sur PyPI. En attendant :
-    <code>pip install "git+https://github.com/InseeFrLab/cartiflette#subdirectory=python-package/cartiflette"</code>.`
+  Python: html`L'argument <code>where</code> et le niveau IRIS demandent la
+    version 0.4.0 du client : <code>pip install -U cartiflette</code>.`
+})
+notesCarreaux = ({
+  ...notes,
+  Python: html`Les carreaux demandent la version 0.4.0 du client
+    (<code>pip install -U cartiflette</code>). Ce sont des carrés : ils ne sont
+    publiés que sans simplification.`
 })
 
 // Le package JavaScript ne suit pas encore les évolutions des clients Python
