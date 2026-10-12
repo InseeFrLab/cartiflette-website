@@ -334,11 +334,15 @@ wheels = [
 [[package]]
 name = "cartiflette"
 version = "0.4.0"
-source = { git = "https://github.com/InseeFrLab/cartiflette?subdirectory=python-package%2Fcartiflette&rev=b3b48b8bd8bbe733e18498416978c8d5ea08dbf4#b3b48b8bd8bbe733e18498416978c8d5ea08dbf4" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "duckdb" },
     { name = "geopandas" },
     { name = "pyarrow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b5/cd/e37a3c8438fd568efe588227f6ef528f87083fa005c39d1507541c005293/cartiflette-0.4.0.tar.gz", hash = "sha256:7f26202db7856437ca0c033e2dc2b315798c0d86667d6c483cf11da3dce5cc4b", size = 147221, upload-time = "2026-10-12T07:42:08.556Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/45/ee/a64ef9cb6757578514fe2d778259fabb35cbb6d10117297b0438fcc643e2/cartiflette-0.4.0-py3-none-any.whl", hash = "sha256:d1b9c5b58a152a1469ee8bf6d37b81651c02274d1056caf6aa619297a65c983d", size = 14385, upload-time = "2026-10-12T07:42:07.467Z" },
 ]
 
 [[package]]
@@ -366,7 +370,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cartiflette", git = "https://github.com/InseeFrLab/cartiflette?subdirectory=python-package%2Fcartiflette&rev=b3b48b8bd8bbe733e18498416978c8d5ea08dbf4" },
+    { name = "cartiflette", specifier = ">=0.4.0" },
     { name = "folium" },
     { name = "geopandas" },
     { name = "ipykernel" },

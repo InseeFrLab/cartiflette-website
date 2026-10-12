@@ -55,7 +55,8 @@ function apiUrl(q, route = "geojson", extra = {}) {
 SOURCES = ({
   ign: {court: "IGN", label: "IGN, ADMIN EXPRESS COG CARTO", url: "https://geoservices.ign.fr/adminexpress"},
   tagc: {court: "Insee", label: "Insee, appartenance géographique des communes", url: "https://www.insee.fr/fr/information/7671844"},
-  cartiflette: {court: "cartiflette", label: "construite par cartiflette", url: "https://github.com/InseeFrLab/cartiflette"}
+  cartiflette: {court: "cartiflette", label: "construite par cartiflette", url: "https://github.com/InseeFrLab/cartiflette"},
+  filosofi: {court: "Insee", label: "Insee, Filosofi 2021, données carroyées", url: "https://www.insee.fr/fr/statistiques/8735243"}
 })
 COLONNES = ({
   ID: ["ign", "Identifiant IGN"],
@@ -67,6 +68,17 @@ COLONNES = ({
   NOM_IRIS: ["ign", "Nom de l'IRIS"],
   TYP_IRIS: ["ign", "Type d'IRIS : habitat (H), activité (A), divers (D), commune non découpée (Z)"],
   NOM_COM: ["ign", "Nom de la commune"],
+  idcar_200m: ["filosofi", "Identifiant du carreau de 200 m (projection, taille, coin bas-gauche)"],
+  idcar_1km: ["filosofi", "Identifiant du carreau de 1 km"],
+  idcar_nat: ["filosofi", "Identifiant du carreau de niveau naturel"],
+  lcog_geo: ["filosofi", "Communes que recouvre le carreau (géographie des données)"],
+  i_est_200: ["filosofi", "1 si les valeurs du carreau de 200 m sont imputées (moins de 11 ménages)"],
+  i_est_1km: ["filosofi", "1 si les valeurs du carreau de 1 km sont imputées"],
+  ind: ["filosofi", "Nombre d'individus"],
+  men: ["filosofi", "Nombre de ménages"],
+  men_pauv: ["filosofi", "Nombre de ménages pauvres"],
+  ind_snv: ["filosofi", "Somme des niveaux de vie winsorisés des individus"],
+  log_soc: ["filosofi", "Nombre de logements sociaux"],
   INSEE_COG: ["cartiflette", "Code commune, ou d'arrondissement municipal à Paris, Lyon et Marseille"],
   AREA: ["cartiflette", "Territoire : métropole ou DROM"],
   PAYS: ["cartiflette", "Pays"],
@@ -119,6 +131,68 @@ function visualisation(geojson, mode) {
     return html`<div>${carte(geojson)}${resume}</div>`
   }
   return html`<div>${tableAttributs(rows)}${resume}</div>`
+}
+```
+
+```{ojs}
+// Carte des carreaux, colorée par un indicateur (Observable Plot : topohelper
+// ne colore pas les polygones). Six classes de même effectif.
+indicateursCarreaux = new Map([
+  ["Niveau de vie moyen (€ par an)", (p) => p.ind > 0 ? p.ind_snv / p.ind : null],
+  ["Habitants", (p) => p.ind],
+  ["Ménages pauvres (%)", (p) => p.men > 0 ? 100 * p.men_pauv / p.men : null]
+])
+
+// Contours extérieurs dans le sens attendu par d3 (sinon, « tout le globe
+// sauf le polygone »)
+function redresser(geojson) {
+  const anneaux = (rings) => d3.geoArea({type: "Polygon", coordinates: rings}) > 2 * Math.PI
+    ? rings.map((r) => r.slice().reverse()) : rings
+  return geojson.features.map((f) => ({
+    ...f,
+    geometry: {
+      ...f.geometry,
+      coordinates: f.geometry.type == "MultiPolygon"
+        ? f.geometry.coordinates.map(anneaux)
+        : anneaux(f.geometry.coordinates)
+    }
+  }))
+}
+
+// contours : communes ou arrondissements tracés par-dessus, avec leur numéro
+function carteCarreaux(geojson, valeur, contours) {
+  const carres = redresser(geojson)
+  const limites = redresser(contours)
+  const libelle = [...indicateursCarreaux].find(([, v]) => v === valeur)[0]
+  const texte = (d) => {
+    const v = valeur(d.properties)
+    return `${d.properties.NOM_COM}
+${libelle} : ${v === null ? "—" : Math.round(v).toLocaleString("fr-FR")}
+${Math.round(d.properties.ind).toLocaleString("fr-FR")} habitants${(d.properties.i_est_200 ?? d.properties.i_est_1km) == 1 ? " (valeurs imputées)" : ""}`
+  }
+  return Plot.plot({
+    projection: {type: "conic-conformal", parallels: [44, 49], rotate: [-3, 0], domain: {type: "FeatureCollection", features: carres}},
+    width: largeurCarte,
+    color: {type: "quantile", n: 6, scheme: "ylorbr", legend: true, label: libelle, tickFormat: (d) => Math.round(d).toLocaleString("fr-FR")},
+    marks: [
+      Plot.geo(carres, Plot.centroid({
+        fill: (d) => valeur(d.properties),
+        stroke: "var(--bs-body-bg)",
+        strokeWidth: 0.5,
+        title: texte,
+        tip: true
+      })),
+      Plot.geo(limites, {stroke: "var(--bs-body-color)", strokeWidth: 1.2}),
+      Plot.text(limites, Plot.centroid({
+        text: (d) => `${Number(d.properties.INSEE_COG.slice(3))}e`,
+        fontSize: 14,
+        fontWeight: "bold",
+        fill: "var(--bs-body-color)",
+        stroke: "var(--bs-body-bg)",
+        strokeWidth: 4
+      }))
+    ]
+  })
 }
 ```
 

@@ -31,8 +31,3 @@ dependencies = [
 
 [tool.uv]
 package = false
-
-[tool.uv.sources]
-# 0.4.0 (where) is not on PyPI yet: client of the cartiflette main branch,
-# pinned to the merge of #120. Remove once 0.4.0 is published, then `uv lock`.
-cartiflette = { git = "https://github.com/InseeFrLab/cartiflette", subdirectory = "python-package/cartiflette", rev = "b3b48b8bd8bbe733e18498416978c8d5ea08dbf4" }

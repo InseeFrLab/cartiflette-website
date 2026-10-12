@@ -27,3 +27,8 @@ couches publiées par l'IGN.
 : Les IRIS d'une intercommunalité ou d'un quartier prioritaire, récupérés avec
   `where`, puis le revenu médian de l'Insee (Filosofi) cartographié avec les
   quartiers prioritaires de la politique de la ville.
+
+[Le niveau de vie au carreau de 200 mètres dans la petite couronne](usecase5.qmd)
+: Les données carroyées de l'Insee (Filosofi), récupérées par département avec
+  leur géométrie : une carte du niveau de vie, de la pauvreté et des logements
+  sociaux à 200 mètres, puis une agrégation par commune.

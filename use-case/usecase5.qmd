@@ -1,0 +1,310 @@
+---
+title: "Le niveau de vie au carreau de 200 mètres dans la petite couronne"
+output: true
+number-sections: true
+code-annotations: hover
+author: "Lino Galiana"
+---
+
+Ce tutoriel montre comment récupérer les __[données carroyées]{.yellow} de l'Insee__ avec `cartiflette` : des carreaux de 200 mètres de côté, avec la population, les ménages, les logements et les revenus de leurs habitants. Ces carreaux ne dépendent d'aucun découpage administratif : ils révèlent les contrastes à l'intérieur même des communes. Cela nous donnera, *in fine*, cette carte du niveau de vie à Paris et dans la petite couronne :
+
+```{ojs}
+//| echo: false
+html`<div class="titre-carte-cheptel"><h3>Niveau de vie moyen par carreau de 200 mètres</h3></div>
+<div>${carteCarreaux(indicateurs.get("Niveau de vie moyen"), null)}</div>
+<div class="message-below-map"><i>Passer la souris sur un carreau pour afficher sa commune, son niveau de vie et sa population</i></div>`
+```
+
+::: {.callout-note}
+## Les données carroyées de l'Insee
+
+L'Insee diffuse les [revenus, la pauvreté et le niveau de vie en 2021](https://www.insee.fr/fr/statistiques/8735243) (dispositif Filosofi) sur une grille de carreaux de 200 mètres, en France métropolitaine, en Martinique et à La Réunion. Chaque carreau porte des effectifs et des sommes : individus (`ind`), ménages (`men`), ménages pauvres (`men_pauv`), somme des niveaux de vie (`ind_snv`), logements par période de construction, logements sociaux (`log_soc`), individus par tranche d'âge…
+
+Le secret statistique interdit de diffuser un carreau de moins de 11 ménages : ses valeurs sont alors __imputées__, estimées à partir des carreaux voisins, et la variable `i_est_200` vaut 1. Ces carreaux sont nombreux à la campagne, rares en ville.
+
+`cartiflette` publie ces carreaux avec leur géométrie (niveaux `CARREAU_200M` et `CARREAU_1KM`) et les rattache chacun à la commune qui contient son centre, avec les zonages de cette commune. On peut donc les demander par département, par commune, par intercommunalité… comme les autres niveaux. Il faut la version 0.4.0 du client.
+:::
+
+# Récupérer les carreaux
+
+On demande les carreaux de 200 mètres (`borders="CARREAU_200M"`) de Paris et des trois départements de la petite couronne :
+
+```{python}
+from cartiflette import carti_download
+
+carreaux = carti_download(
+    values=["75", "92", "93", "94"],
+    borders="CARREAU_200M",
+    filter_by="DEPARTEMENT",
+    year=2026, #<1>
+)
+```
+1. Millésime des communes auxquelles les carreaux sont rattachés. Les données sont celles de Filosofi 2021, la dernière édition carroyée.
+
+```{python}
+#| echo: false
+def nombre(x):
+    return f"{x:,.0f}".replace(",", " ")
+
+
+part_imputes = 100 * carreaux["i_est_200"].mean()
+population_imputee = (
+    100 * carreaux.loc[carreaux["i_est_200"] == 1, "ind"].sum() / carreaux["ind"].sum()
+)
+```
+
+On obtient __`{python} nombre(len(carreaux))` carreaux__, où vivent `{python} nombre(carreaux["ind"].sum())` personnes. Chacun garde les variables de l'Insee et reçoit la commune qui contient son centre (`INSEE_COM`, `INSEE_COG`, `NOM_COM`) avec ses zonages :
+
+```{python}
+#| echo: false
+carreaux[["idcar_200m", "ind", "men", "ind_snv", "i_est_200", "lcog_geo", "NOM_COM"]].head(3)
+```
+
+`lcog_geo` liste les communes que recouvre le carreau. Seuls `{python} f"{part_imputes:.0f}"` % des carreaux ont des valeurs imputées, et ils ne regroupent que `{python} f"{population_imputee:.1f}".replace(".", ",")` % de la population.
+
+# Calculer les indicateurs
+
+Les carreaux donnent des sommes et des effectifs, pas des moyennes : on les calcule. Le niveau de vie moyen rapporte la somme des niveaux de vie au nombre d'individus ; la part des ménages pauvres, le nombre de ménages pauvres au nombre de ménages ; la part des logements sociaux, leur nombre à celui de tous les logements.
+
+```{python}
+logements = carreaux[["log_av45", "log_45_70", "log_70_90", "log_ap90", "log_inc"]].sum(axis=1)
+
+carreaux["niveau_vie"] = carreaux["ind_snv"] / carreaux["ind"] #<1>
+carreaux["pauvrete"] = 100 * carreaux["men_pauv"] / carreaux["men"]
+carreaux["logements_sociaux"] = 100 * carreaux["log_soc"] / logements
+```
+1. Une moyenne, et non une médiane comme pour les IRIS : la somme des niveaux de vie est diffusée, pas leur distribution. Les niveaux de vie extrêmes sont ramenés à des bornes (_winsorisés_) avant d'être sommés.
+
+Pour la carte, les communes et arrondissements des quatre départements servent de fond, et leurs limites donnent celles des départements :
+
+```{python}
+communes = carti_download(
+    values=["75", "92", "93", "94"],
+    borders="COMMUNE_ARRONDISSEMENT",
+    filter_by="DEPARTEMENT",
+    year=2026,
+)
+departements = communes.dissolve("INSEE_DEP")
+```
+
+# Faire la carte
+
+Les couleurs vont des niveaux de vie les plus faibles, en clair, aux plus élevés, en foncé ; chaque classe regroupe un sixième des carreaux. Les deux autres indicateurs, en pourcentage, ont des classes fixes : beaucoup de carreaux n'ont aucun logement social. On peut changer d'indicateur et zoomer sur un département :
+
+```{ojs}
+//| echo: false
+viewof indicateur = Inputs.radio(indicateurs, {label: "Indicateur", value: indicateurs.get("Niveau de vie moyen")})
+viewof zone = Inputs.radio(
+    new Map([
+        ["Paris et petite couronne", null],
+        ["Paris", "75"],
+        ["Hauts-de-Seine", "92"],
+        ["Seine-Saint-Denis", "93"],
+        ["Val-de-Marne", "94"]
+    ]),
+    {label: "Zone", value: null}
+)
+```
+
+```{ojs}
+//| echo: false
+carteCarreaux(indicateur, zone)
+```
+
+À 200 mètres, les contrastes ne s'arrêtent pas aux limites des communes : l'ouest de Paris et les communes qui le prolongent dans les Hauts-de-Seine ont les niveaux de vie les plus élevés, le nord-est de Paris et la Seine-Saint-Denis les plus faibles, mais chaque commune mêle des quartiers aisés et modestes. Les logements sociaux dessinent des îlots, souvent les carreaux où la pauvreté est la plus forte.
+
+::: {.callout-note collapse="true"}
+## La même carte en `Python`
+
+```{python}
+#| fig-cap: "Niveau de vie moyen par carreau de 200 mètres, Paris et petite couronne"
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(9, 9))
+communes.plot(ax=ax, color="#e0e0e0", edgecolor="white", linewidth=0.3)
+carreaux.plot(
+    ax=ax,
+    column="niveau_vie",
+    scheme="Quantiles",
+    k=6,
+    cmap="YlOrBr",
+    linewidth=0,
+    legend=True,
+    legend_kwds={
+        "title": "Niveau de vie moyen (€ par an)",
+        "loc": "upper center",
+        "bbox_to_anchor": (0.5, 0.02),
+        "ncol": 3,
+        "fmt": "{:.0f}",
+        "frameon": False,
+    },
+)
+communes.boundary.plot(ax=ax, color="white", linewidth=0.2)
+departements.boundary.plot(ax=ax, color="black", linewidth=0.6)
+for texte in ax.get_legend().get_texts(): #<1>
+    bornes = texte.get_text().split(", ")
+    texte.set_text(" – ".join(f"{int(b):,}".replace(",", " ") for b in bornes))
+ax.set_axis_off()
+plt.figtext(
+    0.5,
+    0.02,
+    "Sources : Insee, Filosofi 2021 (données carroyées) ; IGN, ADMIN EXPRESS COG CARTO 2026",
+    horizontalalignment="center",
+    fontsize=8,
+    style="italic",
+)
+plt.show()
+```
+1. Bornes des classes à la française : « 22 300 – 26 900 » plutôt que « 22300, 26900 ».
+
+:::
+
+# Agréger les carreaux par commune
+
+Chaque carreau n'est rattaché qu'à une commune : additionner les carreaux d'une commune ne compte donc personne deux fois. On additionne les sommes et les effectifs, puis on refait le rapport, plutôt que de faire la moyenne des niveaux de vie des carreaux, qui donnerait le même poids à un carreau de 10 habitants et à un carreau de 3 000 :
+
+```{python}
+par_commune = (
+    carreaux.groupby(["INSEE_COG", "NOM_COM"])[["ind", "ind_snv"]]
+    .sum()
+    .assign(niveau_vie=lambda d: d["ind_snv"] / d["ind"])
+    .sort_values("niveau_vie")
+)
+```
+
+```{python}
+#| echo: false
+extremes = (
+    par_commune.iloc[list(range(5)) + list(range(-5, 0))]
+    .reset_index()[["NOM_COM", "ind", "niveau_vie"]]
+    .rename(columns={"NOM_COM": "Commune", "ind": "Habitants", "niveau_vie": "Niveau de vie moyen (€)"})
+)
+extremes.style.format({"Habitants": nombre, "Niveau de vie moyen (€)": nombre}).hide(axis="index")
+```
+
+Les cinq niveaux de vie moyens les plus faibles sont tous en Seine-Saint-Denis, les cinq plus élevés à Paris (6e, 7e, 8e et 16e arrondissements) et à Neuilly-sur-Seine. Un carreau à cheval sur deux communes est compté entier dans celle de son centre : l'écart avec les chiffres communaux de l'Insee reste faible pour une commune entière, mais il vaut mieux préférer ces derniers quand ils existent. Les carreaux servent surtout à ce qu'aucun découpage ne montre : les écarts à l'intérieur d'une commune, ou des zones d'étude sur mesure (un rayon autour d'une gare avec `where`, comme dans [le tutoriel sur les filtres](usecase3.qmd)).
+
+Pour comparer avec le revenu médian des IRIS et les quartiers prioritaires, voir [le tutoriel sur les IRIS](usecase4.qmd).
+
+# Les cartes en `Javascript`
+
+::: {.callout-tip collapse="true"}
+## Comment faire avec `Javascript` ?
+
+Les cartes de cette page sont faites avec [`Observable Plot`](https://observablehq.com/plot/), par le biais de `Quarto`. Le code source de cette page est disponible [ici](https://github.com/InseeFrLab/cartiflette-website/blob/main/use-case/usecase5.qmd).
+
+Plus de 13 000 carrés pèseraient plusieurs mégaoctets en GeoJSON. Or un carreau se déduit de son identifiant : `CRS3035RES200mN2894200E3763400` est le carré de 200 mètres dont le coin inférieur gauche est à 2 894 200 mètres au nord et 3 763 400 mètres à l'est, dans la projection européenne LAEA (EPSG:3035). On ne transmet donc à `Javascript` que ces deux nombres et les indicateurs, colonne par colonne, et le fond des communes dans la même projection :
+
+```{python}
+import json
+
+import pandas as pd
+
+
+def colonne(serie, decimales=0):
+    """Liste JSON, valeurs manquantes en null."""
+    return [None if pd.isna(v) else round(float(v), decimales) for v in serie]
+
+
+coins = carreaux["idcar_200m"].str.extract(r"N(?P<nord>\d+)E(?P<est>\d+)$").astype(int)
+
+ojs_define(
+    carreaux_col={
+        "nord": coins["nord"].tolist(),
+        "est": coins["est"].tolist(),
+        "commune": carreaux["NOM_COM"].tolist(),
+        "departement": carreaux["INSEE_DEP"].tolist(),
+        "ind": colonne(carreaux["ind"]),
+        "niveau_vie": colonne(carreaux["niveau_vie"], -1),
+        "pauvrete": colonne(carreaux["pauvrete"], 1),
+        "logements_sociaux": colonne(carreaux["logements_sociaux"], 1),
+        "impute": carreaux["i_est_200"].tolist(),
+    },
+    communes_3035=json.loads(
+        communes[["INSEE_COG", "INSEE_DEP", "geometry"]].to_crs(3035).to_json(drop_id=True) #<1>
+    ),
+    departements_3035=json.loads(
+        departements.reset_index()[["INSEE_DEP", "geometry"]].to_crs(3035).to_json(drop_id=True)
+    ),
+)
+```
+1. Les communes et les départements passent dans la même projection que les carreaux. Dans un plan (et non sur la sphère), le sens de parcours des polygones n'a pas d'importance pour `d3`.
+
+Côté `Javascript`, on reconstruit les carrés, puis on les dessine dans le plan de la projection LAEA, sans autre projection (`reflect-y` : le nord en haut) :
+
+```{ojs}
+carreauxGeo = d3.range(carreaux_col.nord.length).map((i) => {
+    const [x, y] = [carreaux_col.est[i], carreaux_col.nord[i]]
+    return {
+        type: "Feature",
+        properties: Object.fromEntries(Object.keys(carreaux_col).map((k) => [k, carreaux_col[k][i]])),
+        geometry: {type: "Polygon", coordinates: [[[x, y], [x + 200, y], [x + 200, y + 200], [x, y + 200], [x, y]]]}
+    }
+})
+
+collection = (features) => ({type: "FeatureCollection", features})
+nombre = (x) => Math.round(x).toLocaleString("fr-FR")
+
+// Six classes de même effectif, sur tous les carreaux : les couleurs ne
+// changent pas quand on zoome sur un département
+function quantiles(champ) {
+    const valeurs = carreauxGeo.map((d) => d.properties[champ]).filter((v) => v !== null).sort(d3.ascending)
+    return d3.range(1, 6).map((i) => Math.round(d3.quantileSorted(valeurs, i / 6) / 100) * 100)
+}
+
+// Les pourcentages ont des classes fixes : beaucoup de carreaux sont à 0 %
+// de logements sociaux, ce qui écraserait des quantiles
+indicateurs = new Map([
+    ["Niveau de vie moyen", {champ: "niveau_vie", libelle: "Niveau de vie moyen (€ par an)", schema: "ylorbr", unite: " €", seuils: quantiles("niveau_vie")}],
+    ["Ménages pauvres", {champ: "pauvrete", libelle: "Part des ménages pauvres (%)", schema: "purples", unite: " %", seuils: [5, 10, 15, 25, 35]}],
+    ["Logements sociaux", {champ: "logements_sociaux", libelle: "Part des logements sociaux (%)", schema: "blues", unite: " %", seuils: [5, 15, 30, 50, 75]}]
+])
+
+infobulle = (d, {champ, libelle, unite}) => `${d.properties.commune}
+${libelle} : ${d.properties[champ] === null ? "non calculable" : nombre(d.properties[champ]) + unite}
+${nombre(d.properties.ind)} habitants${d.properties.impute ? " (valeurs imputées)" : ""}`
+```
+
+La carte : le fond des communes, les carreaux colorés selon l'indicateur (avec un contour de leur couleur, sans quoi un fin quadrillage apparaît entre carreaux voisins), les limites des communes en blanc et celles des départements :
+
+```{ojs}
+function carteCarreaux(indicateur, zone) {
+    const dans = (d) => zone === null || d.properties.departement === zone || d.properties.INSEE_DEP === zone
+    const cellules = carreauxGeo.filter(dans)
+    const fond = communes_3035.features.filter(dans)
+    const limites = departements_3035.features.filter(dans)
+    const couleur = (d) => d.properties[indicateur.champ]
+    return Plot.plot({
+        projection: {type: "reflect-y", domain: collection(fond)},
+        width: 720,
+        color: {
+            type: "threshold",
+            domain: indicateur.seuils,
+            scheme: indicateur.schema,
+            legend: true,
+            label: indicateur.libelle,
+            tickFormat: nombre,
+            width: 480
+        },
+        marks: [
+            Plot.geo(fond, {fill: "var(--carte-vide)", stroke: "var(--bs-body-bg)", strokeWidth: 0.5}),
+            Plot.geo(cellules.filter((d) => couleur(d) !== null), Plot.centroid({
+                fill: couleur,
+                stroke: couleur,
+                strokeWidth: 0.3,
+                title: (d) => infobulle(d, indicateur),
+                tip: true
+            })),
+            Plot.geo(fond, {stroke: "var(--bs-body-bg)", strokeWidth: zone === null ? 0.4 : 0.8, strokeOpacity: 0.8}),
+            Plot.geo(limites, {stroke: "var(--bs-body-color)", strokeWidth: 0.9})
+        ]
+    })
+}
+```
+
+:::
+
+# Sources
+
+- Données : Insee, [Revenus, pauvreté et niveau de vie en 2021 – Données carroyées](https://www.insee.fr/fr/statistiques/8735243), dispositif Filosofi, carreaux de 200 mètres, via `cartiflette` ;
+- Fond de carte : IGN, [ADMIN EXPRESS COG CARTO](https://geoservices.ign.fr/adminexpress) 2026, via `cartiflette`.
